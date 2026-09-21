@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- pdf-lib for true multi-page PDF merging -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <!-- PDF.js for robust PDF rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -47,84 +45,77 @@
             background-color: #f8fafc;
             color: #0f172a;
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .fade-in { animation: fadeIn 0.2s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item.active { background-color: #e0e7ff; color: #4f46e5; font-weight: 600; }
         .nav-item.active i { color: #4f46e5; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-50">
 
-    <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 fade-in">
-            <div class="text-center mb-6 sm:mb-8">
-                <div class="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-indigo-600 text-white rounded-2xl mb-3 sm:mb-4 text-xl sm:text-2xl shadow-lg shadow-indigo-200">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200">
                     <i class="fa-solid fa-music"></i>
                 </div>
-                <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Hagios Worship</h1>
-                <p class="text-slate-500 text-xs sm:text-sm mt-1" id="auth-subtitle">팀 계정에 로그인하세요</p>
+                <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
+                <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 계정에 로그인하세요</p>
             </div>
 
-            <!-- 로그인 폼 -->
-            <div id="login-form" class="space-y-3 sm:space-y-4">
+            <div id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용자 이름</label>
-                    <input type="text" id="login-username" class="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" placeholder="이름을 입력하세요">
+                    <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="이름을 입력하세요">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="login-password" class="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" placeholder="비밀번호">
+                    <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="비밀번호">
                 </div>
-                <button onclick="handleLogin()" class="w-full py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-xs sm:text-sm">로그인</button>
-                <div class="text-center mt-3 sm:mt-4">
+                <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm">로그인</button>
+                <div class="text-center mt-4">
                     <button onclick="toggleAuthMode('signup')" class="text-xs text-indigo-600 hover:underline">계정이 없으신가요? 회원가입</button>
                 </div>
             </div>
 
-            <!-- 회원가입 폼 -->
-            <div id="signup-form" class="space-y-3 sm:space-y-4 hidden">
+            <div id="signup-form" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
-                    <input type="text" id="signup-username" class="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" placeholder="예: 김찬양">
+                    <input type="text" id="signup-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="예: 김찬양">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="signup-password" class="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" placeholder="사용할 비밀번호">
+                    <input type="password" id="signup-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="사용할 비밀번호">
                 </div>
-                <button onclick="handleSignup()" class="w-full py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-xs sm:text-sm">회원가입 신청</button>
-                <div class="text-center mt-3 sm:mt-4">
+                <button onclick="handleSignup()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm">회원가입 신청</button>
+                <div class="text-center mt-4">
                     <button onclick="toggleAuthMode('login')" class="text-xs text-slate-600 hover:underline">이미 계정이 있으신가요? 로그인</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 메인 앱 컨테이너 -->
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row bg-gray-50 overflow-hidden hidden fade-in">
         
-        <!-- 사이드바 -->
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
-            <div class="p-3 md:p-3.5 flex items-center justify-between border-b border-gray-100">
-                <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2 overflow-hidden cursor-pointer group py-0.5" title="홈으로 이동">
-                    <div class="w-8 h-8 md:w-8 md:h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 group-hover:bg-indigo-700 transition">
+            <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
+                <div class="flex items-center gap-2 overflow-hidden">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0">
                         <i class="fa-solid fa-music text-white text-sm"></i>
                     </div>
-                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios Worship</span>
+                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap">Hagios Worship</span>
                 </div>
-                <!-- 모바일 헤더 버튼 (크기 및 터치 영역 확대) -->
-                <div class="flex items-center gap-2 md:hidden">
-                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-2xs"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
-                    <button onclick="handleLogout()" class="text-gray-600 hover:text-red-600 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-bold transition" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-indigo-600 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-bold transition"><i class="fa-solid fa-bars"></i></button>
+                <div class="flex items-center gap-1.5 md:hidden">
+                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
+                    <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 p-1.5 bg-gray-100 rounded-lg" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-indigo-600 p-1.5 bg-gray-100 rounded-lg"><i class="fa-solid fa-bars"></i></button>
                 </div>
             </div>
             
-            <!-- 데스크탑 관리자/로그아웃 -->
             <div class="hidden md:flex flex-col gap-2 p-3 border-b border-gray-100">
                 <div class="text-xs text-gray-500 mb-1 px-1 flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></div>
                 <div class="flex gap-2">
@@ -133,166 +124,165 @@
                 </div>
             </div>
 
-            <!-- 사이드바 네비게이션 -->
-            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-1 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[53px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
-                <ul class="space-y-0.5 px-2 md:px-3">
-                    <li><button class="nav-item active w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-gray-400"></i><span>투두리스트</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-gray-400"></i><span>악보</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-audio"><i class="fa-solid fa-headphones w-5 text-center text-gray-400"></i><span>음원</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-gray-400"></i><span>콘티</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-board"><i class="fa-regular fa-comments w-5 text-center text-gray-400"></i><span>게시판</span></button></li>
+            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[57px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
+                <ul class="space-y-1 px-3">
+                    <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-gray-400"></i><span>투두리스트</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-gray-400"></i><span>악보</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-audio"><i class="fa-solid fa-headphones w-5 text-center text-gray-400"></i><span>음원</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-gray-400"></i><span>콘티</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-board"><i class="fa-regular fa-comments w-5 text-center text-gray-400"></i><span>게시판</span></button></li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- 메인 컨텐츠 영역 -->
-        <main class="flex-1 flex flex-col h-[calc(100vh-53px)] md:h-screen overflow-y-auto bg-gray-50 relative">
+        <main class="flex-1 flex flex-col h-[calc(100vh-57px)] md:h-screen overflow-hidden bg-gray-50 relative">
             <div id="toast-container" class="absolute bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
 
-            <div class="flex-1 p-2.5 sm:p-4 md:p-6 scroll-smooth w-full min-w-0 max-w-5xl mx-auto">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 scroll-smooth w-full">
                 
                 <!-- View: Home Dashboard with Navigation Cards -->
                 <section id="view-dashboard" class="view-section fade-in">
-                    <h3 class="text-xs sm:text-sm md:text-base font-bold text-gray-800 mb-2.5 sm:mb-3">메뉴</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-                        <div onclick="navigateToView('view-calendar')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-indigo-600 group-hover:text-white transition flex-shrink-0"><i class="fa-regular fa-calendar-days"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">캘린더</h4></div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">메뉴</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div onclick="navigateToView('view-calendar')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-regular fa-calendar-days"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">캘린더</h4></div>
                         </div>
-                        <div onclick="navigateToView('view-todos')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-blue-600 group-hover:text-white transition flex-shrink-0"><i class="fa-solid fa-check-double"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">투두리스트</h4></div>
+                        <div onclick="navigateToView('view-todos')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition"><i class="fa-solid fa-check-double"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">투두리스트</h4></div>
                         </div>
-                        <div onclick="navigateToView('view-sheetmusic')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-emerald-600 group-hover:text-white transition flex-shrink-0"><i class="fa-solid fa-file-audio"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">악보</h4></div>
+                        <div onclick="navigateToView('view-sheetmusic')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl group-hover:bg-emerald-600 group-hover:text-white transition"><i class="fa-solid fa-file-audio"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">악보</h4></div>
                         </div>
-                        <div onclick="navigateToView('view-audio')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-purple-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-purple-600 group-hover:text-white transition flex-shrink-0"><i class="fa-solid fa-headphones"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">음원</h4></div>
+                        <div onclick="navigateToView('view-audio')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-headphones"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">음원</h4></div>
                         </div>
-                        <div onclick="navigateToView('view-konti')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-indigo-600 group-hover:text-white transition flex-shrink-0"><i class="fa-solid fa-list-ol"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">콘티</h4></div>
+                        <div onclick="navigateToView('view-konti')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-solid fa-list-ol"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">콘티</h4></div>
                         </div>
-                        <div onclick="navigateToView('view-board')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-amber-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-base sm:text-lg group-hover:bg-amber-600 group-hover:text-white transition flex-shrink-0"><i class="fa-regular fa-comments"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-xs sm:text-sm">게시판</h4></div>
+                        <div onclick="navigateToView('view-board')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-amber-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-600 group-hover:text-white transition"><i class="fa-regular fa-comments"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">게시판</h4></div>
                         </div>
                     </div>
                 </section>
 
                 <!-- View: Calendar with Detail Viewer Panel -->
-                <section id="view-calendar" class="view-section hidden fade-in pb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-sm sm:text-lg font-bold text-gray-800">캘린더</h2>
-                        <button onclick="openCalendarEventModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-plus text-[10px]"></i> 일정 추가
+                <section id="view-calendar" class="view-section hidden fade-in">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">캘린더</h2>
+                        <button onclick="openCalendarEventModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> 일정 추가
                         </button>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 mb-2.5">
-                        <div class="flex justify-between items-center mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="changeCalendarMonth(-1)" class="w-6 h-6 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-xs"><i class="fa-solid fa-chevron-left"></i></button>
-                                <h3 id="calendar-title" class="font-bold text-xs sm:text-sm text-gray-800">2026년 9월</h3>
-                                <button onclick="changeCalendarMonth(1)" class="w-6 h-6 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 text-xs"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800">2026년 9월</h3>
+                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                             </div>
-                            <button onclick="resetCalendarToCurrent()" class="text-[11px] text-indigo-600 font-semibold hover:underline">오늘</button>
+                            <button onclick="resetCalendarToCurrent()" class="text-xs text-indigo-600 font-semibold hover:underline">오늘로 이동</button>
                         </div>
-                        <div class="grid grid-cols-7 gap-0.5 mb-1 text-center text-[11px] font-medium text-gray-500">
+                        <div class="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-xs sm:text-sm font-medium text-gray-500">
                             <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
                         </div>
-                        <div class="grid grid-cols-7 gap-0.5 text-center text-xs" id="calendar-grid"></div>
+                        <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm" id="calendar-grid"></div>
                     </div>
 
                     <!-- Calendar Day Details Panel -->
-                    <div id="calendar-detail-panel" class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 hidden mb-4">
-                        <div class="flex justify-between items-center mb-2 pb-1.5 border-b border-gray-100">
-                            <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-xs">날짜</h3>
-                            <button onclick="openCalendarEventModal()" class="text-[10px] bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-0.5 rounded font-medium transition"><i class="fa-solid fa-plus mr-0.5"></i> 추가</button>
+                    <div id="calendar-detail-panel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6 hidden">
+                        <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100">
+                            <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-base">날짜</h3>
+                            <button onclick="openCalendarEventModal()" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-plus mr-1"></i> 이 날 일정 추가</button>
                         </div>
-                        <div id="calendar-detail-content" class="text-xs text-gray-600 space-y-2 max-h-48 overflow-y-auto"></div>
+                        <div id="calendar-detail-content" class="text-sm text-gray-600 space-y-3"></div>
                     </div>
                 </section>
 
                 <!-- View: Todo List -->
                 <section id="view-todos" class="view-section hidden fade-in">
-                    <h2 class="text-sm sm:text-lg font-bold text-gray-800 mb-3">투두리스트</h2>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[380px]">
-                        <div class="p-2.5 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="todo-input" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="할 일을 입력하세요">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">투두리스트</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
+                        <div class="p-3 sm:p-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="todo-input" class="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="할 일을 입력하세요">
                             <div class="flex items-center gap-1">
-                                <input type="date" id="todo-date" class="px-2 py-1 text-xs border border-gray-300 rounded-lg outline-none bg-white">
+                                <span class="text-xs text-gray-500 font-medium whitespace-nowrap">기한:</span>
+                                <input type="date" id="todo-date" class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white">
                             </div>
-                            <button id="add-todo-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">추가</button>
+                            <button id="add-todo-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg font-medium transition shadow-sm whitespace-nowrap">추가</button>
                         </div>
-                        <div class="flex-1 overflow-y-auto p-2 sm:p-3" id="todo-list"></div>
+                        <div class="flex-1 overflow-y-auto p-3 sm:p-4" id="todo-list"></div>
                     </div>
                 </section>
                 
                 <!-- View: Sheet Music -->
                 <section id="view-sheetmusic" class="view-section hidden fade-in">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-sm sm:text-lg font-bold text-gray-800">악보</h2>
-                        <button onclick="openModal('sheet-modal')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-plus text-[10px]"></i> 업로드
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">악보</h2>
+                        <button onclick="openModal('sheet-modal')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> 새 악보 업로드
                         </button>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-6">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none shadow-sm" placeholder="악보 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none shadow-sm" placeholder="악보 검색...">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="sheet-list"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="sheet-list"></div>
                 </section>
 
                 <!-- View: Audio -->
                 <section id="view-audio" class="view-section hidden fade-in">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-sm sm:text-lg font-bold text-gray-800">음원</h2>
-                        <button onclick="openModal('audio-modal')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-plus text-[10px]"></i> 등록
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">음원</h2>
+                        <button onclick="openModal('audio-modal')" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> 새 음원 등록
                         </button>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-6">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none shadow-sm" placeholder="음원 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none shadow-sm" placeholder="음원 검색...">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 gap-2.5" id="audio-list"></div>
+                    <div class="grid grid-cols-1 gap-4" id="audio-list"></div>
                 </section>
 
                 <!-- View: Konti -->
                 <section id="view-konti" class="view-section hidden fade-in">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-sm sm:text-lg font-bold text-gray-800">콘티</h2>
-                        <button onclick="openModal('konti-modal')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-plus text-[10px]"></i> 만들기
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">콘티</h2>
+                        <button onclick="openModal('konti-modal')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> 새 콘티 만들기
                         </button>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-6">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm" placeholder="콘티 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm" placeholder="콘티 검색...">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 gap-2.5" id="konti-list"></div>
+                    <div class="grid grid-cols-1 gap-4" id="konti-list"></div>
                 </section>
 
                 <!-- View: Notice Board -->
                 <section id="view-board" class="view-section hidden fade-in">
-                    <h2 class="text-sm sm:text-lg font-bold text-gray-800 mb-3">게시판</h2>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[380px]">
-                        <div class="flex-1 overflow-y-auto p-2.5 bg-gray-50 flex flex-col gap-2.5" id="board-list"></div>
-                        <div class="p-2.5 border-t border-gray-200 bg-white">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">게시판</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
+                        <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 flex flex-col gap-4" id="board-list"></div>
+                        <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="1" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-none" placeholder="내용을 입력하세요"></textarea>
-                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-sm flex items-center justify-center text-xs">
-                                    <i class="fa-solid fa-paper-plane"></i>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" placeholder="내용을 입력하세요..."></textarea>
+                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center">
+                                    <i class="fa-solid fa-paper-plane text-sm sm:text-base"></i>
                                 </button>
                             </div>
                         </div>
@@ -303,123 +293,117 @@
         </main>
     </div>
 
-    <!-- 커스텀 팝업(Alert) 모달 -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl fade-in text-center">
-            <div id="alert-icon-container" class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2.5 text-base">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
+            <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
                 <i id="alert-icon" class="fa-solid fa-circle-info"></i>
             </div>
-            <h3 class="font-bold text-gray-800 text-sm mb-1" id="alert-title">안내</h3>
-            <p class="text-xs text-gray-500 mb-3 whitespace-pre-line" id="alert-message">메시지 내용</p>
-            <button id="alert-action-btn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-xs shadow-sm">확인</button>
+            <h3 class="font-bold text-gray-800 text-lg mb-2" id="alert-title">안내</h3>
+            <p class="text-sm text-gray-500 mb-6 whitespace-pre-line" id="alert-message">메시지 내용</p>
+            <button id="alert-action-btn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm">확인</button>
         </div>
     </div>
 
-    <!-- 커스텀 확인(Confirm) 모달 -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl fade-in text-center">
-            <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2.5 text-base">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3 class="font-bold text-gray-800 text-sm mb-1" id="confirm-title">확인</h3>
-            <p class="text-xs text-gray-500 mb-3" id="confirm-message">정말 진행하시겠습니까?</p>
-            <div class="flex gap-2">
-                <button onclick="closeCustomConfirm()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition text-xs">취소</button>
-                <button id="confirm-action-btn" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-xs shadow-sm">삭제</button>
+            <h3 class="font-bold text-gray-800 text-lg mb-2" id="confirm-title">확인</h3>
+            <p class="text-sm text-gray-500 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
+            <div class="flex gap-3">
+                <button onclick="closeCustomConfirm()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition text-sm">취소</button>
+                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">삭제</button>
             </div>
         </div>
     </div>
 
-    <!-- 관리자 모달 -->
     <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full shadow-xl overflow-hidden flex flex-col max-h-[80vh]">
-            <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h3 class="font-bold text-xs sm:text-sm text-gray-800 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
-                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex border-b border-gray-200 bg-white">
-                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-2 text-xs font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full">0</span></button>
-                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition">기존 팀원</button>
+                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
+                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition">기존 팀원</button>
             </div>
-            <div class="flex-1 overflow-y-auto p-3 bg-white">
-                <div id="admin-pending-view" class="space-y-2 fade-in"></div>
-                <div id="admin-active-view" class="space-y-2 hidden fade-in"></div>
+            <div class="flex-1 overflow-y-auto p-4 bg-white">
+                <div id="admin-pending-view" class="space-y-3 fade-in"></div>
+                <div id="admin-active-view" class="space-y-3 hidden fade-in"></div>
             </div>
         </div>
     </div>
 
-    <!-- 콘티 모달 -->
     <div id="konti-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-4 shadow-xl fade-in max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-2.5">
-                <h3 class="font-bold text-gray-800 text-xs sm:text-sm" id="konti-modal-title">새 콘티 만들기</h3>
-                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="konti-modal-title">새 콘티 만들기</h3>
+                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="konti-edit-id" value="">
-            <div class="flex flex-col gap-2.5">
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">콘티 이름</label><input type="text" id="konti-name" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
                 <div>
-                    <div class="flex justify-between items-center mb-1"><label class="block text-[11px] font-medium text-gray-700">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-2 py-0.5 text-[11px] border border-gray-200 rounded-md outline-none focus:border-indigo-500 w-28"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-36 overflow-y-auto border border-gray-200 rounded-lg p-2 flex flex-col gap-1"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-medium text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="" class="px-3 py-1 text-xs border border-gray-200 rounded-lg outline-none focus:border-indigo-500 w-40"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-3 flex flex-col gap-2"></div>
                 </div>
-                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-xs rounded-xl font-medium transition mt-1 shadow-sm">콘티 저장</button>
+                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">콘티 저장</button>
             </div>
         </div>
     </div>
 
-    <!-- 악보 모달 -->
     <div id="sheet-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-4 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-2.5">
-                <h3 class="font-bold text-gray-800 text-xs sm:text-sm" id="sheet-modal-title">새 악보 파일 등록</h3>
-                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="sheet-modal-title">새 악보 파일 등록</h3>
+                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
-            <div class="flex flex-col gap-2.5">
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">곡 제목</label><input type="text" id="sheet-title" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder=""></div>
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">악보 파일 (PDF 또는 이미지)</label><input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"></div>
-                <div id="sheet-current-file-info" class="text-[11px] text-gray-400"></div>
-                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-xs rounded-xl font-medium transition mt-1 shadow-sm">저장 완료</button>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목</label><input type="text" id="sheet-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder=""></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">악보 파일 (PDF 또는 이미지)</label><input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"></div>
+                <div id="sheet-current-file-info" class="text-xs text-gray-400"></div>
+                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장 완료</button>
             </div>
         </div>
     </div>
 
-    <!-- 음원 모달 -->
     <div id="audio-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-4 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-2.5">
-                <h3 class="font-bold text-gray-800 text-xs sm:text-sm" id="audio-modal-title">새 음원 등록</h3>
-                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="audio-modal-title">새 음원 등록</h3>
+                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="audio-edit-id" value="">
-            <div class="flex flex-col gap-2.5">
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">오디오 파일 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"></div>
-                <div id="audio-current-file-info" class="text-[11px] text-gray-400"></div>
-                <div class="text-center text-[10px] text-gray-400">- 또는 -</div>
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">링크 입력 (유튜브 등)</label><input type="url" id="audio-url" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
-                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-xs rounded-xl font-medium transition mt-1 shadow-sm">등록 완료</button>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">오디오 파일 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"></div>
+                <div id="audio-current-file-info" class="text-xs text-gray-400"></div>
+                <div class="text-center text-xs text-gray-400">- 또는 -</div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">링크 입력 (유튜브 등)</label><input type="url" id="audio-url" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
+                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">등록 완료</button>
             </div>
         </div>
     </div>
 
-    <!-- 캘린더 일정 추가/수정 모달 -->
+    <!-- Calendar Event Modal with Optional Time and Detail Content -->
     <div id="calendar-event-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-4 shadow-xl fade-in max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-2.5">
-                <h3 class="font-bold text-gray-800 text-xs sm:text-sm" id="cal-modal-title">일정 추가</h3>
-                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="cal-modal-title">일정 추가</h3>
+                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="cal-edit-id" value="">
-            <div class="flex flex-col gap-2.5">
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block text-[11px] font-medium text-gray-700 mb-1">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
-                    <div><label class="block text-[11px] font-medium text-gray-700 mb-1">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+                    <div><label class="block text-xs font-medium text-gray-700 mb-1">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+                    <div><label class="block text-xs font-medium text-gray-700 mb-1">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
                 </div>
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500 resize-none" placeholder="세부 내용..."></textarea></div>
-                <button id="save-cal-event-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-xs rounded-xl font-medium transition mt-1 shadow-sm">저장하기</button>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">세부 내용</label><textarea id="cal-event-detail" rows="3" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 resize-none" placeholder="세부 내용을 입력하세요..."></textarea></div>
+                <button id="save-cal-event-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장하기</button>
             </div>
         </div>
     </div>
@@ -443,17 +427,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2.5 text-base';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-xs shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2.5 text-base';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-xs shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else {
-                iconContainer.className = 'w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-2.5 text-base';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-xs shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             }
 
             alertCallback = callback;
@@ -488,7 +472,7 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.id === 'board-input') {
-                    return;
+                    return; // Let textarea handle enter normally
                 }
                 const alertModal = document.getElementById('custom-alert-modal');
                 if (alertModal && !alertModal.classList.contains('hidden')) {
@@ -754,12 +738,12 @@
 
         function switchAdminTab(tab) {
             document.getElementById('tab-admin-pending').className = tab === 'pending' 
-                ? 'flex-1 py-2 text-xs font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
-                : 'flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
+                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
             
             document.getElementById('tab-admin-active').className = tab === 'active' 
-                ? 'flex-1 py-2 text-xs font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
-                : 'flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
+                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
 
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
             document.getElementById('admin-active-view').style.display = tab === 'active' ? 'block' : 'none';
@@ -775,18 +759,18 @@
             const pendingView = document.getElementById('admin-pending-view');
             pendingView.innerHTML = '';
             if(pendingUsers.length === 0) {
-                pendingView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">가입 대기 중인 인원이 없습니다.</div>';
+                pendingView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">가입 대기 중인 인원이 없습니다.</div>';
             } else {
                 pendingUsers.forEach(u => {
                     pendingView.innerHTML += `
-                        <div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs">
+                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
                             <div>
-                                <p class="font-bold text-xs text-gray-800">${escapeHtml(u.username)}</p>
+                                <p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p>
                                 <p class="text-[10px] text-gray-400">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p>
                             </div>
-                            <div class="flex gap-1.5">
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">거부</button>
-                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] rounded-lg transition font-medium shadow-2xs">승인</button>
+                            <div class="flex gap-2">
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부/삭제</button>
+                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
                             </div>
                         </div>
                     `;
@@ -796,18 +780,18 @@
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
             if(activeUsers.length === 0) {
-                activeView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">등록된 팀원이 없습니다.</div>';
+                activeView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">등록된 팀원이 없습니다.</div>';
             } else {
                 activeUsers.forEach(u => {
                     const isSuspended = u.status === 'suspended';
                     activeView.innerHTML += `
-                        <div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs ${isSuspended ? 'opacity-60' : ''}">
+                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'opacity-60' : ''}">
                             <div>
-                                <p class="font-bold text-xs text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p>
+                                <p class="font-bold text-sm text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p>
                             </div>
-                            <div class="flex gap-1.5">
-                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-2 py-1 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-[11px] rounded-lg transition font-medium">${isSuspended ? '해제' : '정지'}</button>
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">삭제</button>
+                            <div class="flex gap-2">
+                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">계정삭제</button>
                             </div>
                         </div>
                     `;
@@ -829,7 +813,7 @@
                 });
             }
             else if(action === 'delete') {
-                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => {
+                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, async () => {
                     await dbDelete('users', id);
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info');
                     renderAdminViews();
@@ -846,8 +830,8 @@
                 'info': 'bg-blue-100 text-blue-800 border-blue-200'
             };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
-            toast.className = `flex items-center gap-2 px-3 py-2 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto text-xs`;
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="font-medium">${message}</span>`;
+            toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="text-xs sm:text-sm font-medium">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -910,7 +894,7 @@
             }
 
             for(let i = 0; i < firstDayIndex; i++) {
-                grid.innerHTML += `<div class="p-0.5 border border-gray-100 rounded-md bg-gray-50/30 min-h-[44px] sm:min-h-[55px]"></div>`;
+                grid.innerHTML += `<div class="p-1 sm:p-2 border border-gray-100 rounded-lg bg-gray-50/30 min-h-[80px] sm:min-h-[110px]"></div>`;
             }
 
             for(let i = 1; i <= totalDays; i++) {
@@ -931,15 +915,15 @@
                 let eventsHtml = '';
                 dayEvents.slice(0, 2).forEach(dt => {
                     let timeText = dt.time ? `[${dt.time}] ` : '';
-                    eventsHtml += `<div class="text-[8px] bg-indigo-500 text-white px-1 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium shadow-2xs" title="${escapeHtml(dt.text)}">${timeText}${escapeHtml(dt.text)}</div>`;
+                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium shadow-2xs" title="${escapeHtml(dt.text)}">${timeText}${escapeHtml(dt.text)}</div>`;
                 });
                 if (dayEvents.length > 2) {
-                    eventsHtml += `<div class="text-[8px] text-gray-500 font-semibold mt-0.5 px-0.5">+${dayEvents.length - 2}</div>`;
+                    eventsHtml += `<div class="text-[9px] text-gray-500 font-semibold mt-0.5 px-0.5">+${dayEvents.length - 2}개 더보기</div>`;
                 }
 
-                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1 border rounded-md sm:rounded-lg ${bgClass} min-h-[44px] sm:min-h-[55px] flex flex-col justify-start items-start cursor-pointer hover:border-indigo-400 transition group">
-                    <div class="w-full flex justify-between items-center mb-0.5">
-                        <span class="text-[11px] sm:text-xs font-semibold text-gray-800">${i}</span>
+                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start cursor-pointer hover:border-indigo-400 transition group">
+                    <div class="w-full flex justify-between items-center mb-1">
+                        <span class="text-xs sm:text-sm font-semibold text-gray-800">${i}</span>
                         ${dayEvents.length > 0 ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>' : ''}
                     </div>
                     <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
@@ -980,20 +964,20 @@
 
             let html = '';
             dayEvents.forEach(ev => {
-                let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-0.5"></i>${ev.time}</span>` : '';
-                let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-[10px] text-gray-400">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
-                let detailText = ev.detail ? `<div class="mt-1 text-[11px] text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : '';
+                let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-1"></i>${ev.time}</span>` : '';
+                let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-xs text-gray-400">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
+                let detailText = ev.detail ? `<div class="mt-2 text-xs sm:text-sm text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : '';
 
                 html += `
-                    <div class="bg-white border border-gray-200 rounded-lg p-2.5 shadow-2xs relative group mb-2">
-                        <div class="flex items-center justify-between mb-1">
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <h4 class="font-bold text-gray-800 text-xs">${escapeHtml(ev.text)}</h4>
+                    <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-2xs relative group mb-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(ev.text)}</h4>
                                 ${timeDisplay}
                             </div>
                             <div class="flex items-center gap-1">
-                                <button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                                <button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
                         ${periodDisplay ? `<div class="mb-1">${periodDisplay}</div>` : ''}
@@ -1066,23 +1050,23 @@
             const todos = getCollectionData('todos');
             list.innerHTML = '';
             if(todos.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs sm:text-sm"><p></p></div>`;
                 return;
             }
             todos.forEach((todo) => {
                 const item = document.createElement('div');
-                item.className = `flex items-center gap-2 p-2 border-b border-gray-100 hover:bg-gray-50 transition group ${todo.completed ? 'opacity-50' : ''}`;
-                let dateBadge = todo.dueDate ? `<span class="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
+                item.className = `flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border-b border-gray-100 hover:bg-gray-50 transition group ${todo.completed ? 'opacity-50' : ''}`;
+                let dateBadge = todo.dueDate ? `<span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
                 item.innerHTML = `
-                    <button class="w-4 h-4 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[9px]"></i></button>
-                    <span class="flex-1 text-xs ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
+                    <button class="w-5 h-5 sm:w-6 sm:h-6 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
+                    <span class="flex-1 text-xs sm:text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
                     ${dateBadge}
                     <div class="flex items-center gap-1">
-                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-up"></i></button>
-                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-down"></i></button>
-                        <button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
+                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
                     </div>
-                    <button class="text-gray-300 hover:text-red-500 transition px-1 text-[11px]" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="text-gray-300 hover:text-red-500 transition px-1 text-xs" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 list.appendChild(item);
             });
@@ -1134,23 +1118,23 @@
             if (search) sheets = sheets.filter(s => s.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(sheets.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
                 return;
             }
             sheets.forEach(sheet => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-xl p-3 flex items-start gap-3 hover:shadow-sm transition relative group';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex items-start gap-4 hover:shadow-md transition relative group';
                 item.innerHTML = `
-                    <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0 text-sm"><i class="fa-solid fa-file-pdf"></i></div>
-                    <div class="flex-1 overflow-hidden pr-10">
-                        <h4 class="font-bold text-gray-800 text-xs truncate">${escapeHtml(sheet.title)}</h4>
-                        <div class="flex items-center gap-2 mt-1.5">
-                            <button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-semibold hover:underline cursor-pointer"><i class="fa-solid fa-download"></i> 다운로드</button>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
+                    <div class="flex-1 overflow-hidden pr-12">
+                        <h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(sheet.title)}</h4>
+                        <div class="flex items-center gap-3 mt-3">
+                            <button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold hover:underline cursor-pointer"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     </div>
-                    <div class="absolute top-2.5 right-2.5 flex items-center gap-1">
-                        <button onclick="openEditSheet('${sheet.id}')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteSheet('${sheet.id}')" class="text-gray-300 hover:text-red-500 p-1 text-[11px]"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="absolute top-3 right-3 flex items-center gap-1">
+                        <button onclick="openEditSheet('${sheet.id}')" class="text-gray-300 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteSheet('${sheet.id}')" class="text-gray-300 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -1162,35 +1146,23 @@
             if (!sheet || !sheet.data) { showToast('악보 파일을 찾을 수 없습니다.', 'error'); return; }
             try {
                 const arr = sheet.data.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1] || 'application/pdf';
+                const mime = arr[0].match(/:(.*?);/)[1];
                 const bstr = atob(arr[1]);
                 let n = bstr.length;
                 const u8arr = new Uint8Array(n);
                 while(n--){ u8arr[n] = bstr.charCodeAt(n); }
                 const blob = new Blob([u8arr], {type: mime});
-                const filename = sheet.filename || `${sheet.title || 'sheet'}.pdf`;
-
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = blobUrl;
-                link.download = filename;
+                link.download = sheet.filename || `${sheet.title || 'sheet'}_악보`;
                 document.body.appendChild(link);
                 link.click();
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(blobUrl);
-                }, 500);
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
                 showToast('다운로드가 시작되었습니다.', 'success');
             } catch (e) {
-                console.error("Download error:", e);
-                try {
-                    const win = window.open(sheet.data, '_blank');
-                    if (!win) {
-                        window.location.href = sheet.data;
-                    }
-                } catch (err) {
-                    showToast('다운로드 중 오류가 발생했습니다.', 'error');
-                }
+                showToast('다운로드 중 오류가 발생했습니다.', 'error');
             }
         };
 
@@ -1254,18 +1226,18 @@
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
             const sheets = getCollectionData('sheets');
             container.innerHTML = '';
-            if (sheets.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2"></p>`; return; }
+            if (sheets.length === 0) { container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4"></p>`; return; }
             sheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-1 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
-                        <label class="flex items-center gap-2 cursor-pointer flex-1">
-                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-3.5 h-3.5 text-indigo-600 rounded border-gray-300">
-                            <span class="text-xs text-gray-700">${escapeHtml(sheet.title)}</span>
+                    <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
+                        <label class="flex items-center gap-2.5 cursor-pointer flex-1">
+                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300">
+                            <span class="text-xs sm:text-sm text-gray-700">${escapeHtml(sheet.title)}</span>
                         </label>
                         <div class="flex items-center gap-1">
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-up"></i></button>
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-down"></i></button>
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
                         </div>
                     </div>
                 `;
@@ -1293,7 +1265,7 @@
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search));
             list.innerHTML = '';
             if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
                 return;
             }
             kontiList.forEach(konti => {
@@ -1301,27 +1273,27 @@
                 let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic"></p>` : '';
                 kontiSheets.forEach((sheet, idx) => {
                     sheetsHtml += `
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-                            <div class="flex items-center gap-2 overflow-hidden">
-                                <span class="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[9px] flex items-center justify-center flex-shrink-0">${idx + 1}</span>
-                                <span class="text-xs font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
+                        <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span>
+                                <span class="text-xs sm:text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
                             </div>
-                            <button onclick="downloadSheet('${sheet.id}')" class="text-[11px] text-indigo-600 font-semibold hover:underline px-1.5 py-0.5"><i class="fa-solid fa-download"></i> 다운로드</button>
+                            <button onclick="downloadSheet('${sheet.id}')" class="text-xs text-indigo-600 font-semibold hover:underline px-2 py-1"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     `;
                 });
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-xl p-3 shadow-sm';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm';
                 item.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2.5 pb-2 border-b border-gray-100">
-                        <div><h3 class="font-bold text-gray-800 text-xs">${escapeHtml(konti.name)}</h3><p class="text-[10px] text-gray-400">총 ${kontiSheets.length}곡 포함</p></div>
-                        <div class="flex items-center gap-1 w-full sm:w-auto justify-end">
-                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-medium transition shadow-2xs flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드</button>
-                            <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1 text-[11px]"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
+                        <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
+                            <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-1.5">${sheetsHtml}</div>
+                    <div class="flex flex-col gap-2">${sheetsHtml}</div>
                 `;
                 list.appendChild(item);
             });
@@ -1424,21 +1396,21 @@
             if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(audios.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
                 return;
             }
             audios.forEach(audio => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center gap-3 hover:shadow-sm transition relative group';
-                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-56 h-7 mt-1"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1 mt-1 text-[11px] text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 이동하기</a>`;
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
+                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-72 h-9 mt-2"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 이동하기</a>`;
                 item.innerHTML = `
-                    <div class="flex items-center gap-2.5 w-full sm:w-auto flex-1 overflow-hidden">
-                        <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0 text-xs"><i class="fa-solid fa-headphones"></i></div>
-                        <div class="flex-1 overflow-hidden pr-12 sm:pr-0"><h4 class="font-bold text-gray-800 text-xs truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
+                    <div class="flex items-center gap-3.5 w-full sm:w-auto flex-1 overflow-hidden">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0 text-base"><i class="fa-solid fa-headphones"></i></div>
+                        <div class="flex-1 overflow-hidden pr-20 sm:pr-0"><h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
                     </div>
-                    <div class="absolute top-2.5 right-2.5 flex items-center gap-1">
-                        <button onclick="openEditAudio('${audio.id}')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteAudio('${audio.id}')" class="text-gray-300 hover:text-red-500 p-1 text-[11px]"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="absolute top-3 right-3 flex items-center gap-1">
+                        <button onclick="openEditAudio('${audio.id}')" class="text-gray-300 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteAudio('${audio.id}')" class="text-gray-300 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -1546,28 +1518,28 @@
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
             list.innerHTML = '';
             if(posts.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 flex-1 flex items-center justify-center text-xs sm:text-sm"><p>첫 게시글을 남겨보세요.</p></div>`;
                 return;
             }
             posts.forEach(post => {
                 const item = document.createElement('div');
-                item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-2 group';
-                const authorName = post.author ? `<div class="text-[10px] font-bold text-gray-600 ml-1.5 mb-0.5">${escapeHtml(post.author)}</div>` : '';
+                item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-3 group';
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-gray-600 ml-2 mb-1">${escapeHtml(post.author)}</div>` : '';
                 
                 const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
                 const actionButtons = isOwner ? `
                     <div class="flex items-center gap-1">
-                        <button class="text-gray-300 hover:text-indigo-600 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-gray-300 hover:text-red-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="text-gray-300 hover:text-indigo-600 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="text-gray-300 hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 ` : '';
 
                 item.innerHTML = `
                     ${authorName}
-                    <div class="flex items-end gap-1.5 w-full">
-                        <div class="px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 shadow-2xs text-xs whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
-                        <div class="flex flex-col items-start gap-0.5 flex-shrink-0">
-                            <span class="text-[9px] text-gray-400">${post.time}</span>
+                    <div class="flex items-end gap-2 w-full">
+                        <div class="px-4 py-3 rounded-2xl bg-white border border-gray-200 text-gray-800 shadow-sm text-sm whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
+                        <div class="flex flex-col items-start gap-1 flex-shrink-0">
+                            <span class="text-[10px] text-gray-400">${post.time}</span>
                             ${actionButtons}
                         </div>
                     </div>
@@ -1581,7 +1553,7 @@
         boardInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 if (e.shiftKey) {
-                    return;
+                    return; // Allow Shift+Enter for newline
                 } else {
                     e.preventDefault();
                     if (e.isComposing) return;
