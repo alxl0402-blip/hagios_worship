@@ -1646,36 +1646,54 @@
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
 
+        let isSubmittingPost = false; // 중복 전송 방지용 안전장치 추가
+
         document.getElementById('add-post-btn').addEventListener('click', async () => {
+            if (isSubmittingPost) return; // 이미 전송 중이면 두 번 눌리지 않게 차단
+            
             const input = document.getElementById('board-input');
             const text = input.value.trim();
             if(!text) return;
             
+            isSubmittingPost = true; // 전송 시작
             const btn = document.getElementById('add-post-btn');
             btn.disabled = true;
             
-            const now = new Date();
-            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            const authorName = currentUser ? currentUser.username : '알 수 없음';
-            
-            await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
-            
-            input.value = '';
-            btn.disabled = false;
-            // 스크롤 다운을 위해 약간의 딜레이
-            setTimeout(() => {
-                const list = document.getElementById('board-list');
-                list.scrollTop = list.scrollHeight;
-            }, 100);
+            try {
+                const now = new Date();
+                const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+                const authorName = currentUser ? currentUser.username : '알 수 없음';
+                
+                await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
+                
+                input.value = '';
+            } finally {
+                isSubmittingPost = false; // 전송 완료 후 해제
+                btn.disabled = false;
+                
+                // 스크롤 다운을 위해 약간의 딜레이
+                setTimeout(() => {
+                    const list = document.getElementById('board-list');
+                    list.scrollTop = list.scrollHeight;
+                }, 100);
+            }
         });
 
         // Shift+Enter 로 줄바꿈, Enter 로 등록
         document.getElementById('board-input').addEventListener('keydown', function(e) {
-            if (e.isComposing || e.keyCode === 229) return; // 한글(IME) 입력 중 엔터키로 인한 전송 방지
-            
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault(); // 기본 줄바꿈 방지
-                document.getElementById('add-post-btn').click();
+            // 엔터키를 눌렀을 때만 동작
+            if (e.key === 'Enter') {
+                if (e.shiftKey) {
+                    // Shift + Enter인 경우: 아무 작업도 하지 않음 (브라우저 기본 동작인 줄바꿈이 정상 작동됨)
+                    return; 
+                } else {
+                    // 일반 Enter인 경우 (전송)
+                    e.preventDefault(); // 엔터로 인해 줄바꿈이 생기는 것을 완벽히 막음
+                    
+                    // 한글 입력기(IME) 버그 방지: 글자 조합 중(예: 'ㅇ'치고 엔터)이어도
+                    // 버튼 클릭 이벤트로 넘기되, isSubmittingPost 가 중복 전송을 막아줍니다.
+                    document.getElementById('add-post-btn').click();
+                }
             }
         });
 
