@@ -197,14 +197,12 @@
                     </div>
 
                     <!-- Calendar Day Details Panel -->
-                    <div id="calendar-detail-panel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
+                    <div id="calendar-detail-panel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6 hidden">
                         <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100">
-                            <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-base">날짜를 선택하세요</h3>
+                            <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-base">날짜</h3>
                             <button onclick="openCalendarEventModal()" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-plus mr-1"></i> 이 날 일정 추가</button>
                         </div>
-                        <div id="calendar-detail-content" class="text-sm text-gray-600 space-y-3">
-                            <p class="text-gray-400 italic">달력의 날짜를 클릭하면 해당 날짜의 세부 일정과 내용이 여기에 표시됩니다.</p>
-                        </div>
+                        <div id="calendar-detail-content" class="text-sm text-gray-600 space-y-3"></div>
                     </div>
                 </section>
 
@@ -470,7 +468,7 @@
             closeCustomConfirm();
         });
 
-        // Global Enter key handler for modals
+        // Global Enter key handler for modals and dialogs
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.id === 'board-input') {
@@ -940,17 +938,16 @@
         };
 
         function renderCalendarDetailPanel() {
+            const panelEl = document.getElementById('calendar-detail-panel');
             const titleEl = document.getElementById('calendar-detail-date-title');
             const contentEl = document.getElementById('calendar-detail-content');
-            if(!titleEl || !contentEl) return;
+            if(!panelEl || !titleEl || !contentEl) return;
 
             if(!selectedCalendarDateStr) {
-                titleEl.textContent = '날짜를 선택하세요';
-                contentEl.innerHTML = `<p class="text-gray-400 italic">달력의 날짜를 클릭하면 해당 날짜의 세부 일정과 내용이 여기에 표시됩니다.</p>`;
+                panelEl.classList.add('hidden');
                 return;
             }
 
-            titleEl.textContent = `${selectedCalendarDateStr} 세부 일정`;
             const calendarEvents = getCollectionData('calendar');
             const dayEvents = calendarEvents.filter(ev => {
                 if (!ev.startDate) return false;
@@ -958,15 +955,18 @@
             });
 
             if (dayEvents.length === 0) {
-                contentEl.innerHTML = `<p class="text-gray-400 text-xs sm:text-sm py-2">등록된 일정이 없습니다. 우측 상단의 [이 날 일정 추가] 버튼을 눌러보세요.</p>`;
+                panelEl.classList.add('hidden');
                 return;
             }
+
+            panelEl.classList.remove('hidden');
+            titleEl.textContent = `${selectedCalendarDateStr}`;
 
             let html = '';
             dayEvents.forEach(ev => {
                 let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-1"></i>${ev.time}</span>` : '';
                 let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-xs text-gray-400">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
-                let detailText = ev.detail ? `<div class="mt-2 text-xs sm:text-sm text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : `<div class="mt-1 text-xs text-gray-400 italic">작성된 세부 내용이 없습니다.</div>`;
+                let detailText = ev.detail ? `<div class="mt-2 text-xs sm:text-sm text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : `<div class="mt-1 text-xs text-gray-400 italic">작성된 내용이 없습니다.</div>`;
 
                 html += `
                     <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-2xs relative group mb-3">
