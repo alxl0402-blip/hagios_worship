@@ -103,11 +103,11 @@
         
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
             <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0">
+                <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2 overflow-hidden cursor-pointer group" title="홈으로 이동">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 group-hover:bg-indigo-700 transition">
                         <i class="fa-solid fa-music text-white text-sm"></i>
                     </div>
-                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap">Hagios Worship</span>
+                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios Worship</span>
                 </div>
                 <div class="flex items-center gap-1.5 md:hidden">
                     <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
