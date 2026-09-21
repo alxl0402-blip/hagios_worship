@@ -1240,10 +1240,19 @@
         window.openEditSheet = (id) => {
             let sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet) return;
+            
             document.getElementById('sheet-edit-id').value = sheet.id;
-            document.getElementById('sheet-title').value = sheet.title;
+            document.getElementById('sheet-title').value = sheet.title || '';
+            document.getElementById('sheet-file').value = ''; // 파일 선택창은 비워둠 (새로 올릴 때만 선택)
+            
+            // 기존 파일이 있는 경우 파일명 표시
+            const fileNameText = sheet.filename ? `현재 파일: ${sheet.filename} (변경시에만 클릭)` : '기존 파일 유지 (변경시에만 클릭)';
+            document.getElementById('sheet-file-name').textContent = fileNameText;
+            
             document.getElementById('sheet-modal-title').textContent = '악보 수정';
-            openModal('sheet-modal');
+            
+            // 폼을 초기화하는 openModal() 대신, 모달을 직접 표시하여 데이터가 날아가지 않게 함
+            document.getElementById('sheet-modal').classList.remove('hidden');
         };
 
         window.deleteSheet = async (id) => { 
@@ -1371,11 +1380,21 @@
         window.openEditAudio = (id) => {
             let audio = getCollectionData('audio').find(a => a.id == id);
             if (!audio) return;
+            
             document.getElementById('audio-edit-id').value = audio.id;
-            document.getElementById('audio-title').value = audio.title;
-            if(audio.type === 'url') document.getElementById('audio-url').value = audio.data;
+            document.getElementById('audio-title').value = audio.title || '';
+            document.getElementById('audio-file').value = ''; // 파일 선택창 초기화
+            
+            if(audio.type === 'url') {
+                document.getElementById('audio-url').value = audio.data;
+            } else {
+                document.getElementById('audio-url').value = '';
+            }
+            
             document.getElementById('audio-modal-title').textContent = '음원 수정';
-            openModal('audio-modal');
+            
+            // 폼을 초기화하는 openModal() 대신, 모달을 직접 표시하여 데이터가 날아가지 않게 함
+            document.getElementById('audio-modal').classList.remove('hidden');
         };
 
         window.deleteAudio = async (id) => { 
