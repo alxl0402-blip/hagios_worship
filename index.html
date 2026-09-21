@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- pdf-lib for true multi-page PDF merging -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- PDF.js for robust PDF rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -57,6 +59,7 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-50">
 
+    <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in">
             <div class="text-center mb-8">
@@ -67,6 +70,7 @@
                 <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 계정에 로그인하세요</p>
             </div>
 
+            <!-- 로그인 폼 -->
             <div id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용자 이름</label>
@@ -82,6 +86,7 @@
                 </div>
             </div>
 
+            <!-- 회원가입 폼 -->
             <div id="signup-form" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
@@ -99,8 +104,10 @@
         </div>
     </div>
 
+    <!-- 메인 앱 컨테이너 -->
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row bg-gray-50 overflow-hidden hidden fade-in">
         
+        <!-- 사이드바 -->
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
             <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
                 <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2 overflow-hidden cursor-pointer group" title="홈으로 이동">
@@ -109,6 +116,7 @@
                     </div>
                     <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios Worship</span>
                 </div>
+                <!-- 모바일 헤더 버튼 -->
                 <div class="flex items-center gap-1.5 md:hidden">
                     <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
                     <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 p-1.5 bg-gray-100 rounded-lg" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
@@ -116,6 +124,7 @@
                 </div>
             </div>
             
+            <!-- 데스크탑 관리자/로그아웃 -->
             <div class="hidden md:flex flex-col gap-2 p-3 border-b border-gray-100">
                 <div class="text-xs text-gray-500 mb-1 px-1 flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></div>
                 <div class="flex gap-2">
@@ -124,6 +133,7 @@
                 </div>
             </div>
 
+            <!-- 사이드바 네비게이션 -->
             <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[57px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
                 <ul class="space-y-1 px-3">
                     <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
@@ -137,6 +147,7 @@
             </nav>
         </aside>
 
+        <!-- 메인 컨텐츠 영역 -->
         <main class="flex-1 flex flex-col h-[calc(100vh-57px)] md:h-screen overflow-y-auto bg-gray-50 relative">
             <div id="toast-container" class="absolute bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
 
@@ -295,6 +306,7 @@
         </main>
     </div>
 
+    <!-- 커스텀 팝업(Alert) 모달 -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
@@ -306,6 +318,7 @@
         </div>
     </div>
 
+    <!-- 커스텀 확인(Confirm) 모달 -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
@@ -320,6 +333,7 @@
         </div>
     </div>
 
+    <!-- 관리자 모달 -->
     <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
@@ -337,6 +351,7 @@
         </div>
     </div>
 
+    <!-- 콘티 모달 -->
     <div id="konti-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -355,6 +370,7 @@
         </div>
     </div>
 
+    <!-- 악보 모달 -->
     <div id="sheet-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
             <div class="flex justify-between items-center mb-4">
@@ -371,6 +387,7 @@
         </div>
     </div>
 
+    <!-- 음원 모달 -->
     <div id="audio-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
             <div class="flex justify-between items-center mb-4">
@@ -389,7 +406,7 @@
         </div>
     </div>
 
-    <!-- Calendar Event Modal with Optional Time and Detail Content -->
+    <!-- 캘린더 일정 추가/수정 모달 -->
     <div id="calendar-event-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -1148,23 +1165,45 @@
             if (!sheet || !sheet.data) { showToast('악보 파일을 찾을 수 없습니다.', 'error'); return; }
             try {
                 const arr = sheet.data.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1];
+                const mime = arr[0].match(/:(.*?);/)[1] || 'application/octet-stream';
                 const bstr = atob(arr[1]);
                 let n = bstr.length;
                 const u8arr = new Uint8Array(n);
                 while(n--){ u8arr[n] = bstr.charCodeAt(n); }
                 const blob = new Blob([u8arr], {type: mime});
-                const blobUrl = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = sheet.filename || `${sheet.title || 'sheet'}_악보`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                const filename = sheet.filename || `${sheet.title || 'sheet'}.pdf`;
+
+                // Cross-browser safe download approach (Safari/iOS/Chrome/Firefox)
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, filename);
+                } else {
+                    const blobUrl = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.href = blobUrl;
+                    link.download = filename;
+                    link.setAttribute('target', '_blank');
+                    document.body.appendChild(link);
+                    link.click();
+                    setTimeout(() => {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(blobUrl);
+                    }, 500);
+                }
                 showToast('다운로드가 시작되었습니다.', 'success');
             } catch (e) {
-                showToast('다운로드 중 오류가 발생했습니다.', 'error');
+                console.error("Download error:", e);
+                // Fallback direct open
+                try {
+                    const win = window.open();
+                    if (win) {
+                        win.document.write(`<iframe src="${sheet.data}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+                    } else {
+                        window.location.href = sheet.data;
+                    }
+                } catch (err) {
+                    showToast('다운로드 중 오류가 발생했습니다.', 'error');
+                }
             }
         };
 
