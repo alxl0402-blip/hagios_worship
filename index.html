@@ -1667,6 +1667,19 @@
 
         let isSubmittingPost = false; // 중복 전송 방지용 안전장치 추가
 
+        // 엔터키 입력 완벽 제어
+        document.getElementById('board-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (!e.shiftKey) {
+                    // 1. Shift 없이 엔터만 쳤을 때: 전송
+                    e.preventDefault(); // 기본 동작인 줄바꿈 방지
+                    if (e.isComposing) return; // 한글 입력 조합 중복 방지 (두번 써지는 현상 제거)
+                    document.getElementById('add-post-btn').click();
+                }
+                // 2. Shift + Enter 일 때: 이 if문 안으로 들어오지 않으므로 기본 동작인 '줄바꿈'만 실행됨 (전송 안 됨)
+            }
+        });
+
         document.getElementById('add-post-btn').addEventListener('click', async () => {
             if (isSubmittingPost) return; // 이미 전송 중이면 두 번 눌리지 않게 차단
             
