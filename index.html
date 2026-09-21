@@ -403,9 +403,10 @@
     <div id="audio-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
-                <h3 class="font-bold text-gray-800 text-lg">새 음원 등록</h3>
+                <h3 class="font-bold text-gray-800 text-lg" id="audio-modal-title">새 음원 등록</h3>
                 <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
+            <input type="hidden" id="audio-edit-id" value="">
             <div class="flex flex-col gap-5">
                 <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 및 파트 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="text" id="audio-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="예: 내 모든 삶의 행동 주 안에 (드럼)"></div>
                 <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">MP3 파일 직접 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition cursor-pointer"></div>
@@ -1162,6 +1163,7 @@
                         </div>
                     </div>
                     <div class="absolute top-4 right-4 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="openEditSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition" title="수정"><i class="fa-solid fa-pen text-sm"></i></button>
                         <button onclick="deleteSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="삭제"><i class="fa-solid fa-trash-can text-sm"></i></button>
                     </div>
                 `;
@@ -1175,38 +1177,74 @@
             document.getElementById('sheet-file-name').textContent = fileName;
         });
 
-        document.getElementById('add-sheet-btn').addEventListener('click', () => {
+        document.getElementById('add-sheet-btn').addEventListener('click', async () => {
             const editId = document.getElementById('sheet-edit-id').value;
             let title = document.getElementById('sheet-title').value.trim();
             const fileInput = document.getElementById('sheet-file');
 
-            if(fileInput.files.length === 0) { showToast('업로드할 파일을 선택해주세요.', 'error'); return; }
-            
-            const file = fileInput.files[0];
-            if (!title) title = file.name.replace(/\.[^/.]+$/, ""); // 확장자 제거
+            if(!editId && fileInput.files.length === 0) { 
+                showToast('업로드할 파일을 선택해주세요.', 'error'); 
+                return; 
+            }
             
             const btn = document.getElementById('add-sheet-btn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
-                closeModal('sheet-modal');
-                showToast('악보가 성공적으로 업로드되었습니다.', 'success');
-                btn.disabled = false;
-                btn.innerText = '업로드 완료';
-                document.getElementById('sheet-title').value = '';
-                document.getElementById('sheet-file').value = '';
-                document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
-            };
-            reader.onerror = function() {
-                showToast('파일을 읽는 중 오류가 발생했습니다.', 'error');
-                btn.disabled = false;
-                btn.innerText = '업로드 완료';
+            if (editId) {
+                let updateData = { title };
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
+                    updateData.title = title;
+                    updateData.filename = file.name;
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        updateData.data = e.target.result;
+                        await dbUpdate('sheets', editId, updateData);
+                        finishSheetUpload('악보 파일이 수정되었습니다.', btn);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    await dbUpdate('sheets', editId, updateData);
+                    finishSheetUpload('악보 정보가 수정되었습니다.', btn);
+                }
+            } else {
+                const file = fileInput.files[0];
+                if (!title) title = file.name.replace(/\.[^/.]+$/, ""); 
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
+                    finishSheetUpload('악보가 성공적으로 업로드되었습니다.', btn);
+                };
+                reader.onerror = function() {
+                    showToast('파일을 읽는 중 오류가 발생했습니다.', 'error');
+                    btn.disabled = false;
+                    btn.innerText = '업로드 완료';
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
         });
+
+        function finishSheetUpload(msg, btn) {
+            closeModal('sheet-modal');
+            showToast(msg, 'success');
+            btn.disabled = false;
+            btn.innerText = '업로드 완료';
+            document.getElementById('sheet-title').value = '';
+            document.getElementById('sheet-file').value = '';
+            document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
+            document.getElementById('sheet-edit-id').value = '';
+        }
+
+        window.openEditSheet = (id) => {
+            let sheet = getCollectionData('sheets').find(s => s.id == id);
+            if (!sheet) return;
+            document.getElementById('sheet-edit-id').value = sheet.id;
+            document.getElementById('sheet-title').value = sheet.title;
+            document.getElementById('sheet-modal-title').textContent = '악보 수정';
+            openModal('sheet-modal');
+        };
 
         window.deleteSheet = async (id) => { 
             showCustomConfirm('악보 삭제', '정말 이 악보를 삭제하시겠습니까?\n콘티에 포함된 경우 콘티에서도 보이지 않게 됩니다.', async () => {
@@ -1246,58 +1284,99 @@
                             ${mediaContent}
                         </div>
                     </div>
-                    <button class="absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto text-gray-300 hover:text-red-500 transition p-2 bg-gray-50 hover:bg-red-50 rounded-lg sm:opacity-0 sm:group-hover:opacity-100" onclick="deleteAudio('${audio.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <button class="text-gray-400 hover:text-purple-600 transition p-2 bg-gray-50 hover:bg-purple-50 rounded-lg" onclick="openEditAudio('${audio.id}')" title="수정"><i class="fa-solid fa-pen"></i></button>
+                        <button class="text-gray-400 hover:text-red-500 transition p-2 bg-gray-50 hover:bg-red-50 rounded-lg" onclick="deleteAudio('${audio.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
                 `;
                 list.appendChild(item);
             });
             updateStats();
         }
 
-        document.getElementById('add-audio-btn').addEventListener('click', () => {
+        document.getElementById('add-audio-btn').addEventListener('click', async () => {
+            const editId = document.getElementById('audio-edit-id').value;
             let title = document.getElementById('audio-title').value.trim();
             const fileInput = document.getElementById('audio-file');
             const urlInput = document.getElementById('audio-url').value.trim();
             
-            if(fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크 중 하나를 입력해주세요.', 'error'); return; }
             if(fileInput.files.length > 0 && urlInput) { showToast('파일 업로드와 링크 등록 중 하나만 선택해주세요.', 'error'); return; }
+            if(!editId && fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크 중 하나를 입력해주세요.', 'error'); return; }
             
             const btn = document.getElementById('add-audio-btn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
             
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                if (!title) title = file.name.replace(/\.[^/.]+$/, "");
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
-                    finishAudioUpload('음원이 업로드되었습니다.', btn);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                if (!title) title = "링크 음원";
-                
-                // 간단한 URL 검증
-                try { new URL(urlInput); } catch(e) { 
-                    showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
-                    btn.disabled = false; btn.innerText = '등록 완료'; return; 
+            if (editId) {
+                let updateData = { title };
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
+                    updateData.title = title;
+                    updateData.type = 'file';
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        updateData.data = e.target.result;
+                        await dbUpdate('audio', editId, updateData);
+                        finishAudioUpload('음원이 수정되었습니다.', btn);
+                    };
+                    reader.readAsDataURL(file);
+                } else if (urlInput) {
+                    try { new URL(urlInput); } catch(e) { 
+                        showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
+                        btn.disabled = false; btn.innerText = '등록 완료'; return; 
+                    }
+                    if (!title) updateData.title = "링크 음원";
+                    updateData.type = 'url';
+                    updateData.data = urlInput;
+                    await dbUpdate('audio', editId, updateData);
+                    finishAudioUpload('음원이 수정되었습니다.', btn);
+                } else {
+                    await dbUpdate('audio', editId, updateData);
+                    finishAudioUpload('음원 정보가 수정되었습니다.', btn);
                 }
-
-                dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() }).then(() => {
+            } else {
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
+                        finishAudioUpload('음원이 업로드되었습니다.', btn);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (!title) title = "링크 음원";
+                    try { new URL(urlInput); } catch(e) { 
+                        showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
+                        btn.disabled = false; btn.innerText = '등록 완료'; return; 
+                    }
+                    await dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() });
                     finishAudioUpload('음원 링크가 등록되었습니다.', btn);
-                });
+                }
             }
         });
 
         function finishAudioUpload(msg, btn) {
             closeModal('audio-modal');
             showToast(msg, 'success');
+            document.getElementById('audio-edit-id').value = '';
             document.getElementById('audio-title').value = '';
             document.getElementById('audio-file').value = '';
             document.getElementById('audio-url').value = '';
             btn.disabled = false;
             btn.innerText = '등록 완료';
         }
+        
+        window.openEditAudio = (id) => {
+            let audio = getCollectionData('audio').find(a => a.id == id);
+            if (!audio) return;
+            document.getElementById('audio-edit-id').value = audio.id;
+            document.getElementById('audio-title').value = audio.title;
+            if(audio.type === 'url') document.getElementById('audio-url').value = audio.data;
+            document.getElementById('audio-modal-title').textContent = '음원 수정';
+            openModal('audio-modal');
+        };
 
         window.deleteAudio = async (id) => { 
             showCustomConfirm('음원 삭제', '이 음원을 삭제하시겠습니까?', async () => {
@@ -1401,7 +1480,7 @@
                             <p class="text-[11px] text-gray-500 mt-1 font-medium bg-gray-100 inline-block px-2 py-0.5 rounded">총 ${kontiSheets.length}곡 포함</p>
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 PDF 생성</button>
+                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
                             <button onclick="openEditKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="deleteKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
                         </div>
@@ -1517,7 +1596,7 @@
                     link.href = URL.createObjectURL(blob);
                     // 파일명에 공백 대신 언더바 사용
                     const safeFileName = konti.name.replace(/ /g, '_');
-                    link.download = `${safeFileName}_통합악보.pdf`;
+                    link.download = `${safeFileName}_전체악보.pdf`;
                     link.click();
                     
                     showToast('PDF 다운로드가 시작되었습니다.', 'success');
@@ -1620,9 +1699,11 @@
                 if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
                 renderKontiSheetCheckboxes();
             } else if (id === 'audio-modal') {
+                document.getElementById('audio-edit-id').value = '';
                 document.getElementById('audio-title').value = '';
                 document.getElementById('audio-file').value = '';
                 document.getElementById('audio-url').value = '';
+                document.getElementById('audio-modal-title').textContent = '새 음원 등록';
             }
             document.getElementById(id).classList.remove('hidden');
         }
