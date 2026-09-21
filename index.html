@@ -266,11 +266,36 @@
     <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-gray-800 text-base sm:text-lg">회원가입 승인 관리</h3>
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg">팀원 계정 관리</h3>
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-gray-500 mb-4">가입 신청한 팀원을 승인해야 앱에 접속할 수 있습니다.</p>
-            <div id="pending-users-list" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+            
+            <!-- 관리자 탭 (대기/기존회원 분리) -->
+            <div class="flex border-b border-gray-200 mb-4">
+                <button onclick="switchAdminTab('pending')" id="admin-tab-pending" class="flex-1 py-2 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600">가입 대기</button>
+                <button onclick="switchAdminTab('approved')" id="admin-tab-approved" class="flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700">기존 팀원 관리</button>
+            </div>
+
+            <!-- 대기 중인 회원 뷰 -->
+            <div id="admin-pending-view" class="flex-1 overflow-y-auto pr-1 space-y-3"></div>
+            
+            <!-- 승인된 회원 뷰 -->
+            <div id="admin-approved-view" class="flex-1 overflow-y-auto pr-1 space-y-3 hidden"></div>
+        </div>
+    </div>
+
+    <!-- 커스텀 확인(Confirm) 모달 -->
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="font-bold text-gray-800 text-lg mb-2" id="confirm-title">확인</h3>
+            <p class="text-sm text-gray-500 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
+            <div class="flex gap-3">
+                <button onclick="closeCustomConfirm()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition text-sm">취소</button>
+                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">삭제</button>
+            </div>
         </div>
     </div>
 
@@ -406,8 +431,12 @@
                 showToast('비밀번호가 일치하지 않습니다.', 'error');
                 return;
             }
-            if(user.status !== 'approved') {
+            if(user.status === 'pending') {
                 showToast('관리자 승인을 기다리고 있습니다. 승인 후 로그인해주세요.', 'error');
+                return;
+            }
+            if(user.status === 'suspended') {
+                showToast('일시 정지된 계정입니다. 관리자에게 문의하세요.', 'error');
                 return;
             }
 
@@ -421,45 +450,153 @@
             location.reload();
         }
 
-        function openAdminModal() {
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
-            const listEl = document.getElementById('pending-users-list');
-            listEl.innerHTML = '';
-            
-            // 일반 회원 목록 필터링 (하드코딩된 '관리자' 계정 제외)
-            const regularUsers = users.filter(u => !u.isAdmin);
+        // --- 커스텀 확인 창 로직 ---
+        let confirmCallback = null;
 
-            if(regularUsers.length === 0) {
-                listEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">가입 대기 중인 회원이 없습니다.</p>';
+        function showCustomConfirm(title, message, callback) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = message;
+            confirmCallback = callback;
+            document.getElementById('custom-confirm-modal').classList.remove('hidden');
+        }
+
+        function closeCustomConfirm() {
+            document.getElementById('custom-confirm-modal').classList.add('hidden');
+            confirmCallback = null;
+        }
+
+        document.getElementById('confirm-action-btn').addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            closeCustomConfirm();
+        });
+
+        // --- 관리자 모달 탭 로직 ---
+        function switchAdminTab(tab) {
+            const pendingTab = document.getElementById('admin-tab-pending');
+            const approvedTab = document.getElementById('admin-tab-approved');
+            const pendingView = document.getElementById('admin-pending-view');
+            const approvedView = document.getElementById('admin-approved-view');
+
+            if (tab === 'pending') {
+                pendingTab.className = "flex-1 py-2 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600";
+                approvedTab.className = "flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700";
+                pendingView.classList.remove('hidden');
+                approvedView.classList.add('hidden');
             } else {
-                users.forEach((u, idx) => {
-                    if(u.isAdmin) return; // 최고 관리자는 리스트에서 숨김
-
-                    // 반응형 레이아웃 적용 및 긴 이름 잘림(truncate) 방지
-                    listEl.innerHTML += `
-                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 gap-2">
-                            <div class="flex-1 min-w-0 flex flex-col items-start gap-1">
-                                <p class="font-bold text-sm text-gray-800 truncate w-full">${escapeHtml(u.username)}</p>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap ${u.status==='approved'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${u.status==='approved'?'승인 완료':'대기중'}</span>
-                            </div>
-                            ${u.status==='pending' ? `<button onclick="approveUser(${idx})" class="flex-shrink-0 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">승인하기</button>` : ''}
-                        </div>
-                    `;
-                });
+                approvedTab.className = "flex-1 py-2 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600";
+                pendingTab.className = "flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700";
+                approvedView.classList.remove('hidden');
+                pendingView.classList.add('hidden');
             }
+        }
+
+        function openAdminModal() {
+            renderAdminLists();
             document.getElementById('admin-modal').classList.remove('hidden');
+            switchAdminTab('pending'); // 열 때 기본으로 대기 탭 표시
         }
 
         function closeAdminModal() {
             document.getElementById('admin-modal').classList.add('hidden');
         }
 
+        function renderAdminLists() {
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            const pendingEl = document.getElementById('admin-pending-view');
+            const approvedEl = document.getElementById('admin-approved-view');
+            
+            pendingEl.innerHTML = '';
+            approvedEl.innerHTML = '';
+            
+            // 일반 회원 목록 필터링 (하드코딩된 '관리자' 제외)
+            const regularUsers = users.filter(u => !u.isAdmin);
+            const pendingUsers = regularUsers.filter(u => u.status === 'pending');
+            const approvedOrSuspendedUsers = regularUsers.filter(u => u.status === 'approved' || u.status === 'suspended');
+
+            // 1. 대기 탭 렌더링
+            if(pendingUsers.length === 0) {
+                pendingEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">가입 대기 중인 회원이 없습니다.</p>';
+            } else {
+                users.forEach((u, idx) => {
+                    if(u.isAdmin || u.status !== 'pending') return;
+                    pendingEl.innerHTML += `
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 gap-2">
+                            <div class="flex-1 min-w-0 flex flex-col items-start gap-1">
+                                <p class="font-bold text-sm text-gray-800 truncate w-full">${escapeHtml(u.username)}</p>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">대기중</span>
+                            </div>
+                            <div class="flex gap-1.5 flex-shrink-0">
+                                <button onclick="approveUser(${idx})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">승인</button>
+                                <button onclick="promptDeleteUser(${idx})" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // 2. 승인/정지 회원 탭 렌더링
+            if(approvedOrSuspendedUsers.length === 0) {
+                approvedEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">관리 중인 기존 회원이 없습니다.</p>';
+            } else {
+                users.forEach((u, idx) => {
+                    if(u.isAdmin || u.status === 'pending') return;
+                    
+                    const isSuspended = u.status === 'suspended';
+                    const statusBadge = isSuspended 
+                        ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap">일시 정지됨</span>'
+                        : '<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 whitespace-nowrap">승인 완료</span>';
+                    
+                    const suspendBtnText = isSuspended ? '정지 해제' : '일시 정지';
+                    const suspendBtnClass = isSuspended 
+                        ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700' 
+                        : 'bg-orange-100 hover:bg-orange-200 text-orange-700';
+
+                    approvedEl.innerHTML += `
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 gap-2">
+                            <div class="flex-1 min-w-0 flex flex-col items-start gap-1">
+                                <p class="font-bold text-sm text-gray-800 truncate w-full">${escapeHtml(u.username)}</p>
+                                ${statusBadge}
+                            </div>
+                            <div class="flex gap-1.5 flex-shrink-0">
+                                <button onclick="toggleSuspendUser(${idx})" class="px-2.5 py-1.5 ${suspendBtnClass} text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">${suspendBtnText}</button>
+                                <button onclick="promptDeleteUser(${idx})" class="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
         function approveUser(idx) {
             let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
             users[idx].status = 'approved';
             localStorage.setItem('hagios_users', JSON.stringify(users));
-            openAdminModal(); // 목록 새로고침
+            renderAdminLists(); // 목록 새로고침
             showToast(`${users[idx].username}님의 권한이 승인되었습니다.`, 'success');
+        }
+
+        function toggleSuspendUser(idx) {
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            if (users[idx].status === 'approved') {
+                users[idx].status = 'suspended';
+                showToast(`${users[idx].username}님의 계정이 일시 정지되었습니다.`, 'info');
+            } else {
+                users[idx].status = 'approved';
+                showToast(`${users[idx].username}님의 정지가 해제되었습니다.`, 'success');
+            }
+            localStorage.setItem('hagios_users', JSON.stringify(users));
+            renderAdminLists();
+        }
+
+        function promptDeleteUser(idx) {
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            showCustomConfirm('계정 삭제', `${users[idx].username}님의 계정을 완전히 삭제하시겠습니까?`, () => {
+                const deletedName = users[idx].username;
+                users.splice(idx, 1); // 배열에서 완전히 삭제
+                localStorage.setItem('hagios_users', JSON.stringify(users));
+                renderAdminLists();
+                showToast(`${deletedName}님의 계정이 삭제되었습니다.`, 'success');
+            });
         }
 
         function startWorkspace() {
