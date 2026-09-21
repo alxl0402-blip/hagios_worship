@@ -8,23 +8,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- pdf-lib for true multi-page PDF merging -->
+    <!-- pdf-lib for multi-page PDF merging -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <!-- PDF.js for robust PDF rendering -->
+    <!-- PDF.js for rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     
-    <!-- 🔥 여기에 발급받은 Firebase 설정값을 넣어주세요 🔥 -->
+    <!-- Firebase 설정 적용 -->
     <script>
         const __firebase_config = JSON.stringify({
-            apiKey: "본인의_API_KEY",
-            authDomain: "본인의_PROJECT_ID.firebaseapp.com",
-            projectId: "본인의_PROJECT_ID",
-            storageBucket: "본인의_PROJECT_ID.appspot.com",
-            messagingSenderId: "본인의_SENDER_ID",
-            appId: "본인의_APP_ID"
+            apiKey: "AIzaSyCZtO2tYjX0rLH5AZ74Q_qPxlJb0dglcQs",
+            authDomain: "hagios-worship.firebaseapp.com",
+            projectId: "hagios-worship",
+            storageBucket: "hagios-worship.firebasestorage.app",
+            messagingSenderId: "1096988256247",
+            appId: "1:1096988256247:web:8d55b644a9a01b21cc70f2",
+            measurementId: "G-1W6XNQT991"
         });
     </script>
     
@@ -55,8 +56,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item.active { background-color: #e0e7ff; color: #4f46e5; font-weight: 600; }
         .nav-item.active i { color: #4f46e5; }
-        
-        /* 버튼 비활성화 스타일 */
         button:disabled { opacity: 0.6; cursor: not-allowed; }
         input:disabled { background-color: #f1f5f9; cursor: not-allowed; }
     </style>
@@ -66,7 +65,6 @@
     <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in relative overflow-hidden">
-            <!-- 로딩 오버레이 (초기 연결 중) -->
             <div id="auth-loading-overlay" class="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity duration-300">
                 <i class="fa-solid fa-circle-notch fa-spin text-3xl text-indigo-600 mb-3"></i>
                 <p class="text-sm font-medium text-gray-600">서버 연결 중...</p>
@@ -75,7 +73,6 @@
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200 relative">
                     <i class="fa-solid fa-music"></i>
-                    <!-- 연결 상태 인디케이터 -->
                     <div id="auth-connection-dot" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white bg-gray-400" title="연결 상태 확인 중"></div>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
@@ -120,7 +117,6 @@
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row bg-gray-50 overflow-hidden hidden fade-in">
         
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
-            <!-- Header section -->
             <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
                 <div class="flex items-center gap-2 overflow-hidden">
                     <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 relative">
@@ -129,7 +125,6 @@
                     </div>
                     <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap">Hagios Worship</span>
                 </div>
-                <!-- Action Buttons right next to the title on mobile, below on desktop -->
                 <div class="flex items-center gap-1.5 md:hidden">
                     <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden relative bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap">
                         <i class="fa-solid fa-shield-halved mr-1"></i>관리
@@ -140,7 +135,6 @@
                 </div>
             </div>
             
-            <!-- Desktop Admin/Logout actions -->
             <div class="hidden md:flex flex-col gap-2 p-3 border-b border-gray-100">
                 <div class="text-xs text-gray-500 mb-1 px-1 flex items-center justify-between">
                     <span class="flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></span>
@@ -209,7 +203,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
                                 <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800 w-24 text-center">2026년 9월</h3>
+                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800 w-28 text-center">2026년 9월</h3>
                                 <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                             </div>
                             <button onclick="resetCalendarToCurrent()" class="text-xs text-indigo-600 font-semibold hover:underline">오늘로 이동</button>
@@ -295,7 +289,7 @@
                         <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50/50 flex flex-col gap-4" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요..."></textarea>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요... (Enter 키로 전송)"></textarea>
                                 <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center group">
                                     <i class="fa-solid fa-paper-plane text-sm sm:text-base group-hover:scale-110 transition-transform"></i>
                                 </button>
@@ -308,7 +302,7 @@
         </main>
     </div>
 
-    <!-- 커스텀 팝업(Alert) 모달 -->
+    <!-- 커스텀 팝업 모달들 -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[70] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center transform transition-all scale-100">
             <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
@@ -320,7 +314,6 @@
         </div>
     </div>
 
-    <!-- 커스텀 확인(Confirm) 모달 -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
@@ -342,14 +335,12 @@
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            
             <div class="flex border-b border-gray-200 bg-white">
                 <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">
                     가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow-sm">0</span>
                 </button>
                 <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition">기존 팀원</button>
             </div>
-            
             <div class="flex-1 overflow-y-auto p-4 bg-gray-50/50">
                 <div id="admin-pending-view" class="space-y-3 fade-in"></div>
                 <div id="admin-active-view" class="space-y-3 hidden fade-in"></div>
@@ -357,8 +348,6 @@
         </div>
     </div>
 
-    <!-- 기타 데이터 입력 모달 (콘티, 악보, 음원, 캘린더) -->
-    <!-- (이전과 동일한 구조 유지, Tailwind 클래스 미세 조정) -->
     <div id="konti-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
@@ -369,7 +358,7 @@
             <div class="flex flex-col gap-5">
                 <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="예: 2026-09-27 주일예배"></div>
                 <div>
-                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-semibold text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="악보 검색" class="px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition w-40"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-semibold text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="악보 검색" class="px-3 py-1.5 text-xs border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition w-40"></div>
                     <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-xl p-3 flex flex-col gap-1 bg-gray-50/50"></div>
                 </div>
                 <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">콘티 저장하기</button>
@@ -377,6 +366,7 @@
         </div>
     </div>
 
+    <!-- 악보 업로드/수정 모달 -->
     <div id="sheet-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
@@ -385,7 +375,7 @@
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
             <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="text" id="sheet-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="미입력시 파일명으로 자동 저장"></div>
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목</label><input type="text" id="sheet-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="미입력시 파일명으로 자동 저장"></div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">악보 파일 <span class="text-gray-400 font-normal">(PDF 또는 이미지)</span></label>
                     <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-gray-50 transition cursor-pointer relative">
@@ -400,6 +390,7 @@
         </div>
     </div>
 
+    <!-- 음원 등록/수정 모달 -->
     <div id="audio-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
@@ -408,7 +399,7 @@
             </div>
             <input type="hidden" id="audio-edit-id" value="">
             <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 및 파트 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="text" id="audio-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="예: 내 모든 삶의 행동 주 안에 (드럼)"></div>
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="예: 은혜 (보컬)"></div>
                 <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">MP3 파일 직접 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition cursor-pointer"></div>
                 <div class="flex items-center gap-3"><div class="h-px bg-gray-200 flex-1"></div><span class="text-xs text-gray-400 font-medium">또는</span><div class="h-px bg-gray-200 flex-1"></div></div>
                 <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">외부 링크 등록 <span class="text-gray-400 font-normal">(유튜브 등)</span></label><input type="url" id="audio-url" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="https://youtube.com/..."></div>
@@ -442,11 +433,9 @@
         let currentCalendarDate = new Date();
         let store = { users: [], todos: [], calendar: [], sheets: [], audio: [], board: [], konti: [] };
         
-        // 상태 변수 추가
         let isFirebaseReady = false;
         let isCloudMode = false;
 
-        // 커스텀 알럿 로직
         let alertCallback = null;
         function showAlert(title, message, type = 'info', buttonText = '확인', callback = null) {
             document.getElementById('alert-title').textContent = title;
@@ -480,7 +469,6 @@
         }
         document.getElementById('alert-action-btn').addEventListener('click', closeAlert);
 
-        // 커스텀 확인 로직
         let confirmCallback = null;
         function showCustomConfirm(title, message, callback) {
             document.getElementById('confirm-title').textContent = title;
@@ -502,19 +490,17 @@
         window.addEventListener('firebaseReady', async () => {
             const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore } = window.firebaseAppModules;
             try {
-                // 설정 확인
                 const configStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
                 const firebaseConfig = JSON.parse(configStr);
                 
                 if (Object.keys(firebaseConfig).length === 0) {
-                    throw new Error("No Firebase config provided. Offline mode.");
+                    throw new Error("No Firebase config provided.");
                 }
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // 완벽한 인증 완료 대기
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -525,56 +511,36 @@
                 initFirebaseListeners();
                 
             } catch (err) {
-                console.warn("Firebase 연결 실패 (로컬 모드로 실행됩니다):", err);
+                console.warn("Firebase 연결 실패 (로컬 모드):", err);
                 isCloudMode = false;
                 initLocalFallback();
             } finally {
-                // 초기화가 완전히 끝난 후 상태 변경
                 isFirebaseReady = true;
                 updateConnectionStatusUI();
                 enableAuthForms();
-                
-                // 로그인 상태 체크를 마지막에 실행
-                setTimeout(() => {
-                    checkSavedLogin();
-                }, 100);
+                setTimeout(() => { checkSavedLogin(); }, 100);
             }
         });
 
-        // UI 상태 업데이트 함수들
         function updateConnectionStatusUI() {
             const authDot = document.getElementById('auth-connection-dot');
             const dashDot = document.getElementById('dash-connection-dot');
             const dashText = document.getElementById('connection-status-text');
-            
             const colorClass = isCloudMode ? 'bg-emerald-500' : 'bg-amber-400';
-            const titleText = isCloudMode ? '클라우드 동기화 됨' : '로컬 모드 (서버 동기화 안됨)';
+            const titleText = isCloudMode ? '클라우드 동기화 됨' : '로컬 모드';
             
-            if(authDot) {
-                authDot.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${colorClass}`;
-                authDot.title = titleText;
-            }
-            if(dashDot) {
-                dashDot.className = `absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${colorClass}`;
-                dashDot.title = titleText;
-            }
+            if(authDot) { authDot.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${colorClass}`; authDot.title = titleText; }
+            if(dashDot) { dashDot.className = `absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${colorClass}`; dashDot.title = titleText; }
             if(dashText) {
                 dashText.textContent = isCloudMode ? 'Cloud' : 'Local';
                 dashText.className = `text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm ${isCloudMode ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`;
-                dashText.title = titleText;
             }
         }
 
         function enableAuthForms() {
             const overlay = document.getElementById('auth-loading-overlay');
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 300);
-            }
-            
-            document.querySelectorAll('.auth-input, .auth-btn').forEach(el => {
-                el.removeAttribute('disabled');
-            });
+            if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }
+            document.querySelectorAll('.auth-input, .auth-btn').forEach(el => el.removeAttribute('disabled'));
         }
 
         function checkSavedLogin() {
@@ -583,9 +549,7 @@
                 try {
                     currentUser = JSON.parse(savedUser);
                     startWorkspace();
-                } catch(e) {
-                    localStorage.removeItem('hagios_current_user');
-                }
+                } catch(e) { localStorage.removeItem('hagios_current_user'); }
             }
         }
 
@@ -604,12 +568,9 @@
                 onSnapshot(q, (snapshot) => {
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
-                    
                     if(collectionName === 'users') {
-                        updateAdminBadge(); // 새로운 사용자가 등록되면 뱃지 즉시 업데이트
-                        if(currentUser && currentUser.isAdmin) {
-                            renderAdminViews(); // 관리자 뷰가 열려있다면 즉시 새로고침
-                        }
+                        updateAdminBadge();
+                        if(currentUser && currentUser.isAdmin) renderAdminViews();
                     }
                     if(currentUser) refreshUI();
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
@@ -619,13 +580,10 @@
         
         function updateAdminBadge() {
             if (!currentUser || !currentUser.isAdmin) return;
-            
             const users = getCollectionData('users');
             const pendingCount = users.filter(u => u.status === 'pending').length;
-            
             const desktopBadge = document.getElementById('admin-badge-desktop');
             const mobileBadge = document.getElementById('admin-badge-mobile');
-            
             if (pendingCount > 0) {
                 if(desktopBadge) { desktopBadge.textContent = pendingCount; desktopBadge.classList.remove('hidden'); }
                 if(mobileBadge) { mobileBadge.textContent = pendingCount; mobileBadge.classList.remove('hidden'); }
@@ -646,22 +604,14 @@
         }
 
         async function dbAdd(collectionName, data) {
-            if (!isFirebaseReady) {
-                console.error("앱이 아직 초기화되지 않았습니다.");
-                return false;
-            }
-            
+            if (!isFirebaseReady) return false;
             if (isCloudMode && db && auth && auth.currentUser) {
                 try {
                     const { collection, addDoc } = window.firebaseAppModules;
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', collectionName), data);
                     return true;
-                } catch(e) {
-                    console.error("Cloud Add Error:", e);
-                    return false;
-                }
+                } catch(e) { console.error("Cloud Add Error:", e); return false; }
             } else {
-                // LocalStorage fallback
                 let list = JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
                 list.unshift({ id: 'local_' + Date.now(), ...data });
                 localStorage.setItem(`ccm_${collectionName}`, JSON.stringify(list));
@@ -698,7 +648,6 @@
         }
 
         function getCollectionData(collectionName) {
-            // 스토어가 채워져있으면 우선 반환, 아니면 로컬 탐색
             if (store[collectionName] && store[collectionName].length > 0) return store[collectionName];
             return JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
         }
@@ -717,58 +666,28 @@
 
         async function handleSignup() {
             if (!isFirebaseReady) return;
+            const username = document.getElementById('signup-username').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            if(!username || !password) { showToast('이름과 비밀번호를 모두 입력해주세요.', 'error'); return; }
             
-            const btn = document.getElementById('signup-btn');
-            const originalText = btn.innerText;
-            btn.disabled = true;
-            btn.innerText = '처리 중...';
-
-            try {
-                const username = document.getElementById('signup-username').value.trim();
-                const password = document.getElementById('signup-password').value.trim();
-                
-                if(!username || !password) {
-                    showToast('이름과 비밀번호를 모두 입력해주세요.', 'error');
-                    return;
-                }
-                
-                const users = getCollectionData('users');
-                if(users.find(u => u.username === username)) {
-                    showToast('이미 존재하는 이름입니다.', 'error');
-                    return;
-                }
-                
-                const success = await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
-                
-                if (success) {
-                    document.getElementById('signup-username').value = '';
-                    document.getElementById('signup-password').value = '';
-
-                    let extraMessage = isCloudMode ? '' : '\n(주의: 현재 기기에만 저장되는 로컬 모드입니다)';
-                    
-                    showAlert(
-                        '가입 신청 완료',
-                        `회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.${extraMessage}`,
-                        'success',
-                        '로그인 화면으로 돌아가기',
-                        () => { toggleAuthMode('login'); }
-                    );
-                } else {
-                    showToast('회원가입 처리 중 문제가 발생했습니다.', 'error');
-                }
-            } finally {
-                btn.disabled = false;
-                btn.innerText = originalText;
+            const users = getCollectionData('users');
+            if(users.find(u => u.username === username)) { showToast('이미 존재하는 이름입니다.', 'error'); return; }
+            
+            const success = await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
+            if (success) {
+                document.getElementById('signup-username').value = '';
+                document.getElementById('signup-password').value = '';
+                showAlert('가입 신청 완료', '회원가입 신청이 완료되었습니다.\n관리자 승인 후 로그인이 가능합니다.', 'success', '로그인 화면으로', () => { toggleAuthMode('login'); });
+            } else {
+                showToast('회원가입 처리 중 문제가 발생했습니다.', 'error');
             }
         }
 
         function handleLogin() {
             if (!isFirebaseReady) return;
-
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
-            // 마스터 관리자 하드코딩
             if(username === '관리자' && password === 'hagios') {
                 currentUser = { id: 'admin_main', username: '관리자', isAdmin: true, status: 'approved' };
                 localStorage.setItem('hagios_current_user', JSON.stringify(currentUser));
@@ -779,22 +698,10 @@
             const users = getCollectionData('users');
             const user = users.find(u => u.username === username);
 
-            if(!user) {
-                showAlert('로그인 실패', '가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error');
-                return;
-            }
-            if(user.password !== password) {
-                showAlert('로그인 실패', '비밀번호 오류입니다.', 'error', '다시 입력하기');
-                return;
-            }
-            if(user.status === 'pending') {
-                showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.\n승인 후 로그인해주세요.', 'info', '확인');
-                return;
-            }
-            if(user.status === 'suspended') {
-                showAlert('이용 정지', '일시 정지된 계정입니다.\n관리자에게 문의하세요.', 'error', '확인');
-                return;
-            }
+            if(!user) { showAlert('로그인 실패', '가입되지 않은 이름입니다.', 'error'); return; }
+            if(user.password !== password) { showAlert('로그인 실패', '비밀번호 오류입니다.', 'error'); return; }
+            if(user.status === 'pending') { showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.', 'info'); return; }
+            if(user.status === 'suspended') { showAlert('이용 정지', '일시 정지된 계정입니다.', 'error'); return; }
 
             currentUser = user;
             localStorage.setItem('hagios_current_user', JSON.stringify(user));
@@ -810,7 +717,6 @@
         function startWorkspace() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            
             document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '👑' : ''}`;
             
             if(currentUser.isAdmin) {
@@ -821,34 +727,16 @@
                 document.getElementById('admin-menu-btn-desktop').classList.add('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.add('hidden');
             }
-            
             refreshUI();
-            
-            if(!isCloudMode) {
-                showToast(`로컬 오프라인 모드로 실행중입니다.`, 'error');
-            } else {
-                showToast(`${currentUser.username}님 환영합니다!`, 'success');
-            }
+            showToast(`${currentUser.username}님 환영합니다!`, 'success');
         }
 
-        function openAdminModal() {
-            renderAdminViews();
-            document.getElementById('admin-modal').classList.remove('hidden');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
+        function openAdminModal() { renderAdminViews(); document.getElementById('admin-modal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
         function switchAdminTab(tab) {
-            document.getElementById('tab-admin-pending').className = tab === 'pending' 
-                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
-                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
-            
-            document.getElementById('tab-admin-active').className = tab === 'active' 
-                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
-                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
-
+            document.getElementById('tab-admin-pending').className = tab === 'pending' ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+            document.getElementById('tab-admin-active').className = tab === 'active' ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
             document.getElementById('admin-active-view').style.display = tab === 'active' ? 'block' : 'none';
         }
@@ -856,7 +744,7 @@
         function renderAdminViews() {
             const users = getCollectionData('users');
             const pendingUsers = users.filter(u => u.status === 'pending');
-            const activeUsers = users.filter(u => u.status !== 'pending' && u.id !== 'admin_main'); // 마스터 관리자는 목록에서 제외
+            const activeUsers = users.filter(u => u.status !== 'pending' && u.id !== 'admin_main');
 
             document.getElementById('pending-badge').textContent = pendingUsers.length;
 
@@ -867,11 +755,8 @@
             } else {
                 pendingUsers.forEach(u => {
                     pendingView.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-indigo-200 transition">
-                            <div>
-                                <p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">신청일: ${new Date(u.createdAt).toLocaleDateString()}</p>
-                            </div>
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div><p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p><p class="text-[10px] text-gray-400 mt-0.5">신청일: ${new Date(u.createdAt).toLocaleDateString()}</p></div>
                             <div class="flex gap-2">
                                 <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-2 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부</button>
                                 <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
@@ -889,15 +774,10 @@
                 activeUsers.forEach(u => {
                     const isSuspended = u.status === 'suspended';
                     activeView.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'bg-gray-50 opacity-75' : 'hover:border-indigo-200'} transition">
-                            <div>
-                                <p class="font-bold text-sm text-gray-800 flex items-center gap-1.5">
-                                    ${escapeHtml(u.username)} 
-                                    ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-1.5 py-0.5 rounded font-medium">정지됨</span>' : '<span class="bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded font-medium">활동중</span>'}
-                                </p>
-                            </div>
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'opacity-75' : ''}">
+                            <div><p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-1.5 py-0.5 rounded">정지됨</span>' : '<span class="bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded">활동중</span>'}</p></div>
                             <div class="flex gap-2">
-                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
+                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
                                 <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">삭제</button>
                             </div>
                         </div>
@@ -912,17 +792,15 @@
                 showToast(`${username}님의 권한이 승인되었습니다.`, 'success');
                 renderAdminViews();
                 updateAdminBadge();
-            } 
-            else if(action === 'suspend') {
+            } else if(action === 'suspend') {
                 showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => {
                     await dbUpdate('users', id, { status: 'suspended' });
                     showToast(`${username}님의 계정이 정지되었습니다.`, 'info');
                     renderAdminViews();
                     updateAdminBadge();
                 });
-            }
-            else if(action === 'delete') {
-                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 정 없습니다.`, async () => {
+            } else if(action === 'delete') {
+                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => {
                     await dbDelete('users', id);
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info');
                     renderAdminViews();
@@ -934,21 +812,12 @@
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const colors = {
-                'success': 'bg-emerald-100 text-emerald-800 border-emerald-200',
-                'error': 'bg-red-100 text-red-800 border-red-200',
-                'info': 'bg-indigo-100 text-indigo-800 border-indigo-200'
-            };
+            const colors = { 'success': 'bg-emerald-100 text-emerald-800 border-emerald-200', 'error': 'bg-red-100 text-red-800 border-red-200', 'info': 'bg-indigo-100 text-indigo-800 border-indigo-200' };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
             toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border ${colors[type]} fade-in pointer-events-auto backdrop-blur-md bg-opacity-90`;
             toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span class="text-sm font-semibold">${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px) scale(0.95)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         const navItems = document.querySelectorAll('.nav-item');
@@ -989,23 +858,11 @@
             todos.forEach((todo) => {
                 const item = document.createElement('div');
                 item.className = `flex items-center gap-3 p-3.5 border-b border-gray-100 hover:bg-white rounded-lg transition group ${todo.completed ? 'opacity-60 bg-gray-50' : 'bg-transparent'}`;
-                
-                let dateStr = '';
-                if(todo.dueDate) {
-                    const today = new Date().toISOString().split('T')[0];
-                    let dateColor = 'text-indigo-600 bg-indigo-50 border-indigo-100';
-                    if(!todo.completed && todo.dueDate < today) dateColor = 'text-red-600 bg-red-50 border-red-100 font-bold';
-                    dateStr = `<span class="text-[10px] ${dateColor} border px-2 py-0.5 rounded-md font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>`;
-                }
-
+                let dateStr = todo.dueDate ? `<span class="text-[10px] text-indigo-600 bg-indigo-50 border-indigo-100 border px-2 py-0.5 rounded-md font-medium">${escapeHtml(todo.dueDate)}</span>` : '';
                 item.innerHTML = `
-                    <button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent hover:border-indigo-400'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
+                    <button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
                     <span class="flex-1 text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800 font-medium'}">${escapeHtml(todo.text)}</span>
                     ${dateStr}
-                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs rounded hover:bg-indigo-50"><i class="fa-solid fa-arrow-up"></i></button>
-                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs rounded hover:bg-indigo-50"><i class="fa-solid fa-arrow-down"></i></button>
-                    </div>
                     <button class="text-gray-400 hover:text-red-500 transition p-2 rounded hover:bg-red-50 text-sm ml-1" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 list.appendChild(item);
@@ -1023,35 +880,10 @@
             showToast('할 일이 추가되었습니다.', 'success');
         });
 
-        document.getElementById('todo-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') document.getElementById('add-todo-btn').click();
-        });
-
         window.toggleTodo = async (id) => {
             const todo = getCollectionData('todos').find(t => t.id == id);
             if(todo) await dbUpdate('todos', id, { completed: !todo.completed });
         };
-
-        window.moveTodoOrder = async (id, direction) => {
-            let todos = getCollectionData('todos');
-            const index = todos.findIndex(t => t.id == id);
-            if (index === -1) return;
-            if (direction === 'up' && index > 0) {
-                const temp = todos[index]; todos[index] = todos[index - 1]; todos[index - 1] = temp;
-            } else if (direction === 'down' && index < todos.length - 1) {
-                const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp;
-            } else return;
-            
-            // Note: Firebase doesn't support manual ordering easily without a specific field. 
-            // For now, this just updates local view if cloud is on, or updates local storage completely.
-            if (isCloudMode) { 
-                store.todos = todos; loadTodos(); 
-                // To persist order in cloud, we'd need an 'order' field in DB and update all docs. Skipping for simplicity here.
-            } else { 
-                localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); 
-            }
-        };
-
         window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
 
         function renderCalendar() {
@@ -1074,15 +906,7 @@
 
             for(let i = 1; i <= totalDays; i++) {
                 const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
-                const bgClass = isToday ? 'bg-indigo-50 border-indigo-200 shadow-inner' : 'bg-white border-gray-100 hover:border-indigo-300';
-                
-                // 날짜 색상 (일요일 빨강, 토요일 파랑)
-                const currentDayIndex = new Date(year, month, i).getDay();
-                let textClass = 'text-gray-700';
-                if(currentDayIndex === 0) textClass = 'text-red-500';
-                else if (currentDayIndex === 6) textClass = 'text-blue-500';
-                if(isToday) textClass = 'text-indigo-700 font-black';
-
+                const bgClass = isToday ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100 hover:border-indigo-300';
                 const monthStr = String(month + 1).padStart(2, '0');
                 const dayStr = String(i).padStart(2, '0');
                 const dateKey = `${year}-${monthStr}-${dayStr}`;
@@ -1094,17 +918,11 @@
 
                 let eventsHtml = '';
                 dayEvents.slice(0, 3).forEach(dt => {
-                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-1 font-medium shadow-sm" title="${escapeHtml(dt.text)}">${escapeHtml(dt.text)}</div>`;
+                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-1 font-medium shadow-sm">${escapeHtml(dt.text)}</div>`;
                 });
-                if (dayEvents.length > 3) {
-                    eventsHtml += `<div class="text-[9px] text-gray-500 font-bold mt-1 px-1">+${dayEvents.length - 3}개 더보기</div>`;
-                }
 
-                grid.innerHTML += `<div onclick="openCalendarDateModal('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start overflow-hidden cursor-pointer transition group">
-                    <div class="w-full flex justify-between items-center mb-1">
-                        <span class="${textClass} text-xs sm:text-sm font-semibold">${i}</span>
-                        <span class="text-[10px] text-gray-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-plus"></i></span>
-                    </div>
+                grid.innerHTML += `<div onclick="openCalendarDateModal('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start cursor-pointer transition">
+                    <div class="w-full flex justify-between items-center mb-1"><span class="text-xs sm:text-sm font-semibold">${i}</span></div>
                     <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
                 </div>`;
             }
@@ -1112,29 +930,14 @@
 
         window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
         window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); renderCalendar(); };
-
-        window.openCalendarEventModal = () => {
-            document.getElementById('cal-event-text').value = '';
-            document.getElementById('cal-event-start').value = '';
-            document.getElementById('cal-event-end').value = '';
-            document.getElementById('calendar-event-modal').classList.remove('hidden');
-        };
-
-        window.openCalendarDateModal = (dateStr) => {
-            document.getElementById('cal-event-text').value = '';
-            document.getElementById('cal-event-start').value = dateStr;
-            document.getElementById('cal-event-end').value = dateStr;
-            document.getElementById('calendar-event-modal').classList.remove('hidden');
-        };
+        window.openCalendarEventModal = () => { document.getElementById('cal-event-text').value = ''; document.getElementById('cal-event-start').value = ''; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
+        window.openCalendarDateModal = (dateStr) => { document.getElementById('cal-event-text').value = ''; document.getElementById('cal-event-start').value = dateStr; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
 
         document.getElementById('save-cal-event-btn').addEventListener('click', async () => {
             const text = document.getElementById('cal-event-text').value.trim();
             const startDate = document.getElementById('cal-event-start').value;
             const endDate = document.getElementById('cal-event-end').value || startDate;
-            
-            if (!text || !startDate) { showToast('내용과 날짜를 확인해주세요.', 'error'); return; }
-            if (endDate < startDate) { showToast('종료 날짜가 시작 날짜보다 빠를 수 없습니다.', 'error'); return; }
-            
+            if (!text || !startDate) { showToast('내용과 날짜를 입력해주세요.', 'error'); return; }
             closeModal('calendar-event-modal');
             await dbAdd('calendar', { text, startDate, endDate, createdAt: Date.now() });
             showToast('일정이 추가되었습니다.', 'success');
@@ -1153,18 +956,18 @@
             }
             sheets.forEach(sheet => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 hover:shadow-lg hover:border-emerald-200 transition relative group';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition relative group';
                 item.innerHTML = `
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 flex-shrink-0 text-xl shadow-inner"><i class="fa-solid fa-file-pdf"></i></div>
-                    <div class="flex-1 overflow-hidden pr-8">
-                        <h4 class="font-bold text-gray-800 text-sm truncate" title="${escapeHtml(sheet.title)}">${escapeHtml(sheet.title)}</h4>
+                    <div class="flex-1 overflow-hidden pr-12">
+                        <h4 class="font-bold text-gray-800 text-sm truncate">${escapeHtml(sheet.title)}</h4>
                         <div class="flex items-center gap-3 mt-3">
                             <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="inline-flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-emerald-100 text-gray-700 hover:text-emerald-700 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-download"></i> 다운로드</a>
                         </div>
                     </div>
-                    <div class="absolute top-4 right-4 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="openEditSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition" title="수정"><i class="fa-solid fa-pen text-sm"></i></button>
-                        <button onclick="deleteSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="삭제"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <button onclick="openEditSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-emerald-600 transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -1173,8 +976,7 @@
         }
 
         document.getElementById('sheet-file').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : "선택된 파일 없음";
-            document.getElementById('sheet-file-name').textContent = fileName;
+            document.getElementById('sheet-file-name').textContent = e.target.files[0] ? e.target.files[0].name : "선택된 파일 없음";
         });
 
         document.getElementById('add-sheet-btn').addEventListener('click', async () => {
@@ -1182,27 +984,22 @@
             let title = document.getElementById('sheet-title').value.trim();
             const fileInput = document.getElementById('sheet-file');
 
-            if(!editId && fileInput.files.length === 0) { 
-                showToast('업로드할 파일을 선택해주세요.', 'error'); 
-                return; 
-            }
-            
+            if(!editId && fileInput.files.length === 0) { showToast('파일을 선택해주세요.', 'error'); return; }
             const btn = document.getElementById('add-sheet-btn');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
 
             if (editId) {
-                let updateData = { title };
+                let sheet = getCollectionData('sheets').find(s => s.id == editId);
+                let updateData = { title: title || sheet.title };
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
-                    updateData.title = title;
+                    if (!title) updateData.title = file.name.replace(/\.[^/.]+$/, "");
                     updateData.filename = file.name;
                     const reader = new FileReader();
                     reader.onload = async function(e) {
                         updateData.data = e.target.result;
                         await dbUpdate('sheets', editId, updateData);
-                        finishSheetUpload('악보 파일이 수정되었습니다.', btn);
+                        finishSheetUpload('악보가 수정되었습니다.', btn);
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -1211,54 +1008,37 @@
                 }
             } else {
                 const file = fileInput.files[0];
-                if (!title) title = file.name.replace(/\.[^/.]+$/, ""); 
+                if (!title) title = file.name.replace(/\.[^/.]+$/, "");
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
-                    finishSheetUpload('악보가 성공적으로 업로드되었습니다.', btn);
+                    finishSheetUpload('악보가 업로드되었습니다.', btn);
                 };
-                reader.onerror = function() {
-                    showToast('파일을 읽는 중 오류가 발생했습니다.', 'error');
-                    btn.disabled = false;
-                    btn.innerText = '업로드 완료';
-                }
                 reader.readAsDataURL(file);
             }
         });
 
         function finishSheetUpload(msg, btn) {
-            closeModal('sheet-modal');
-            showToast(msg, 'success');
-            btn.disabled = false;
-            btn.innerText = '업로드 완료';
-            document.getElementById('sheet-title').value = '';
-            document.getElementById('sheet-file').value = '';
+            closeModal('sheet-modal'); showToast(msg, 'success');
+            btn.disabled = false; document.getElementById('sheet-edit-id').value = '';
+            document.getElementById('sheet-title').value = ''; document.getElementById('sheet-file').value = '';
             document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
-            document.getElementById('sheet-edit-id').value = '';
         }
 
         window.openEditSheet = (id) => {
             let sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet) return;
-            
             document.getElementById('sheet-edit-id').value = sheet.id;
             document.getElementById('sheet-title').value = sheet.title || '';
-            document.getElementById('sheet-file').value = ''; // 파일 선택창은 비워둠 (새로 올릴 때만 선택)
-            
-            // 기존 파일이 있는 경우 파일명 표시
-            const fileNameText = sheet.filename ? `현재 파일: ${sheet.filename} (변경시에만 클릭)` : '기존 파일 유지 (변경시에만 클릭)';
-            document.getElementById('sheet-file-name').textContent = fileNameText;
-            
+            document.getElementById('sheet-file').value = '';
+            document.getElementById('sheet-file-name').textContent = sheet.filename ? `현재 파일: ${sheet.filename}` : '기존 파일 유지';
             document.getElementById('sheet-modal-title').textContent = '악보 수정';
-            
-            // 폼을 초기화하는 openModal() 대신, 모달을 직접 표시하여 데이터가 날아가지 않게 함
             document.getElementById('sheet-modal').classList.remove('hidden');
         };
 
-        window.deleteSheet = async (id) => { 
-            showCustomConfirm('악보 삭제', '정말 이 악보를 삭제하시겠습니까?\n콘티에 포함된 경우 콘티에서도 보이지 않게 됩니다.', async () => {
-                await dbDelete('sheets', id); 
-                showToast('악보가 삭제되었습니다.', 'info'); 
+        window.deleteSheet = async (id) => {
+            showCustomConfirm('악보 삭제', '이 악보를 삭제하시겠습니까?', async () => {
+                await dbDelete('sheets', id); showToast('악보가 삭제되었습니다.', 'info');
             });
         };
 
@@ -1275,27 +1055,16 @@
             }
             audios.forEach(audio => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg hover:border-purple-200 transition relative group';
-                
-                let mediaContent = '';
-                if(audio.type === 'file') {
-                    mediaContent = `<audio controls class="w-full sm:max-w-md h-10 mt-3 rounded-lg"><source src="${audio.data}" type="audio/mpeg"></audio>`;
-                } else {
-                    let domain = new URL(audio.data).hostname.replace('www.','');
-                    mediaContent = `<a href="${audio.data}" target="_blank" class="inline-flex items-center justify-center gap-2 mt-3 px-4 py-2 bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-700 rounded-lg text-sm font-semibold transition truncate"><i class="fa-solid fa-link"></i> ${domain} 열기</a>`;
-                }
-
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
+                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:max-w-md h-10 mt-3 rounded-lg"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-gray-100 hover:bg-purple-100 text-gray-700 rounded-lg text-sm font-semibold transition truncate"><i class="fa-solid fa-link"></i> 외부 링크 열기</a>`;
                 item.innerHTML = `
                     <div class="flex items-start gap-4 w-full flex-1 overflow-hidden">
                         <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 flex-shrink-0 text-xl shadow-inner mt-1"><i class="fa-solid fa-music"></i></div>
-                        <div class="flex-1 overflow-hidden pr-8">
-                            <h4 class="font-bold text-gray-800 text-sm truncate" title="${escapeHtml(audio.title)}">${escapeHtml(audio.title)}</h4>
-                            ${mediaContent}
-                        </div>
+                        <div class="flex-1 overflow-hidden pr-12"><h4 class="font-bold text-gray-800 text-sm truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
                     </div>
-                    <div class="absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                        <button class="text-gray-400 hover:text-purple-600 transition p-2 bg-gray-50 hover:bg-purple-50 rounded-lg" onclick="openEditAudio('${audio.id}')" title="수정"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-gray-400 hover:text-red-500 transition p-2 bg-gray-50 hover:bg-red-50 rounded-lg" onclick="deleteAudio('${audio.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="absolute top-4 right-4 flex gap-1">
+                        <button onclick="openEditAudio('${audio.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-purple-600 transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteAudio('${audio.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -1309,19 +1078,15 @@
             const fileInput = document.getElementById('audio-file');
             const urlInput = document.getElementById('audio-url').value.trim();
             
-            if(fileInput.files.length > 0 && urlInput) { showToast('파일 업로드와 링크 등록 중 하나만 선택해주세요.', 'error'); return; }
-            if(!editId && fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크 중 하나를 입력해주세요.', 'error'); return; }
-            
+            if(!editId && fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크를 입력해주세요.', 'error'); return; }
             const btn = document.getElementById('add-audio-btn');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
-            
+
             if (editId) {
-                let updateData = { title };
+                let audio = getCollectionData('audio').find(a => a.id == editId);
+                let updateData = { title: title || audio.title };
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
-                    updateData.title = title;
                     updateData.type = 'file';
                     const reader = new FileReader();
                     reader.onload = async function(e) {
@@ -1331,11 +1096,6 @@
                     };
                     reader.readAsDataURL(file);
                 } else if (urlInput) {
-                    try { new URL(urlInput); } catch(e) { 
-                        showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
-                        btn.disabled = false; btn.innerText = '등록 완료'; return; 
-                    }
-                    if (!title) updateData.title = "링크 음원";
                     updateData.type = 'url';
                     updateData.data = urlInput;
                     await dbUpdate('audio', editId, updateData);
@@ -1351,15 +1111,11 @@
                     const reader = new FileReader();
                     reader.onload = async function(e) {
                         await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
-                        finishAudioUpload('음원이 업로드되었습니다.', btn);
+                        finishAudioUpload('음원이 등록되었습니다.', btn);
                     };
                     reader.readAsDataURL(file);
                 } else {
                     if (!title) title = "링크 음원";
-                    try { new URL(urlInput); } catch(e) { 
-                        showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
-                        btn.disabled = false; btn.innerText = '등록 완료'; return; 
-                    }
                     await dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() });
                     finishAudioUpload('음원 링크가 등록되었습니다.', btn);
                 }
@@ -1367,39 +1123,25 @@
         });
 
         function finishAudioUpload(msg, btn) {
-            closeModal('audio-modal');
-            showToast(msg, 'success');
-            document.getElementById('audio-edit-id').value = '';
-            document.getElementById('audio-title').value = '';
-            document.getElementById('audio-file').value = '';
+            closeModal('audio-modal'); showToast(msg, 'success');
+            btn.disabled = false; document.getElementById('audio-edit-id').value = '';
+            document.getElementById('audio-title').value = ''; document.getElementById('audio-file').value = '';
             document.getElementById('audio-url').value = '';
-            btn.disabled = false;
-            btn.innerText = '등록 완료';
         }
-        
+
         window.openEditAudio = (id) => {
             let audio = getCollectionData('audio').find(a => a.id == id);
             if (!audio) return;
-            
             document.getElementById('audio-edit-id').value = audio.id;
             document.getElementById('audio-title').value = audio.title || '';
-            document.getElementById('audio-file').value = ''; // 파일 선택창 초기화
-            
-            if(audio.type === 'url') {
-                document.getElementById('audio-url').value = audio.data;
-            } else {
-                document.getElementById('audio-url').value = '';
-            }
-            
-            document.getElementById('audio-modal-title').textContent = '음원 수정';
-            
-            // 폼을 초기화하는 openModal() 대신, 모달을 직접 표시하여 데이터가 날아가지 않게 함
+            document.getElementById('audio-file').value = '';
+            document.getElementById('audio-url').value = audio.type === 'url' ? audio.data : '';
             document.getElementById('audio-modal').classList.remove('hidden');
         };
 
-        window.deleteAudio = async (id) => { 
+        window.deleteAudio = async (id) => {
             showCustomConfirm('음원 삭제', '이 음원을 삭제하시겠습니까?', async () => {
-                await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info'); 
+                await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info');
             });
         };
 
@@ -1409,50 +1151,20 @@
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
             const sheets = getCollectionData('sheets');
             container.innerHTML = '';
-            
-            if (sheets.length === 0) { 
-                container.innerHTML = `<div class="text-xs text-gray-400 text-center py-6">등록된 악보가 없습니다.<br>먼저 악보 탭에서 악보를 업로드해주세요.</div>`; 
-                return; 
-            }
-
-            // 선택된 항목들이 위로 오도록 정렬, 그 다음 검색 필터 적용
-            let displaySheets = [...sheets];
-            
-            displaySheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
+            if (sheets.length === 0) { container.innerHTML = `<div class="text-xs text-gray-400 text-center py-4">등록된 악보가 없습니다.</div>`; return; }
+            sheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-white hover:bg-indigo-50 border border-gray-100 transition shadow-sm mb-1">
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white hover:bg-indigo-50 border border-gray-100 transition shadow-sm mb-1">
                         <label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden">
-                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 flex-shrink-0">
-                            <span class="text-xs sm:text-sm text-gray-700 font-medium truncate">${escapeHtml(sheet.title)}</span>
+                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300">
+                            <span class="text-xs sm:text-sm text-gray-700 truncate">${escapeHtml(sheet.title)}</span>
                         </label>
-                        <div class="flex items-center gap-1 bg-gray-50 rounded border border-gray-200">
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-400 hover:text-indigo-600 px-2 py-1 text-xs hover:bg-gray-100"><i class="fa-solid fa-chevron-up"></i></button>
-                            <div class="w-px h-3 bg-gray-300"></div>
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-400 hover:text-indigo-600 px-2 py-1 text-xs hover:bg-gray-100"><i class="fa-solid fa-chevron-down"></i></button>
-                        </div>
                     </div>
                 `;
             });
         }
-
-        window.filterKontiSheetCheckboxes = () => {
-            renderKontiSheetCheckboxes(Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value));
-        };
-
-        window.moveSheetOrder = (sheetId, dir) => {
-            const container = document.getElementById('konti-sheets-checkboxes');
-            const items = Array.from(container.children);
-            const index = items.findIndex(item => item.querySelector('.konti-sheet-checkbox')?.value == sheetId);
-            if (index === -1) return;
-            if (dir === 'up' && index > 0) {
-                container.insertBefore(items[index], items[index - 1]);
-                items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else if (dir === 'down' && index < items.length - 1) {
-                container.insertBefore(items[index + 1], items[index]);
-                items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        };
+        window.filterKontiSheetCheckboxes = () => { renderKontiSheetCheckboxes(Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value)); };
 
         function loadKonti() {
             const list = document.getElementById('konti-list');
@@ -1460,48 +1172,35 @@
             let kontiList = getCollectionData('konti');
             const sheets = getCollectionData('sheets');
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search));
-            
-            // 생성일 역순 정렬
-            kontiList.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-
             list.innerHTML = '';
             if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-list-ol text-4xl mb-3 opacity-30"></i>생성된 콘티가 없습니다.</div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-list-ol text-4xl mb-3 opacity-30"></i>등록된 콘티가 없습니다.</div>`;
                 return;
             }
-
             kontiList.forEach(konti => {
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic py-2 text-center bg-gray-50 rounded-lg">포함된 악보가 없습니다.</p>` : '';
-                
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic">포함된 악보가 없습니다.</p>` : '';
                 kontiSheets.forEach((sheet, idx) => {
                     sheetsHtml += `
-                        <div class="flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-xl border border-gray-100 transition group">
+                        <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <span class="w-6 h-6 rounded bg-white shadow-sm text-gray-500 font-bold text-xs flex items-center justify-center flex-shrink-0 group-hover:text-indigo-600 transition">${idx + 1}</span>
-                                <span class="text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
+                                <span class="w-5 h-5 rounded bg-white text-gray-600 font-bold text-xs flex items-center justify-center">${idx + 1}</span>
+                                <span class="text-xs sm:text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
                             </div>
-                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="text-xs bg-white text-indigo-600 border border-indigo-100 font-semibold hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-lg shadow-sm transition whitespace-nowrap"><i class="fa-solid fa-download"></i> 개별 다운</a>
+                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="text-xs text-indigo-600 font-semibold hover:underline"><i class="fa-solid fa-download"></i> 다운로드</a>
                         </div>
                     `;
                 });
-
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition';
-                
-                // PDF 통합 기능이 브라우저에서 무거울 수 있으므로 로딩 표시용 id 부여
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm';
                 const btnId = `btn-pdf-${konti.id}`;
-                
                 item.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5 pb-4 border-b border-gray-100">
-                        <div>
-                            <h3 class="font-bold text-gray-800 text-base sm:text-lg flex items-center gap-2"><i class="fa-solid fa-folder-open text-indigo-400"></i> ${escapeHtml(konti.name)}</h3>
-                            <p class="text-[11px] text-gray-500 mt-1 font-medium bg-gray-100 inline-block px-2 py-0.5 rounded">총 ${kontiSheets.length}곡 포함</p>
-                        </div>
-                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
-                            <button onclick="openEditKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="deleteKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
+                        <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
+                        <div class="flex items-center gap-2">
+                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
+                            <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">${sheetsHtml}</div>
@@ -1515,205 +1214,128 @@
             const editId = document.getElementById('konti-edit-id').value;
             const name = document.getElementById('konti-name').value.trim();
             const sheetIds = Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value);
-            
             if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; }
-            if(sheetIds.length === 0) {
-                showCustomConfirm('악보 없음', '선택된 악보가 없습니다. 빈 콘티를 저장하시겠습니까?', async () => {
-                    await finalizeKontiSave(editId, name, sheetIds);
-                });
-                return;
-            }
-            
-            await finalizeKontiSave(editId, name, sheetIds);
-        });
-
-        async function finalizeKontiSave(editId, name, sheetIds) {
             closeModal('konti-modal');
-            if (editId) {
-                await dbUpdate('konti', editId, { name, sheetIds });
-                showToast('콘티가 수정되었습니다.', 'success');
-            } else {
-                await dbAdd('konti', { name, sheetIds, createdAt: Date.now() });
-                showToast('새 콘티가 생성되었습니다.', 'success');
-            }
-            document.getElementById('konti-name').value = '';
-            document.getElementById('konti-edit-id').value = '';
-        }
+            if (editId) { await dbUpdate('konti', editId, { name, sheetIds }); showToast('콘티가 수정되었습니다.', 'success'); }
+            else { await dbAdd('konti', { name, sheetIds, createdAt: Date.now() }); showToast('콘티가 생성되었습니다.', 'success'); }
+            document.getElementById('konti-name').value = ''; document.getElementById('konti-edit-id').value = '';
+        });
 
         window.openEditKonti = (id) => {
             let konti = getCollectionData('konti').find(k => k.id == id);
             if (!konti) return;
             document.getElementById('konti-edit-id').value = konti.id;
             document.getElementById('konti-name').value = konti.name;
-            document.getElementById('konti-modal-title').textContent = '콘티 수정';
             renderKontiSheetCheckboxes(konti.sheetIds || []);
             document.getElementById('konti-modal').classList.remove('hidden');
         };
 
-        window.deleteKonti = async (id) => { 
-            showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?\n포함된 악보 파일 자체는 삭제되지 않습니다.', async () => {
-                await dbDelete('konti', id); showToast('콘티가 삭제되었습니다.', 'info'); 
-            });
-        };
+        window.deleteKonti = async (id) => { await dbDelete('konti', id); showToast('콘티가 삭제되었습니다.', 'info'); };
 
         window.downloadKontiMergedPdf = async (kontiId, btnId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId);
             let sheets = getCollectionData('sheets');
             if (!konti) return;
-            
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-            if (kontiSheets.length === 0) { showToast('포함된 악보가 없어 PDF를 생성할 수 없습니다.', 'error'); return; }
+            if (kontiSheets.length === 0) { showToast('포함된 악보가 없습니다.', 'error'); return; }
 
             const btn = document.getElementById(btnId);
-            const originalBtnHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 생성중...';
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = '생성중...';
 
-            showToast(`[${konti.name}] 병합을 시작합니다. 잠시만 기다려주세요.`, 'info');
-            
-            // 브라우저 렌더링 블로킹 방지를 위해 타임아웃 사용
             setTimeout(async () => {
                 try {
                     const { PDFDocument } = PDFLib;
                     const mergedPdf = await PDFDocument.create();
-
                     for (let i = 0; i < kontiSheets.length; i++) {
                         let sheet = kontiSheets[i];
                         let dataUrl = sheet.data;
                         if (!dataUrl) continue;
-
-                        try {
-                            let base64Data = dataUrl.split(',')[1];
-                            let binaryString = atob(base64Data);
-                            let len = binaryString.length;
-                            let bytes = new Uint8Array(len);
-                            for (let j = 0; j < len; j++) { bytes[j] = binaryString.charCodeAt(j); }
-
-                            if (dataUrl.includes('application/pdf')) {
-                                const donorPdf = await PDFDocument.load(bytes);
-                                const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
-                                copiedPages.forEach((page) => mergedPdf.addPage(page));
-                            } else if (dataUrl.includes('image/')) {
-                                let embeddedImage;
-                                if (dataUrl.includes('image/png')) embeddedImage = await mergedPdf.embedPng(bytes);
-                                else embeddedImage = await mergedPdf.embedJpg(bytes);
-                                
-                                // A4 비율 기준으로 이미지 크기 조정 (선택적)
-                                const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
-                                page.drawImage(embeddedImage, {
-                                    x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height,
-                                });
-                            }
-                        } catch (e) {
-                            console.error(`Error processing sheet ${sheet.title}:`, e);
+                        let base64Data = dataUrl.split(',')[1];
+                        let bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                        if (dataUrl.includes('application/pdf')) {
+                            const donorPdf = await PDFDocument.load(bytes);
+                            const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
+                            copiedPages.forEach(p => mergedPdf.addPage(p));
+                        } else if (dataUrl.includes('image/')) {
+                            let img = dataUrl.includes('image/png') ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
+                            let page = mergedPdf.addPage([img.width, img.height]);
+                            page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
                         }
                     }
-
-                    const mergedPdfBytes = await mergedPdf.save();
-                    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                    const pdfBytes = await mergedPdf.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
-                    // 파일명에 공백 대신 언더바 사용
-                    const safeFileName = konti.name.replace(/ /g, '_');
-                    link.download = `${safeFileName}_전체악보.pdf`;
+                    link.download = `${konti.name.replace(/ /g, '_')}_전체악보.pdf`;
                     link.click();
-                    
-                    showToast('PDF 다운로드가 시작되었습니다.', 'success');
-                } catch (err) {
-                    console.error("PDF merge error:", err);
-                    showToast('PDF 생성 중 오류가 발생했습니다. 악보 파일 형식을 확인해주세요.', 'error');
+                    showToast('전체 악보 다운로드가 시작됩니다.', 'success');
+                } catch(e) {
+                    showToast('PDF 생성 중 오류가 발생했습니다.', 'error');
                 } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = originalBtnHtml;
+                    btn.disabled = false; btn.innerHTML = originalHtml;
                 }
-            }, 100);
+            }, 50);
         };
 
+        // [게시판] - 엔터 전송 / 시프트+엔터 줄바꿈 완벽 분리
         function loadBoard() {
             const list = document.getElementById('board-list');
             const posts = getCollectionData('board');
-            
-            // 시간순 정렬 (오래된 것이 위로)
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
-
             list.innerHTML = '';
             if(posts.length === 0) {
                 list.innerHTML = `<div class="text-center text-gray-400 py-20 flex-1 flex flex-col items-center justify-center text-sm"><i class="fa-regular fa-comments text-4xl mb-3 opacity-30"></i>첫 공지나 이야기를 남겨보세요.</div>`;
                 return;
             }
-            
             posts.forEach(post => {
                 const item = document.createElement('div');
-                // 모든 메시지는 좌측 정렬 (채팅보다는 게시판 느낌)
                 item.className = 'flex flex-col w-full sm:w-[90%] self-start items-start mb-3 group';
-                
                 const authorName = post.author ? `<div class="text-[11px] font-bold text-gray-600 ml-2 mb-1">${escapeHtml(post.author)}</div>` : '';
-
                 item.innerHTML = `
                     ${authorName}
                     <div class="flex items-end gap-2 w-full">
                         <div class="px-4 py-3 rounded-2xl bg-white border border-gray-200 text-gray-800 shadow-sm text-sm whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
-                        <div class="flex flex-col items-start gap-1 flex-shrink-0 min-w-[50px]">
-                            <span class="text-[10px] text-gray-400 font-medium">${post.time}</span>
-                            <button class="text-gray-300 hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100" onclick="deletePost('${post.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex flex-col items-start gap-1 flex-shrink-0">
+                            <span class="text-[10px] text-gray-400">${post.time}</span>
+                            <button class="text-gray-300 hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 `;
                 list.appendChild(item);
             });
-            // 스크롤 맨 아래로 이동
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
 
-        let isSubmittingPost = false; // 중복 전송 방지용 안전장치 추가
-
-        // 엔터키 입력 완벽 제어
-        document.getElementById('board-input').addEventListener('keydown', function(e) {
+        const boardInput = document.getElementById('board-input');
+        boardInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                if (!e.shiftKey) {
-                    // 1. Shift 없이 엔터만 쳤을 때: 전송
-                    e.preventDefault(); // 기본 동작인 줄바꿈 방지
-                    if (e.isComposing) return; // 한글 입력 조합 중복 방지 (두번 써지는 현상 제거)
+                if (e.shiftKey) {
+                    // Shift + Enter: 순수 줄바꿈
+                    return; 
+                } else {
+                    // 그냥 Enter: 무조건 전송 및 줄바꿈 방지
+                    e.preventDefault();
+                    if (e.isComposing) return;
                     document.getElementById('add-post-btn').click();
                 }
-                // 2. Shift + Enter 일 때: 이 if문 안으로 들어오지 않으므로 기본 동작인 '줄바꿈'만 실행됨 (전송 안 됨)
             }
         });
 
         document.getElementById('add-post-btn').addEventListener('click', async () => {
-            if (isSubmittingPost) return; // 이미 전송 중이면 두 번 눌리지 않게 차단
-            
             const input = document.getElementById('board-input');
             const text = input.value.trim();
             if(!text) return;
-            
-            isSubmittingPost = true; // 전송 시작
-            const btn = document.getElementById('add-post-btn');
-            btn.disabled = true;
-            
-            try {
-                const now = new Date();
-                const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-                const authorName = currentUser ? currentUser.username : '알 수 없음';
-                
-                await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
-                
-                input.value = '';
-            } finally {
-                isSubmittingPost = false; // 전송 완료 후 해제
-                btn.disabled = false;
-                
-                // 스크롤 다운을 위해 약간의 딜레이
-                setTimeout(() => {
-                    const list = document.getElementById('board-list');
-                    list.scrollTop = list.scrollHeight;
-                }, 100);
-            }
+            const now = new Date();
+            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const authorName = currentUser ? currentUser.username : '익명';
+            await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
+            input.value = '';
         });
 
-        window.deletePost = async (id) => { 
-            showCustomConfirm('게시글 삭제', '이 내용을 삭제하시겠습니까?', async () => {
-                await dbDelete('board', id); 
+        window.deletePost = async (id) => {
+            showCustomConfirm('게시글 삭제', '이 게시글을 삭제하시겠습니까?', async () => {
+                await dbDelete('board', id); showToast('게시글이 삭제되었습니다.', 'info');
             });
         };
 
@@ -1722,29 +1344,23 @@
                 document.getElementById('sheet-edit-id').value = '';
                 document.getElementById('sheet-title').value = '';
                 document.getElementById('sheet-file').value = '';
-                document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
-                document.getElementById('sheet-modal-title').textContent = '새 악보 등록';
+                document.getElementById('sheet-file-name').textContent = '선택된 파일 없음';
+                document.getElementById('sheet-modal-title').textContent = '새 악보 파일 등록';
             } else if (id === 'konti-modal') {
                 document.getElementById('konti-edit-id').value = '';
                 document.getElementById('konti-name').value = '';
-                document.getElementById('konti-modal-title').textContent = '새 콘티 만들기';
-                if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
                 renderKontiSheetCheckboxes();
             } else if (id === 'audio-modal') {
                 document.getElementById('audio-edit-id').value = '';
                 document.getElementById('audio-title').value = '';
                 document.getElementById('audio-file').value = '';
                 document.getElementById('audio-url').value = '';
-                document.getElementById('audio-modal-title').textContent = '새 음원 등록';
             }
             document.getElementById(id).classList.remove('hidden');
         }
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function escapeHtml(unsafe) {
-            return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
+        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     </script>
 </body>
 </html>
