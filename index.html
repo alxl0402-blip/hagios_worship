@@ -142,52 +142,33 @@
 
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 scroll-smooth w-full">
                 
-                <!-- View: Home Dashboard with Quick Navigation Cards -->
+                <!-- View: Home Dashboard with Navigation Cards -->
                 <section id="view-dashboard" class="view-section fade-in">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-check"></i></div>
-                            <div><p class="text-xs sm:text-sm text-gray-500 font-medium">남은 할 일</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-todos">0</p></div>
-                        </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-ol"></i></div>
-                            <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 콘티</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-konti">0</p></div>
-                        </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl flex-shrink-0"><i class="fa-solid fa-file-lines"></i></div>
-                            <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 악보</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-sheet">0</p></div>
-                        </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xl flex-shrink-0"><i class="fa-solid fa-music"></i></div>
-                            <div><p class="text-xs sm:text-sm text-gray-500 font-medium">공유된 음원</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-audio">0</p></div>
-                        </div>
-                    </div>
-
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">메뉴 바로가기</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">메뉴</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div onclick="navigateToView('view-calendar')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-regular fa-calendar-days"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">캘린더</h4><p class="text-xs text-gray-500">팀 일정 및 모임 확인</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">캘린더</h4></div>
                         </div>
                         <div onclick="navigateToView('view-todos')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition"><i class="fa-solid fa-check-double"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">투두리스트</h4><p class="text-xs text-gray-500">팀원 할 일 및 체크리스트</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">투두리스트</h4></div>
                         </div>
                         <div onclick="navigateToView('view-sheetmusic')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl group-hover:bg-emerald-600 group-hover:text-white transition"><i class="fa-solid fa-file-audio"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">악보</h4><p class="text-xs text-gray-500">찬양 악보 PDF 및 이미지 공유</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">악보</h4></div>
                         </div>
                         <div onclick="navigateToView('view-audio')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-headphones"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">음원</h4><p class="text-xs text-gray-500">파트별 음원 및 링크 듣기</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">음원</h4></div>
                         </div>
                         <div onclick="navigateToView('view-konti')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-solid fa-list-ol"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">콘티</h4><p class="text-xs text-gray-500">예배 콘티 및 통합 PDF</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">콘티</h4></div>
                         </div>
                         <div onclick="navigateToView('view-board')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-amber-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-600 group-hover:text-white transition"><i class="fa-regular fa-comments"></i></div>
-                            <div><h4 class="font-bold text-gray-800 text-base mb-1">게시판</h4><p class="text-xs text-gray-500">팀원들과 자유로운 소통</p></div>
+                            <div><h4 class="font-bold text-gray-800 text-base">게시판</h4></div>
                         </div>
                     </div>
                 </section>
@@ -301,7 +282,7 @@
                         <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 flex flex-col gap-4" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요..."></textarea>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" placeholder="내용을 입력하세요..."></textarea>
                                 <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center">
                                     <i class="fa-solid fa-paper-plane text-sm sm:text-base"></i>
                                 </button>
@@ -314,7 +295,6 @@
         </main>
     </div>
 
-    <!-- Modals -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
@@ -385,6 +365,7 @@
             <div class="flex flex-col gap-4">
                 <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목</label><input type="text" id="sheet-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder=""></div>
                 <div><label class="block text-xs font-medium text-gray-700 mb-1">악보 파일 (PDF 또는 이미지)</label><input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"></div>
+                <div id="sheet-current-file-info" class="text-xs text-gray-400"></div>
                 <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장 완료</button>
             </div>
         </div>
@@ -400,6 +381,7 @@
             <div class="flex flex-col gap-4">
                 <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
                 <div><label class="block text-xs font-medium text-gray-700 mb-1">오디오 파일 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"></div>
+                <div id="audio-current-file-info" class="text-xs text-gray-400"></div>
                 <div class="text-center text-xs text-gray-400">- 또는 -</div>
                 <div><label class="block text-xs font-medium text-gray-700 mb-1">링크 입력 (유튜브 등)</label><input type="url" id="audio-url" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
                 <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">등록 완료</button>
@@ -541,9 +523,14 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (authErr) {
+                    console.warn("Custom token auth failed, falling back to anonymous auth:", authErr);
                     await signInAnonymously(auth);
                 }
                 
@@ -595,7 +582,6 @@
             loadAudio();
             loadBoard();
             loadKonti();
-            updateStats();
         }
 
         async function dbAdd(collectionName, data) {
@@ -888,7 +874,7 @@
             document.getElementById('sidebar-nav').classList.toggle('hidden');
         });
 
-        // --- 캘린더 로직 및 세부 내용 뷰어 ---
+        // --- Calendar Logic & Detail Panel ---
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             const titleEl = document.getElementById('calendar-title');
@@ -1059,13 +1045,6 @@
             });
         };
 
-        function updateStats() {
-            document.getElementById('stat-todos').textContent = getCollectionData('todos').filter(t => !t.completed).length;
-            document.getElementById('stat-sheet').textContent = getCollectionData('sheets').length;
-            document.getElementById('stat-audio').textContent = getCollectionData('audio').length;
-            document.getElementById('stat-konti').textContent = getCollectionData('konti').length;
-        }
-
         function loadTodos() {
             const list = document.getElementById('todo-list');
             const todos = getCollectionData('todos');
@@ -1091,7 +1070,6 @@
                 `;
                 list.appendChild(item);
             });
-            updateStats();
         }
 
         document.getElementById('add-todo-btn').addEventListener('click', async () => {
@@ -1161,7 +1139,6 @@
                 `;
                 list.appendChild(item);
             });
-            updateStats();
         }
 
         window.downloadSheet = (id) => {
@@ -1236,6 +1213,8 @@
             if (!sheet) return;
             document.getElementById('sheet-edit-id').value = sheet.id;
             document.getElementById('sheet-title').value = sheet.title;
+            document.getElementById('sheet-current-file-info').textContent = `현재 파일: ${sheet.filename || '등록된 파일'}`;
+            document.getElementById('sheet-file').value = '';
             document.getElementById('sheet-modal-title').textContent = '악보 수정';
             openModal('sheet-modal');
         };
@@ -1318,7 +1297,6 @@
                 `;
                 list.appendChild(item);
             });
-            updateStats();
         }
 
         document.getElementById('save-konti-btn').addEventListener('click', async () => {
@@ -1437,7 +1415,6 @@
                 `;
                 list.appendChild(item);
             });
-            updateStats();
         }
 
         document.getElementById('add-audio-btn').addEventListener('click', () => {
@@ -1501,6 +1478,8 @@
             document.getElementById('audio-edit-id').value = audio.id;
             document.getElementById('audio-title').value = audio.title;
             document.getElementById('audio-url').value = audio.type === 'url' ? audio.data : '';
+            document.getElementById('audio-current-file-info').textContent = audio.type === 'file' ? '현재 오디오 파일 등록됨' : '';
+            document.getElementById('audio-file').value = '';
             document.getElementById('audio-modal-title').textContent = '음원 수정';
             openModal('audio-modal');
         };
@@ -1512,6 +1491,7 @@
                 document.getElementById('sheet-edit-id').value = '';
                 document.getElementById('sheet-title').value = '';
                 document.getElementById('sheet-file').value = '';
+                document.getElementById('sheet-current-file-info').textContent = '';
                 document.getElementById('sheet-modal-title').textContent = '새 악보 파일 등록';
             } else if (id === 'konti-modal') {
                 document.getElementById('konti-edit-id').value = '';
@@ -1524,6 +1504,7 @@
                 document.getElementById('audio-title').value = '';
                 document.getElementById('audio-file').value = '';
                 document.getElementById('audio-url').value = '';
+                document.getElementById('audio-current-file-info').textContent = '';
                 document.getElementById('audio-modal-title').textContent = '새 음원 등록';
             }
             document.getElementById(id).classList.remove('hidden');
