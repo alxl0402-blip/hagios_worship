@@ -295,7 +295,7 @@
                         <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50/50 flex flex-col gap-4" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요... (Shift+Enter로 줄바꿈)"></textarea>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요..."></textarea>
                                 <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center group">
                                     <i class="fa-solid fa-paper-plane text-sm sm:text-base group-hover:scale-110 transition-transform"></i>
                                 </button>
@@ -1695,24 +1695,6 @@
                     const list = document.getElementById('board-list');
                     list.scrollTop = list.scrollHeight;
                 }, 100);
-            }
-        });
-
-        // Shift+Enter 로 줄바꿈, Enter 로 등록
-        document.getElementById('board-input').addEventListener('keydown', function(e) {
-            // 엔터키를 눌렀을 때만 동작
-            if (e.key === 'Enter') {
-                if (e.shiftKey) {
-                    // Shift + Enter인 경우: 아무 작업도 하지 않음 (브라우저 기본 동작인 줄바꿈이 정상 작동됨)
-                    return; 
-                } else {
-                    // 일반 Enter인 경우 (전송)
-                    e.preventDefault(); // 엔터로 인해 줄바꿈이 생기는 것을 완벽히 막음
-                    
-                    // 한글 입력기(IME) 버그 방지: 글자 조합 중(예: 'ㅇ'치고 엔터)이어도
-                    // 버튼 클릭 이벤트로 넘기되, isSubmittingPost 가 중복 전송을 막아줍니다.
-                    document.getElementById('add-post-btn').click();
-                }
             }
         });
 
