@@ -43,16 +43,28 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item.active { background-color: #e0e7ff; color: #4f46e5; font-weight: 600; }
         .nav-item.active i { color: #4f46e5; }
+        
+        /* 버튼 비활성화 스타일 */
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        input:disabled { background-color: #f1f5f9; cursor: not-allowed; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-50">
 
     <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in relative overflow-hidden">
+            <!-- 로딩 오버레이 (초기 연결 중) -->
+            <div id="auth-loading-overlay" class="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity duration-300">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-indigo-600 mb-3"></i>
+                <p class="text-sm font-medium text-gray-600">서버 연결 중...</p>
+            </div>
+
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200 relative">
                     <i class="fa-solid fa-music"></i>
+                    <!-- 연결 상태 인디케이터 -->
+                    <div id="auth-connection-dot" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white bg-gray-400" title="연결 상태 확인 중"></div>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
                 <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 계정에 로그인하세요</p>
@@ -62,15 +74,15 @@
             <div id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용자 이름</label>
-                    <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="이름을 입력하세요">
+                    <input type="text" id="login-username" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="이름을 입력하세요" disabled>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="비밀번호">
+                    <input type="password" id="login-password" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="비밀번호" disabled>
                 </div>
-                <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm">로그인</button>
+                <button onclick="handleLogin()" id="login-btn" class="auth-btn w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm" disabled>로그인</button>
                 <div class="text-center mt-4">
-                    <button onclick="toggleAuthMode('signup')" class="text-xs text-indigo-600 hover:underline">계정이 없으신가요? 회원가입</button>
+                    <button onclick="toggleAuthMode('signup')" class="auth-btn text-xs text-indigo-600 hover:underline" disabled>계정이 없으신가요? 회원가입</button>
                 </div>
             </div>
 
@@ -78,15 +90,15 @@
             <div id="signup-form" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
-                    <input type="text" id="signup-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="예: 김찬양">
+                    <input type="text" id="signup-username" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="예: 김찬양" disabled>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="signup-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="사용할 비밀번호">
+                    <input type="password" id="signup-password" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="사용할 비밀번호" disabled>
                 </div>
-                <button onclick="handleSignup()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm">회원가입 신청</button>
+                <button onclick="handleSignup()" id="signup-btn" class="auth-btn w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm" disabled>회원가입 신청</button>
                 <div class="text-center mt-4">
-                    <button onclick="toggleAuthMode('login')" class="text-xs text-slate-600 hover:underline">이미 계정이 있으신가요? 로그인</button>
+                    <button onclick="toggleAuthMode('login')" class="auth-btn text-xs text-slate-600 hover:underline" disabled>이미 계정이 있으신가요? 로그인</button>
                 </div>
             </div>
         </div>
@@ -95,19 +107,22 @@
     <!-- 메인 앱 컨테이너 -->
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row bg-gray-50 overflow-hidden hidden fade-in">
         
-        <!-- -->
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
-            <!-- Header section - Fixed layout to prevent truncation -->
+            <!-- Header section -->
             <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
                 <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 relative">
                         <i class="fa-solid fa-music text-white text-sm"></i>
+                        <div id="dash-connection-dot" class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white bg-gray-400" title="연결 상태"></div>
                     </div>
                     <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap">Hagios Worship</span>
                 </div>
                 <!-- Action Buttons right next to the title on mobile, below on desktop -->
                 <div class="flex items-center gap-1.5 md:hidden">
-                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
+                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden relative bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap">
+                        <i class="fa-solid fa-shield-halved mr-1"></i>관리
+                        <span id="admin-badge-mobile" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                    </button>
                     <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 p-1.5 bg-gray-100 rounded-lg" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     <button id="mobile-menu-btn" class="text-gray-500 hover:text-indigo-600 p-1.5 bg-gray-100 rounded-lg"><i class="fa-solid fa-bars"></i></button>
                 </div>
@@ -115,14 +130,20 @@
             
             <!-- Desktop Admin/Logout actions -->
             <div class="hidden md:flex flex-col gap-2 p-3 border-b border-gray-100">
-                <div class="text-xs text-gray-500 mb-1 px-1 flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></div>
+                <div class="text-xs text-gray-500 mb-1 px-1 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></span>
+                    <span id="connection-status-text" class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">확인중</span>
+                </div>
                 <div class="flex gap-2">
-                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"><i class="fa-solid fa-shield-halved"></i> 회원관리</button>
+                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden relative flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-shield-halved"></i> 회원관리
+                        <span id="admin-badge-desktop" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</span>
+                    </button>
                     <button onclick="handleLogout()" class="flex-1 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-red-600 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
                 </div>
             </div>
 
-            <!-- -->
+            <!-- Nav -->
             <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[57px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
                 <ul class="space-y-1 px-3">
                     <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈 (오버뷰)</span></button></li>
@@ -136,7 +157,6 @@
             </nav>
         </aside>
 
-        <!-- -->
         <main class="flex-1 flex flex-col h-[calc(100vh-57px)] md:h-screen overflow-hidden bg-gray-50 relative">
             <div id="toast-container" class="absolute bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
 
@@ -146,19 +166,19 @@
                 <section id="view-dashboard" class="view-section fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">팀 오버뷰</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-check"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">남은 할 일</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-todos">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-ol"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 콘티</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-konti">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl flex-shrink-0"><i class="fa-solid fa-file-lines"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 악보</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-sheet">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xl flex-shrink-0"><i class="fa-solid fa-music"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">공유된 음원</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-audio">0</p></div>
                         </div>
@@ -176,29 +196,28 @@
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
-                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800">2026년 9월</h3>
-                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800 w-24 text-center">2026년 9월</h3>
+                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                             </div>
                             <button onclick="resetCalendarToCurrent()" class="text-xs text-indigo-600 font-semibold hover:underline">오늘로 이동</button>
                         </div>
                         <div class="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-xs sm:text-sm font-medium text-gray-500">
-                            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+                            <div class="text-red-500">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="text-blue-500">토</div>
                         </div>
                         <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm" id="calendar-grid"></div>
                     </div>
                 </section>
 
                 <!-- View: Todo List -->
-                <!-- -->
                 <section id="view-todos" class="view-section hidden fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">투두리스트</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
                         <div class="p-3 sm:p-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="todo-input" class="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="할 일을 입력하세요">
+                            <input type="text" id="todo-input" class="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="할 일을 입력하세요 (Enter 키로 추가 가능)">
                             <div class="flex items-center gap-1">
                                 <span class="text-xs text-gray-500 font-medium whitespace-nowrap">기한:</span>
-                                <input type="date" id="todo-date" class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white">
+                                <input type="date" id="todo-date" class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white cursor-pointer">
                             </div>
                             <button id="add-todo-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg font-medium transition shadow-sm whitespace-nowrap">추가</button>
                         </div>
@@ -217,7 +236,7 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none shadow-sm" placeholder="악보 검색...">
+                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none shadow-sm transition" placeholder="악보 제목 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="sheet-list"></div>
@@ -234,14 +253,13 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none shadow-sm" placeholder="음원 검색...">
+                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none shadow-sm transition" placeholder="음원 제목 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4" id="audio-list"></div>
                 </section>
 
                 <!-- View: Konti -->
-                <!-- -->
                 <section id="view-konti" class="view-section hidden fade-in">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-800">콘티</h2>
@@ -252,7 +270,7 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm" placeholder="콘티 검색...">
+                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm transition" placeholder="콘티 이름 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4" id="konti-list"></div>
@@ -262,12 +280,12 @@
                 <section id="view-board" class="view-section hidden fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">팀 게시판</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 flex flex-col gap-4" id="board-list"></div>
+                        <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50/50 flex flex-col gap-4" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요..."></textarea>
-                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center">
-                                    <i class="fa-solid fa-paper-plane text-sm sm:text-base"></i>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요... (Shift+Enter로 줄바꿈)"></textarea>
+                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center group">
+                                    <i class="fa-solid fa-paper-plane text-sm sm:text-base group-hover:scale-110 transition-transform"></i>
                                 </button>
                             </div>
                         </div>
@@ -278,118 +296,127 @@
         </main>
     </div>
 
-    <!-- -->
-    <!-- 커스텀 팝업(Alert) 모달 (안내용) -->
-    <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
+    <!-- 커스텀 팝업(Alert) 모달 -->
+    <div id="custom-alert-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[70] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center transform transition-all scale-100">
             <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
                 <i id="alert-icon" class="fa-solid fa-circle-info"></i>
             </div>
             <h3 class="font-bold text-gray-800 text-lg mb-2" id="alert-title">안내</h3>
-            <p class="text-sm text-gray-500 mb-6 whitespace-pre-line" id="alert-message">메시지 내용</p>
+            <p class="text-sm text-gray-600 mb-6 whitespace-pre-line leading-relaxed" id="alert-message">메시지 내용</p>
             <button id="alert-action-btn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm">확인</button>
         </div>
     </div>
 
-    <!-- 커스텀 확인(Confirm) 모달 (안전 삭제용) -->
-    <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
+    <!-- 커스텀 확인(Confirm) 모달 -->
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="font-bold text-gray-800 text-lg mb-2" id="confirm-title">확인</h3>
-            <p class="text-sm text-gray-500 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
+            <p class="text-sm text-gray-600 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
             <div class="flex gap-3">
                 <button onclick="closeCustomConfirm()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition text-sm">취소</button>
-                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">삭제</button>
+                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">확인</button>
             </div>
         </div>
     </div>
 
     <!-- 관리자 모달 -->
-    <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[85vh] fade-in">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
-                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
             <div class="flex border-b border-gray-200 bg-white">
-                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
+                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">
+                    가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow-sm">0</span>
+                </button>
                 <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition">기존 팀원</button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-4 bg-white">
+            <div class="flex-1 overflow-y-auto p-4 bg-gray-50/50">
                 <div id="admin-pending-view" class="space-y-3 fade-in"></div>
                 <div id="admin-active-view" class="space-y-3 hidden fade-in"></div>
             </div>
         </div>
     </div>
 
-    <!-- 기타 모달 (콘티, 악보, 음원, 캘린더) -->
-    <div id="konti-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="konti-modal-title">새 콘티 만들기</h3>
-                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- 기타 데이터 입력 모달 (콘티, 악보, 음원, 캘린더) -->
+    <!-- (이전과 동일한 구조 유지, Tailwind 클래스 미세 조정) -->
+    <div id="konti-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
+                <h3 class="font-bold text-gray-800 text-lg" id="konti-modal-title">새 콘티 만들기</h3>
+                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="konti-edit-id" value="">
-            <div class="flex flex-col gap-4">
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
+            <div class="flex flex-col gap-5">
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="예: 2026-09-27 주일예배"></div>
                 <div>
-                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-medium text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="" class="px-3 py-1 text-xs border border-gray-200 rounded-lg outline-none focus:border-indigo-500 w-40"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-3 flex flex-col gap-2"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-semibold text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="악보 검색" class="px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition w-40"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-xl p-3 flex flex-col gap-1 bg-gray-50/50"></div>
                 </div>
-                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">콘티 저장</button>
+                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">콘티 저장하기</button>
             </div>
         </div>
     </div>
 
-    <div id="sheet-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="sheet-modal-title">새 악보 파일 등록</h3>
-                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="sheet-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
+            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
+                <h3 class="font-bold text-gray-800 text-lg" id="sheet-modal-title">새 악보 파일 등록</h3>
+                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
-            <div class="flex flex-col gap-4">
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목 (선택사항 - 미입력시 파일명 자동 적용)</label><input type="text" id="sheet-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder=""></div>
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">악보 파일 (PDF 또는 이미지)</label><input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"></div>
-                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장 완료</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="audio-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-gray-800 text-base sm:text-lg">새 음원 등록</h3>
-                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="flex flex-col gap-4">
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목 및 파트 (선택사항 - 미입력시 파일명 자동 적용)</label><input type="text" id="audio-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">오디오 파일 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"></div>
-                <div class="text-center text-xs text-gray-400">- 또는 -</div>
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">링크 입력 (유튜브 등)</label><input type="url" id="audio-url" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
-                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">등록 완료</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- -->
-    <div id="calendar-event-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-gray-800 text-base sm:text-lg">일정 추가</h3>
-                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="flex flex-col gap-4">
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block text-xs font-medium text-gray-700 mb-1">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
-                    <div><label class="block text-xs font-medium text-gray-700 mb-1">종료 날짜 (여러 날인 경우)</label><input type="date" id="cal-event-end" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+            <div class="flex flex-col gap-5">
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="text" id="sheet-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="미입력시 파일명으로 자동 저장"></div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">악보 파일 <span class="text-gray-400 font-normal">(PDF 또는 이미지)</span></label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-gray-50 transition cursor-pointer relative">
+                        <input type="file" id="sheet-file" accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-emerald-500 mb-2"></i>
+                        <p class="text-sm text-gray-600 font-medium">클릭하여 파일 선택</p>
+                        <p class="text-[10px] text-gray-400 mt-1" id="sheet-file-name">선택된 파일 없음</p>
+                    </div>
                 </div>
-                <button id="save-cal-event-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">추가하기</button>
+                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">업로드 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="audio-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
+            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
+                <h3 class="font-bold text-gray-800 text-lg">새 음원 등록</h3>
+                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="flex flex-col gap-5">
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 및 파트 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="text" id="audio-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="예: 내 모든 삶의 행동 주 안에 (드럼)"></div>
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">MP3 파일 직접 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition cursor-pointer"></div>
+                <div class="flex items-center gap-3"><div class="h-px bg-gray-200 flex-1"></div><span class="text-xs text-gray-400 font-medium">또는</span><div class="h-px bg-gray-200 flex-1"></div></div>
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">외부 링크 등록 <span class="text-gray-400 font-normal">(유튜브 등)</span></label><input type="url" id="audio-url" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="https://youtube.com/..."></div>
+                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">등록 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="calendar-event-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
+            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
+                <h3 class="font-bold text-gray-800 text-lg">일정 추가</h3>
+                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="flex flex-col gap-5">
+                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="예: 금요철야 찬양인도"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition cursor-pointer"></div>
+                    <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">종료 날짜 <span class="text-gray-400 font-normal">(선택)</span></label><input type="date" id="cal-event-end" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition cursor-pointer"></div>
+                </div>
+                <button id="save-cal-event-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">일정 저장</button>
             </div>
         </div>
     </div>
@@ -401,6 +428,10 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hagios-worship-app';
         let currentCalendarDate = new Date();
         let store = { users: [], todos: [], calendar: [], sheets: [], audio: [], board: [], konti: [] };
+        
+        // 상태 변수 추가
+        let isFirebaseReady = false;
+        let isCloudMode = false;
 
         // 커스텀 알럿 로직
         let alertCallback = null;
@@ -413,17 +444,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl';
+                iconContainer.className = 'w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-2xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl';
+                iconContainer.className = 'w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-2xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-xl';
+                iconContainer.className = 'w-14 h-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-2xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             }
 
             alertCallback = callback;
@@ -458,38 +489,97 @@
         window.addEventListener('firebaseReady', async () => {
             const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore } = window.firebaseAppModules;
             try {
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                // 설정 확인
+                const configStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+                const firebaseConfig = JSON.parse(configStr);
+                
+                if (Object.keys(firebaseConfig).length === 0) {
+                    throw new Error("No Firebase config provided. Offline mode.");
+                }
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
-                // 로그인 전에 익명으로라도 Firebase에 연결하여 users 데이터를 불러올 수 있도록 설정 (퍼블릭 데이터)
+                // 완벽한 인증 완료 대기
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
                 
+                isCloudMode = true;
                 initFirebaseListeners();
-                checkSavedLogin();
+                
             } catch (err) {
-                console.error("Firebase init error:", err);
+                console.warn("Firebase 연결 실패 (로컬 모드로 실행됩니다):", err);
+                isCloudMode = false;
                 initLocalFallback();
-                checkSavedLogin();
+            } finally {
+                // 초기화가 완전히 끝난 후 상태 변경
+                isFirebaseReady = true;
+                updateConnectionStatusUI();
+                enableAuthForms();
+                
+                // 로그인 상태 체크를 마지막에 실행
+                setTimeout(() => {
+                    checkSavedLogin();
+                }, 100);
             }
         });
+
+        // UI 상태 업데이트 함수들
+        function updateConnectionStatusUI() {
+            const authDot = document.getElementById('auth-connection-dot');
+            const dashDot = document.getElementById('dash-connection-dot');
+            const dashText = document.getElementById('connection-status-text');
+            
+            const colorClass = isCloudMode ? 'bg-emerald-500' : 'bg-amber-400';
+            const titleText = isCloudMode ? '클라우드 동기화 됨' : '로컬 모드 (서버 동기화 안됨)';
+            
+            if(authDot) {
+                authDot.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${colorClass}`;
+                authDot.title = titleText;
+            }
+            if(dashDot) {
+                dashDot.className = `absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${colorClass}`;
+                dashDot.title = titleText;
+            }
+            if(dashText) {
+                dashText.textContent = isCloudMode ? 'Cloud' : 'Local';
+                dashText.className = `text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm ${isCloudMode ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`;
+                dashText.title = titleText;
+            }
+        }
+
+        function enableAuthForms() {
+            const overlay = document.getElementById('auth-loading-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 300);
+            }
+            
+            document.querySelectorAll('.auth-input, .auth-btn').forEach(el => {
+                el.removeAttribute('disabled');
+            });
+        }
 
         function checkSavedLogin() {
             const savedUser = localStorage.getItem('hagios_current_user');
             if(savedUser) {
-                currentUser = JSON.parse(savedUser);
-                startWorkspace();
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    startWorkspace();
+                } catch(e) {
+                    localStorage.removeItem('hagios_current_user');
+                }
             }
         }
 
         function initLocalFallback() {
             ['users', 'todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(key => {
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
+                store[key] = JSON.parse(localStorage.getItem('ccm_' + key)) || [];
             });
             refreshUI();
         }
@@ -502,13 +592,34 @@
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
                     
-                    if(collectionName === 'users' && currentUser && currentUser.isAdmin) {
-                        renderAdminViews();
+                    if(collectionName === 'users') {
+                        updateAdminBadge(); // 새로운 사용자가 등록되면 뱃지 즉시 업데이트
+                        if(currentUser && currentUser.isAdmin) {
+                            renderAdminViews(); // 관리자 뷰가 열려있다면 즉시 새로고침
+                        }
                     }
                     if(currentUser) refreshUI();
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
             };
             ['users', 'todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(k => attachListener(k, k));
+        }
+        
+        function updateAdminBadge() {
+            if (!currentUser || !currentUser.isAdmin) return;
+            
+            const users = getCollectionData('users');
+            const pendingCount = users.filter(u => u.status === 'pending').length;
+            
+            const desktopBadge = document.getElementById('admin-badge-desktop');
+            const mobileBadge = document.getElementById('admin-badge-mobile');
+            
+            if (pendingCount > 0) {
+                if(desktopBadge) { desktopBadge.textContent = pendingCount; desktopBadge.classList.remove('hidden'); }
+                if(mobileBadge) { mobileBadge.textContent = pendingCount; mobileBadge.classList.remove('hidden'); }
+            } else {
+                if(desktopBadge) desktopBadge.classList.add('hidden');
+                if(mobileBadge) mobileBadge.classList.add('hidden');
+            }
         }
 
         function refreshUI() {
@@ -522,20 +633,33 @@
         }
 
         async function dbAdd(collectionName, data) {
-            if (db && auth && auth.currentUser) {
-                const { collection, addDoc } = window.firebaseAppModules;
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', collectionName), data);
+            if (!isFirebaseReady) {
+                console.error("앱이 아직 초기화되지 않았습니다.");
+                return false;
+            }
+            
+            if (isCloudMode && db && auth && auth.currentUser) {
+                try {
+                    const { collection, addDoc } = window.firebaseAppModules;
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', collectionName), data);
+                    return true;
+                } catch(e) {
+                    console.error("Cloud Add Error:", e);
+                    return false;
+                }
             } else {
+                // LocalStorage fallback
                 let list = JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
                 list.unshift({ id: 'local_' + Date.now(), ...data });
                 localStorage.setItem(`ccm_${collectionName}`, JSON.stringify(list));
                 store[collectionName] = list;
                 refreshUI();
+                return true;
             }
         }
 
         async function dbUpdate(collectionName, id, data) {
-            if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
+            if (isCloudMode && db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, updateDoc } = window.firebaseAppModules;
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), data);
             } else {
@@ -548,7 +672,7 @@
         }
 
         async function dbDelete(collectionName, id) {
-            if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
+            if (isCloudMode && db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, deleteDoc } = window.firebaseAppModules;
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
             } else {
@@ -561,11 +685,11 @@
         }
 
         function getCollectionData(collectionName) {
-            if (db && auth && auth.currentUser) return store[collectionName] || [];
+            // 스토어가 채워져있으면 우선 반환, 아니면 로컬 탐색
+            if (store[collectionName] && store[collectionName].length > 0) return store[collectionName];
             return JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
         }
 
-        // --- 로그인 및 인증 로직 ---
         function toggleAuthMode(mode) {
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -579,34 +703,55 @@
         }
 
         async function handleSignup() {
-            const username = document.getElementById('signup-username').value.trim();
-            const password = document.getElementById('signup-password').value.trim();
-            if(!username || !password) {
-                showToast('이름과 비밀번호를 모두 입력해주세요.', 'error');
-                return;
-            }
+            if (!isFirebaseReady) return;
             
-            const users = getCollectionData('users');
-            if(users.find(u => u.username === username)) {
-                showToast('이미 존재하는 이름입니다.', 'error');
-                return;
-            }
-            
-            await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
-            
-            document.getElementById('signup-username').value = '';
-            document.getElementById('signup-password').value = '';
+            const btn = document.getElementById('signup-btn');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = '처리 중...';
 
-            showAlert(
-                '가입 신청 완료',
-                '회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.',
-                'success',
-                '로그인 화면으로 돌아가기',
-                () => { toggleAuthMode('login'); }
-            );
+            try {
+                const username = document.getElementById('signup-username').value.trim();
+                const password = document.getElementById('signup-password').value.trim();
+                
+                if(!username || !password) {
+                    showToast('이름과 비밀번호를 모두 입력해주세요.', 'error');
+                    return;
+                }
+                
+                const users = getCollectionData('users');
+                if(users.find(u => u.username === username)) {
+                    showToast('이미 존재하는 이름입니다.', 'error');
+                    return;
+                }
+                
+                const success = await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
+                
+                if (success) {
+                    document.getElementById('signup-username').value = '';
+                    document.getElementById('signup-password').value = '';
+
+                    let extraMessage = isCloudMode ? '' : '\n(주의: 현재 기기에만 저장되는 로컬 모드입니다)';
+                    
+                    showAlert(
+                        '가입 신청 완료',
+                        `회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.${extraMessage}`,
+                        'success',
+                        '로그인 화면으로 돌아가기',
+                        () => { toggleAuthMode('login'); }
+                    );
+                } else {
+                    showToast('회원가입 처리 중 문제가 발생했습니다.', 'error');
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
         }
 
         function handleLogin() {
+            if (!isFirebaseReady) return;
+
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
@@ -653,22 +798,26 @@
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
             
-            document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '(관리자)' : ''}`;
+            document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '👑' : ''}`;
             
             if(currentUser.isAdmin) {
                 document.getElementById('admin-menu-btn-desktop').classList.remove('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.remove('hidden');
-                renderAdminViews();
+                updateAdminBadge();
             } else {
                 document.getElementById('admin-menu-btn-desktop').classList.add('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.add('hidden');
             }
             
             refreshUI();
-            showToast(`${currentUser.username}님 환영합니다!`, 'success');
+            
+            if(!isCloudMode) {
+                showToast(`로컬 오프라인 모드로 실행중입니다.`, 'error');
+            } else {
+                showToast(`${currentUser.username}님 환영합니다!`, 'success');
+            }
         }
 
-        // --- 관리자 모달 및 기능 ---
         function openAdminModal() {
             renderAdminViews();
             document.getElementById('admin-modal').classList.remove('hidden');
@@ -694,25 +843,25 @@
         function renderAdminViews() {
             const users = getCollectionData('users');
             const pendingUsers = users.filter(u => u.status === 'pending');
-            const activeUsers = users.filter(u => u.status !== 'pending');
+            const activeUsers = users.filter(u => u.status !== 'pending' && u.id !== 'admin_main'); // 마스터 관리자는 목록에서 제외
 
             document.getElementById('pending-badge').textContent = pendingUsers.length;
 
             const pendingView = document.getElementById('admin-pending-view');
             pendingView.innerHTML = '';
             if(pendingUsers.length === 0) {
-                pendingView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">가입 대기 중인 인원이 없습니다.</div>';
+                pendingView.innerHTML = '<div class="text-center text-gray-400 py-10 text-sm bg-white rounded-xl border border-gray-200">가입 대기 중인 인원이 없습니다.</div>';
             } else {
                 pendingUsers.forEach(u => {
                     pendingView.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-indigo-200 transition">
                             <div>
                                 <p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p>
-                                <p class="text-[10px] text-gray-400">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">신청일: ${new Date(u.createdAt).toLocaleDateString()}</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부/삭제</button>
-                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-2 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부</button>
+                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
                             </div>
                         </div>
                     `;
@@ -722,18 +871,21 @@
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
             if(activeUsers.length === 0) {
-                activeView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">등록된 팀원이 없습니다.</div>';
+                activeView.innerHTML = '<div class="text-center text-gray-400 py-10 text-sm bg-white rounded-xl border border-gray-200">등록된 팀원이 없습니다.</div>';
             } else {
                 activeUsers.forEach(u => {
                     const isSuspended = u.status === 'suspended';
                     activeView.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'opacity-60' : ''}">
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'bg-gray-50 opacity-75' : 'hover:border-indigo-200'} transition">
                             <div>
-                                <p class="font-bold text-sm text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p>
+                                <p class="font-bold text-sm text-gray-800 flex items-center gap-1.5">
+                                    ${escapeHtml(u.username)} 
+                                    ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-1.5 py-0.5 rounded font-medium">정지됨</span>' : '<span class="bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded font-medium">활동중</span>'}
+                                </p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">계정삭제</button>
+                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">삭제</button>
                             </div>
                         </div>
                     `;
@@ -760,22 +912,21 @@
             }
         }
 
-
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const colors = {
-                'success': 'bg-green-100 text-green-800 border-green-200',
+                'success': 'bg-emerald-100 text-emerald-800 border-emerald-200',
                 'error': 'bg-red-100 text-red-800 border-red-200',
-                'info': 'bg-blue-100 text-blue-800 border-blue-200'
+                'info': 'bg-indigo-100 text-indigo-800 border-indigo-200'
             };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
-            toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto`;
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="text-xs sm:text-sm font-medium">${message}</span>`;
+            toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border ${colors[type]} fade-in pointer-events-auto backdrop-blur-md bg-opacity-90`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span class="text-sm font-semibold">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px)';
+                toast.style.transform = 'translateY(10px) scale(0.95)';
                 toast.style.transition = 'all 0.3s ease';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
@@ -801,59 +952,6 @@
             document.getElementById('sidebar-nav').classList.toggle('hidden');
         });
 
-        // 캘린더 등 나머지 기본 로직 유지
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            const titleEl = document.getElementById('calendar-title');
-            if(!grid || !titleEl) return;
-            grid.innerHTML = '';
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            titleEl.textContent = `${year}년 ${month + 1}월`;
-
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-            const calendarEvents = getCollectionData('calendar');
-
-            for(let i = 0; i < firstDayIndex; i++) {
-                grid.innerHTML += `<div class="p-1 sm:p-2 border border-gray-100 rounded-lg bg-gray-50/30 min-h-[80px] sm:min-h-[110px]"></div>`;
-            }
-
-            for(let i = 1; i <= totalDays; i++) {
-                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
-                const bgClass = isToday ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100';
-                const textClass = isToday ? 'text-indigo-700 font-bold' : 'text-gray-700';
-                const monthStr = String(month + 1).padStart(2, '0');
-                const dayStr = String(i).padStart(2, '0');
-                const dateKey = `${year}-${monthStr}-${dayStr}`;
-
-                const dayEvents = calendarEvents.filter(ev => {
-                    if (!ev.startDate) return false;
-                    return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate);
-                });
-
-                let eventsHtml = '';
-                dayEvents.slice(0, 2).forEach(dt => {
-                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-1.5 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium" title="${escapeHtml(dt.text)}">${escapeHtml(dt.text)}</div>`;
-                });
-                if (dayEvents.length > 2) {
-                    eventsHtml += `<div class="text-[9px] text-gray-400 font-semibold mt-0.5 px-0.5">+${dayEvents.length - 2}개 더보기</div>`;
-                }
-
-                grid.innerHTML += `<div onclick="openCalendarDateModal('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start shadow-2xs overflow-hidden cursor-pointer hover:border-indigo-300 transition group">
-                    <div class="w-full flex justify-between items-center mb-1">
-                        <span class="${textClass} text-xs sm:text-sm font-semibold">${i}</span>
-                        <span class="text-[9px] text-gray-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-plus"></i></span>
-                    </div>
-                    <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
-                </div>`;
-            }
-        }
-
-        window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
-        window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); renderCalendar(); };
-
         function updateStats() {
             document.getElementById('stat-todos').textContent = getCollectionData('todos').filter(t => !t.completed).length;
             document.getElementById('stat-sheet').textContent = getCollectionData('sheets').length;
@@ -866,23 +964,30 @@
             const todos = getCollectionData('todos');
             list.innerHTML = '';
             if(todos.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs sm:text-sm"><p></p></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 text-sm flex flex-col items-center"><i class="fa-solid fa-clipboard-check text-4xl mb-3 opacity-30"></i>모든 할 일을 마쳤습니다!</div>`;
                 return;
             }
             todos.forEach((todo) => {
                 const item = document.createElement('div');
-                item.className = `flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border-b border-gray-100 hover:bg-gray-50 transition group ${todo.completed ? 'opacity-50' : ''}`;
-                let dateBadge = todo.dueDate ? `<span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
+                item.className = `flex items-center gap-3 p-3.5 border-b border-gray-100 hover:bg-white rounded-lg transition group ${todo.completed ? 'opacity-60 bg-gray-50' : 'bg-transparent'}`;
+                
+                let dateStr = '';
+                if(todo.dueDate) {
+                    const today = new Date().toISOString().split('T')[0];
+                    let dateColor = 'text-indigo-600 bg-indigo-50 border-indigo-100';
+                    if(!todo.completed && todo.dueDate < today) dateColor = 'text-red-600 bg-red-50 border-red-100 font-bold';
+                    dateStr = `<span class="text-[10px] ${dateColor} border px-2 py-0.5 rounded-md font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>`;
+                }
+
                 item.innerHTML = `
-                    <button class="w-5 h-5 sm:w-6 sm:h-6 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
-                    <span class="flex-1 text-xs sm:text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
-                    ${dateBadge}
-                    <div class="flex items-center gap-1">
-                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
-                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
-                        <button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
+                    <button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent hover:border-indigo-400'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
+                    <span class="flex-1 text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800 font-medium'}">${escapeHtml(todo.text)}</span>
+                    ${dateStr}
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs rounded hover:bg-indigo-50"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs rounded hover:bg-indigo-50"><i class="fa-solid fa-arrow-down"></i></button>
                     </div>
-                    <button class="text-gray-300 hover:text-red-500 transition px-1 text-xs" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="text-gray-400 hover:text-red-500 transition p-2 rounded hover:bg-red-50 text-sm ml-1" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 list.appendChild(item);
             });
@@ -899,14 +1004,9 @@
             showToast('할 일이 추가되었습니다.', 'success');
         });
 
-        window.openEditTodo = (id, currentText, currentDate) => {
-            const newText = prompt("할 일 수정", currentText);
-            if (newText === null || !newText.trim()) return;
-            const newDate = prompt("기한 수정 (YYYY-MM-DD)", currentDate);
-            if (newDate === null) return;
-            dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() });
-            showToast('수정되었습니다.', 'success');
-        };
+        document.getElementById('todo-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') document.getElementById('add-todo-btn').click();
+        });
 
         window.toggleTodo = async (id) => {
             const todo = getCollectionData('todos').find(t => t.id == id);
@@ -922,11 +1022,77 @@
             } else if (direction === 'down' && index < todos.length - 1) {
                 const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp;
             } else return;
-            if (db && auth && auth.currentUser) { store.todos = todos; loadTodos(); }
-            else { localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); }
+            
+            // Note: Firebase doesn't support manual ordering easily without a specific field. 
+            // For now, this just updates local view if cloud is on, or updates local storage completely.
+            if (isCloudMode) { 
+                store.todos = todos; loadTodos(); 
+                // To persist order in cloud, we'd need an 'order' field in DB and update all docs. Skipping for simplicity here.
+            } else { 
+                localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); 
+            }
         };
 
         window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const titleEl = document.getElementById('calendar-title');
+            if(!grid || !titleEl) return;
+            grid.innerHTML = '';
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            titleEl.textContent = `${year}년 ${month + 1}월`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const calendarEvents = getCollectionData('calendar');
+
+            for(let i = 0; i < firstDayIndex; i++) {
+                grid.innerHTML += `<div class="p-1 sm:p-2 border border-transparent rounded-xl bg-gray-50/50 min-h-[80px] sm:min-h-[110px]"></div>`;
+            }
+
+            for(let i = 1; i <= totalDays; i++) {
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
+                const bgClass = isToday ? 'bg-indigo-50 border-indigo-200 shadow-inner' : 'bg-white border-gray-100 hover:border-indigo-300';
+                
+                // 날짜 색상 (일요일 빨강, 토요일 파랑)
+                const currentDayIndex = new Date(year, month, i).getDay();
+                let textClass = 'text-gray-700';
+                if(currentDayIndex === 0) textClass = 'text-red-500';
+                else if (currentDayIndex === 6) textClass = 'text-blue-500';
+                if(isToday) textClass = 'text-indigo-700 font-black';
+
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dayStr = String(i).padStart(2, '0');
+                const dateKey = `${year}-${monthStr}-${dayStr}`;
+
+                const dayEvents = calendarEvents.filter(ev => {
+                    if (!ev.startDate) return false;
+                    return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate);
+                });
+
+                let eventsHtml = '';
+                dayEvents.slice(0, 3).forEach(dt => {
+                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-1 font-medium shadow-sm" title="${escapeHtml(dt.text)}">${escapeHtml(dt.text)}</div>`;
+                });
+                if (dayEvents.length > 3) {
+                    eventsHtml += `<div class="text-[9px] text-gray-500 font-bold mt-1 px-1">+${dayEvents.length - 3}개 더보기</div>`;
+                }
+
+                grid.innerHTML += `<div onclick="openCalendarDateModal('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start overflow-hidden cursor-pointer transition group">
+                    <div class="w-full flex justify-between items-center mb-1">
+                        <span class="${textClass} text-xs sm:text-sm font-semibold">${i}</span>
+                        <span class="text-[10px] text-gray-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-plus"></i></span>
+                    </div>
+                    <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
+                </div>`;
+            }
+        }
+
+        window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
+        window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); renderCalendar(); };
 
         window.openCalendarEventModal = () => {
             document.getElementById('cal-event-text').value = '';
@@ -946,12 +1112,16 @@
             const text = document.getElementById('cal-event-text').value.trim();
             const startDate = document.getElementById('cal-event-start').value;
             const endDate = document.getElementById('cal-event-end').value || startDate;
-            if (!text || !startDate) { showToast('내용과 날짜를 입력해주세요.', 'error'); return; }
+            
+            if (!text || !startDate) { showToast('내용과 날짜를 확인해주세요.', 'error'); return; }
+            if (endDate < startDate) { showToast('종료 날짜가 시작 날짜보다 빠를 수 없습니다.', 'error'); return; }
+            
             closeModal('calendar-event-modal');
-            showToast('일정이 추가되었습니다.', 'success');
             await dbAdd('calendar', { text, startDate, endDate, createdAt: Date.now() });
+            showToast('일정이 추가되었습니다.', 'success');
         });
 
+        // [악보]
         function loadSheets() {
             const list = document.getElementById('sheet-list');
             const search = (document.getElementById('sheet-search')?.value || '').toLowerCase();
@@ -959,23 +1129,22 @@
             if (search) sheets = sheets.filter(s => s.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(sheets.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
+                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-file-pdf text-4xl mb-3 opacity-30"></i>등록된 악보가 없습니다.</div>`;
                 return;
             }
             sheets.forEach(sheet => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex items-start gap-4 hover:shadow-md transition relative group';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 hover:shadow-lg hover:border-emerald-200 transition relative group';
                 item.innerHTML = `
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
-                    <div class="flex-1 overflow-hidden pr-12">
-                        <h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(sheet.title)}</h4>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 flex-shrink-0 text-xl shadow-inner"><i class="fa-solid fa-file-pdf"></i></div>
+                    <div class="flex-1 overflow-hidden pr-8">
+                        <h4 class="font-bold text-gray-800 text-sm truncate" title="${escapeHtml(sheet.title)}">${escapeHtml(sheet.title)}</h4>
                         <div class="flex items-center gap-3 mt-3">
-                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold hover:underline"><i class="fa-solid fa-download"></i> 다운로드</a>
+                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="inline-flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-emerald-100 text-gray-700 hover:text-emerald-700 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-download"></i> 다운로드</a>
                         </div>
                     </div>
-                    <div class="absolute top-3 right-3 flex items-center gap-1">
-                        <button onclick="openEditSheet('${sheet.id}')" class="text-gray-300 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteSheet('${sheet.id}')" class="text-gray-300 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="absolute top-4 right-4 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="deleteSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition" title="삭제"><i class="fa-solid fa-trash-can text-sm"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -983,76 +1152,168 @@
             updateStats();
         }
 
+        document.getElementById('sheet-file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : "선택된 파일 없음";
+            document.getElementById('sheet-file-name').textContent = fileName;
+        });
+
         document.getElementById('add-sheet-btn').addEventListener('click', () => {
             const editId = document.getElementById('sheet-edit-id').value;
             let title = document.getElementById('sheet-title').value.trim();
             const fileInput = document.getElementById('sheet-file');
 
-            if (editId) {
-                let sheets = getCollectionData('sheets');
-                let sheet = sheets.find(s => s.id == editId);
-                if (sheet) {
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
-                        if (!title) title = file.name;
-                        const reader = new FileReader();
-                        reader.onload = async function(e) {
-                            closeModal('sheet-modal');
-                            showToast('악보가 수정되었습니다.', 'success');
-                            await dbUpdate('sheets', editId, { title, data: e.target.result, filename: file.name });
-                        };
-                        reader.readAsDataURL(file);
-                        return;
-                    } else {
-                        if (!title) title = sheet.title;
-                        closeModal('sheet-modal');
-                        showToast('악보 제목이 수정되었습니다.', 'success');
-                        dbUpdate('sheets', editId, { title });
-                    }
-                }
-            } else {
-                if(fileInput.files.length === 0) { showToast('파일을 선택해주세요.', 'error'); return; }
-                const file = fileInput.files[0];
-                if (!title) title = file.name;
-                closeModal('sheet-modal');
-                showToast('악보가 업로드되었습니다.', 'success');
+            if(fileInput.files.length === 0) { showToast('업로드할 파일을 선택해주세요.', 'error'); return; }
+            
+            const file = fileInput.files[0];
+            if (!title) title = file.name.replace(/\.[^/.]+$/, ""); // 확장자 제거
+            
+            const btn = document.getElementById('add-sheet-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
 
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
+                closeModal('sheet-modal');
+                showToast('악보가 성공적으로 업로드되었습니다.', 'success');
+                btn.disabled = false;
+                btn.innerText = '업로드 완료';
+                document.getElementById('sheet-title').value = '';
+                document.getElementById('sheet-file').value = '';
+                document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
+            };
+            reader.onerror = function() {
+                showToast('파일을 읽는 중 오류가 발생했습니다.', 'error');
+                btn.disabled = false;
+                btn.innerText = '업로드 완료';
+            }
+            reader.readAsDataURL(file);
+        });
+
+        window.deleteSheet = async (id) => { 
+            showCustomConfirm('악보 삭제', '정말 이 악보를 삭제하시겠습니까?\n콘티에 포함된 경우 콘티에서도 보이지 않게 됩니다.', async () => {
+                await dbDelete('sheets', id); 
+                showToast('악보가 삭제되었습니다.', 'info'); 
+            });
+        };
+
+        // [음원]
+        function loadAudio() {
+            const list = document.getElementById('audio-list');
+            const search = (document.getElementById('audio-search')?.value || '').toLowerCase();
+            let audios = getCollectionData('audio');
+            if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
+            list.innerHTML = '';
+            if(audios.length === 0) {
+                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-headphones text-4xl mb-3 opacity-30"></i>등록된 음원이 없습니다.</div>`;
+                return;
+            }
+            audios.forEach(audio => {
+                const item = document.createElement('div');
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg hover:border-purple-200 transition relative group';
+                
+                let mediaContent = '';
+                if(audio.type === 'file') {
+                    mediaContent = `<audio controls class="w-full sm:max-w-md h-10 mt-3 rounded-lg"><source src="${audio.data}" type="audio/mpeg"></audio>`;
+                } else {
+                    let domain = new URL(audio.data).hostname.replace('www.','');
+                    mediaContent = `<a href="${audio.data}" target="_blank" class="inline-flex items-center justify-center gap-2 mt-3 px-4 py-2 bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-700 rounded-lg text-sm font-semibold transition truncate"><i class="fa-solid fa-link"></i> ${domain} 열기</a>`;
+                }
+
+                item.innerHTML = `
+                    <div class="flex items-start gap-4 w-full flex-1 overflow-hidden">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 flex-shrink-0 text-xl shadow-inner mt-1"><i class="fa-solid fa-music"></i></div>
+                        <div class="flex-1 overflow-hidden pr-8">
+                            <h4 class="font-bold text-gray-800 text-sm truncate" title="${escapeHtml(audio.title)}">${escapeHtml(audio.title)}</h4>
+                            ${mediaContent}
+                        </div>
+                    </div>
+                    <button class="absolute top-4 right-4 sm:relative sm:top-auto sm:right-auto text-gray-300 hover:text-red-500 transition p-2 bg-gray-50 hover:bg-red-50 rounded-lg sm:opacity-0 sm:group-hover:opacity-100" onclick="deleteAudio('${audio.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                list.appendChild(item);
+            });
+            updateStats();
+        }
+
+        document.getElementById('add-audio-btn').addEventListener('click', () => {
+            let title = document.getElementById('audio-title').value.trim();
+            const fileInput = document.getElementById('audio-file');
+            const urlInput = document.getElementById('audio-url').value.trim();
+            
+            if(fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크 중 하나를 입력해주세요.', 'error'); return; }
+            if(fileInput.files.length > 0 && urlInput) { showToast('파일 업로드와 링크 등록 중 하나만 선택해주세요.', 'error'); return; }
+            
+            const btn = document.getElementById('add-audio-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (!title) title = file.name.replace(/\.[^/.]+$/, "");
                 const reader = new FileReader();
                 reader.onload = async function(e) {
-                    await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
+                    await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
+                    finishAudioUpload('음원이 업로드되었습니다.', btn);
                 };
                 reader.readAsDataURL(file);
+            } else {
+                if (!title) title = "링크 음원";
+                
+                // 간단한 URL 검증
+                try { new URL(urlInput); } catch(e) { 
+                    showToast('올바른 형식의 링크(URL)가 아닙니다.', 'error'); 
+                    btn.disabled = false; btn.innerText = '등록 완료'; return; 
+                }
+
+                dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() }).then(() => {
+                    finishAudioUpload('음원 링크가 등록되었습니다.', btn);
+                });
             }
         });
 
-        window.openEditSheet = (id) => {
-            let sheet = getCollectionData('sheets').find(s => s.id == id);
-            if (!sheet) return;
-            document.getElementById('sheet-edit-id').value = sheet.id;
-            document.getElementById('sheet-title').value = sheet.title;
-            document.getElementById('sheet-modal-title').textContent = '악보 수정';
-            openModal('sheet-modal');
+        function finishAudioUpload(msg, btn) {
+            closeModal('audio-modal');
+            showToast(msg, 'success');
+            document.getElementById('audio-title').value = '';
+            document.getElementById('audio-file').value = '';
+            document.getElementById('audio-url').value = '';
+            btn.disabled = false;
+            btn.innerText = '등록 완료';
+        }
+
+        window.deleteAudio = async (id) => { 
+            showCustomConfirm('음원 삭제', '이 음원을 삭제하시겠습니까?', async () => {
+                await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info'); 
+            });
         };
 
-        window.deleteSheet = async (id) => { await dbDelete('sheets', id); showToast('악보가 삭제되었습니다.', 'info'); };
-
+        // [콘티]
         function renderKontiSheetCheckboxes(selectedIds = []) {
             const container = document.getElementById('konti-sheets-checkboxes');
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
             const sheets = getCollectionData('sheets');
             container.innerHTML = '';
-            if (sheets.length === 0) { container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4"></p>`; return; }
-            sheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
+            
+            if (sheets.length === 0) { 
+                container.innerHTML = `<div class="text-xs text-gray-400 text-center py-6">등록된 악보가 없습니다.<br>먼저 악보 탭에서 악보를 업로드해주세요.</div>`; 
+                return; 
+            }
+
+            // 선택된 항목들이 위로 오도록 정렬, 그 다음 검색 필터 적용
+            let displaySheets = [...sheets];
+            
+            displaySheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
-                        <label class="flex items-center gap-2.5 cursor-pointer flex-1">
-                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300">
-                            <span class="text-xs sm:text-sm text-gray-700">${escapeHtml(sheet.title)}</span>
+                    <div class="flex items-center justify-between p-2.5 rounded-lg bg-white hover:bg-indigo-50 border border-gray-100 transition shadow-sm mb-1">
+                        <label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden">
+                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 flex-shrink-0">
+                            <span class="text-xs sm:text-sm text-gray-700 font-medium truncate">${escapeHtml(sheet.title)}</span>
                         </label>
-                        <div class="flex items-center gap-1">
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
-                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
+                        <div class="flex items-center gap-1 bg-gray-50 rounded border border-gray-200">
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-400 hover:text-indigo-600 px-2 py-1 text-xs hover:bg-gray-100"><i class="fa-solid fa-chevron-up"></i></button>
+                            <div class="w-px h-3 bg-gray-300"></div>
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-400 hover:text-indigo-600 px-2 py-1 text-xs hover:bg-gray-100"><i class="fa-solid fa-chevron-down"></i></button>
                         </div>
                     </div>
                 `;
@@ -1068,8 +1329,13 @@
             const items = Array.from(container.children);
             const index = items.findIndex(item => item.querySelector('.konti-sheet-checkbox')?.value == sheetId);
             if (index === -1) return;
-            if (dir === 'up' && index > 0) container.insertBefore(items[index], items[index - 1]);
-            else if (dir === 'down' && index < items.length - 1) container.insertBefore(items[index + 1], items[index]);
+            if (dir === 'up' && index > 0) {
+                container.insertBefore(items[index], items[index - 1]);
+                items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else if (dir === 'down' && index < items.length - 1) {
+                container.insertBefore(items[index + 1], items[index]);
+                items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         };
 
         function loadKonti() {
@@ -1078,34 +1344,48 @@
             let kontiList = getCollectionData('konti');
             const sheets = getCollectionData('sheets');
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search));
+            
+            // 생성일 역순 정렬
+            kontiList.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
             list.innerHTML = '';
             if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-list-ol text-4xl mb-3 opacity-30"></i>생성된 콘티가 없습니다.</div>`;
                 return;
             }
+
             kontiList.forEach(konti => {
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic"></p>` : '';
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic py-2 text-center bg-gray-50 rounded-lg">포함된 악보가 없습니다.</p>` : '';
+                
                 kontiSheets.forEach((sheet, idx) => {
                     sheetsHtml += `
-                        <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 hover:bg-indigo-50 rounded-xl border border-gray-100 transition group">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span>
-                                <span class="text-xs sm:text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
+                                <span class="w-6 h-6 rounded bg-white shadow-sm text-gray-500 font-bold text-xs flex items-center justify-center flex-shrink-0 group-hover:text-indigo-600 transition">${idx + 1}</span>
+                                <span class="text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
                             </div>
-                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="text-xs text-indigo-600 font-semibold hover:underline px-2 py-1"><i class="fa-solid fa-download"></i> 다운로드</a>
+                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="text-xs bg-white text-indigo-600 border border-indigo-100 font-semibold hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-lg shadow-sm transition whitespace-nowrap"><i class="fa-solid fa-download"></i> 개별 다운</a>
                         </div>
                     `;
                 });
+
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition';
+                
+                // PDF 통합 기능이 브라우저에서 무거울 수 있으므로 로딩 표시용 id 부여
+                const btnId = `btn-pdf-${konti.id}`;
+                
                 item.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
-                        <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5 pb-4 border-b border-gray-100">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-base sm:text-lg flex items-center gap-2"><i class="fa-solid fa-folder-open text-indigo-400"></i> ${escapeHtml(konti.name)}</h3>
+                            <p class="text-[11px] text-gray-500 mt-1 font-medium bg-gray-100 inline-block px-2 py-0.5 rounded">총 ${kontiSheets.length}곡 포함</p>
+                        </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 통합 PDF 다운로드</button>
-                            <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 PDF 생성</button>
+                            <button onclick="openEditKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteKonti('${konti.id}')" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">${sheetsHtml}</div>
@@ -1119,19 +1399,30 @@
             const editId = document.getElementById('konti-edit-id').value;
             const name = document.getElementById('konti-name').value.trim();
             const sheetIds = Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value);
-            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; }
-            closeModal('konti-modal');
             
+            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; }
+            if(sheetIds.length === 0) {
+                showCustomConfirm('악보 없음', '선택된 악보가 없습니다. 빈 콘티를 저장하시겠습니까?', async () => {
+                    await finalizeKontiSave(editId, name, sheetIds);
+                });
+                return;
+            }
+            
+            await finalizeKontiSave(editId, name, sheetIds);
+        });
+
+        async function finalizeKontiSave(editId, name, sheetIds) {
+            closeModal('konti-modal');
             if (editId) {
                 await dbUpdate('konti', editId, { name, sheetIds });
                 showToast('콘티가 수정되었습니다.', 'success');
             } else {
                 await dbAdd('konti', { name, sheetIds, createdAt: Date.now() });
-                showToast('콘티가 생성되었습니다.', 'success');
+                showToast('새 콘티가 생성되었습니다.', 'success');
             }
             document.getElementById('konti-name').value = '';
             document.getElementById('konti-edit-id').value = '';
-        });
+        }
 
         window.openEditKonti = (id) => {
             let konti = getCollectionData('konti').find(k => k.id == id);
@@ -1140,139 +1431,162 @@
             document.getElementById('konti-name').value = konti.name;
             document.getElementById('konti-modal-title').textContent = '콘티 수정';
             renderKontiSheetCheckboxes(konti.sheetIds || []);
-            openModal('konti-modal');
+            document.getElementById('konti-modal').classList.remove('hidden');
         };
 
-        window.deleteKonti = async (id) => { await dbDelete('konti', id); showToast('콘티가 삭제되었습니다.', 'info'); };
+        window.deleteKonti = async (id) => { 
+            showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?\n포함된 악보 파일 자체는 삭제되지 않습니다.', async () => {
+                await dbDelete('konti', id); showToast('콘티가 삭제되었습니다.', 'info'); 
+            });
+        };
 
-        window.downloadKontiMergedPdf = async (kontiId) => {
+        window.downloadKontiMergedPdf = async (kontiId, btnId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId);
             let sheets = getCollectionData('sheets');
             if (!konti) return;
+            
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-            if (kontiSheets.length === 0) { showToast('포함된 악보가 없습니다.', 'error'); return; }
+            if (kontiSheets.length === 0) { showToast('포함된 악보가 없어 PDF를 생성할 수 없습니다.', 'error'); return; }
 
-            showToast(`[${konti.name}] 통합 PDF 생성 중...`, 'info');
-            try {
-                const { PDFDocument } = PDFLib;
-                const mergedPdf = await PDFDocument.create();
+            const btn = document.getElementById(btnId);
+            const originalBtnHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 생성중...';
 
-                for (let i = 0; i < kontiSheets.length; i++) {
-                    let sheet = kontiSheets[i];
-                    let dataUrl = sheet.data;
-                    if (!dataUrl) continue;
+            showToast(`[${konti.name}] 병합을 시작합니다. 잠시만 기다려주세요.`, 'info');
+            
+            // 브라우저 렌더링 블로킹 방지를 위해 타임아웃 사용
+            setTimeout(async () => {
+                try {
+                    const { PDFDocument } = PDFLib;
+                    const mergedPdf = await PDFDocument.create();
 
-                    try {
-                        let base64Data = dataUrl.split(',')[1];
-                        let binaryString = atob(base64Data);
-                        let len = binaryString.length;
-                        let bytes = new Uint8Array(len);
-                        for (let j = 0; j < len; j++) {
-                            bytes[j] = binaryString.charCodeAt(j);
-                        }
+                    for (let i = 0; i < kontiSheets.length; i++) {
+                        let sheet = kontiSheets[i];
+                        let dataUrl = sheet.data;
+                        if (!dataUrl) continue;
 
-                        if (dataUrl.includes('application/pdf')) {
-                            const donorPdf = await PDFDocument.load(bytes);
-                            const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
-                            copiedPages.forEach((page) => mergedPdf.addPage(page));
-                        } else if (dataUrl.includes('image/')) {
-                            let embeddedImage;
-                            if (dataUrl.includes('image/png')) {
-                                embeddedImage = await mergedPdf.embedPng(bytes);
-                            } else {
-                                embeddedImage = await mergedPdf.embedJpg(bytes);
+                        try {
+                            let base64Data = dataUrl.split(',')[1];
+                            let binaryString = atob(base64Data);
+                            let len = binaryString.length;
+                            let bytes = new Uint8Array(len);
+                            for (let j = 0; j < len; j++) { bytes[j] = binaryString.charCodeAt(j); }
+
+                            if (dataUrl.includes('application/pdf')) {
+                                const donorPdf = await PDFDocument.load(bytes);
+                                const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
+                                copiedPages.forEach((page) => mergedPdf.addPage(page));
+                            } else if (dataUrl.includes('image/')) {
+                                let embeddedImage;
+                                if (dataUrl.includes('image/png')) embeddedImage = await mergedPdf.embedPng(bytes);
+                                else embeddedImage = await mergedPdf.embedJpg(bytes);
+                                
+                                // A4 비율 기준으로 이미지 크기 조정 (선택적)
+                                const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
+                                page.drawImage(embeddedImage, {
+                                    x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height,
+                                });
                             }
-                            const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
-                            page.drawImage(embeddedImage, {
-                                x: 0,
-                                y: 0,
-                                width: embeddedImage.width,
-                                height: embeddedImage.height,
-                            });
+                        } catch (e) {
+                            console.error(`Error processing sheet ${sheet.title}:`, e);
                         }
-                    } catch (e) {
-                        console.error("Error processing sheet file:", e);
                     }
-                }
 
-                const mergedPdfBytes = await mergedPdf.save();
-                const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${konti.name}_통합콘티악보.pdf`;
-                link.click();
-                showToast('통합 PDF 다운로드가 시작됩니다.', 'success');
-            } catch (err) {
-                console.error("PDF merge error:", err);
-                showToast('PDF 통합 중 오류가 발생했습니다.', 'error');
-            }
+                    const mergedPdfBytes = await mergedPdf.save();
+                    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    // 파일명에 공백 대신 언더바 사용
+                    const safeFileName = konti.name.replace(/ /g, '_');
+                    link.download = `${safeFileName}_통합악보.pdf`;
+                    link.click();
+                    
+                    showToast('PDF 다운로드가 시작되었습니다.', 'success');
+                } catch (err) {
+                    console.error("PDF merge error:", err);
+                    showToast('PDF 생성 중 오류가 발생했습니다. 악보 파일 형식을 확인해주세요.', 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            }, 100);
         };
 
-        function loadAudio() {
-            const list = document.getElementById('audio-list');
-            const search = (document.getElementById('audio-search')?.value || '').toLowerCase();
-            let audios = getCollectionData('audio');
-            if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
+        function loadBoard() {
+            const list = document.getElementById('board-list');
+            const posts = getCollectionData('board');
+            
+            // 시간순 정렬 (오래된 것이 위로)
+            posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+
             list.innerHTML = '';
-            if(audios.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
+            if(posts.length === 0) {
+                list.innerHTML = `<div class="text-center text-gray-400 py-20 flex-1 flex flex-col items-center justify-center text-sm"><i class="fa-regular fa-comments text-4xl mb-3 opacity-30"></i>첫 공지나 이야기를 남겨보세요.</div>`;
                 return;
             }
-            audios.forEach(audio => {
+            
+            posts.forEach(post => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
-                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-72 h-9 mt-2"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 이동하기</a>`;
+                // 모든 메시지는 좌측 정렬 (채팅보다는 게시판 느낌)
+                item.className = 'flex flex-col w-full sm:w-[90%] self-start items-start mb-1 group';
                 item.innerHTML = `
-                    <div class="flex items-center gap-3.5 w-full sm:w-auto flex-1 overflow-hidden">
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0 text-base"><i class="fa-solid fa-headphones"></i></div>
-                        <div class="flex-1 overflow-hidden pr-12 sm:pr-0"><h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
+                    <div class="flex items-end gap-2 w-full">
+                        <div class="px-4 py-3 rounded-2xl bg-white border border-gray-200 text-gray-800 shadow-sm text-sm whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
+                        <div class="flex flex-col items-start gap-1 flex-shrink-0 min-w-[50px]">
+                            <span class="text-[10px] text-gray-400 font-medium">${post.time}</span>
+                            <button class="text-gray-300 hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100" onclick="deletePost('${post.id}')" title="삭제"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
                     </div>
-                    <button class="absolute top-3 right-3 sm:relative text-gray-300 hover:text-red-500 transition p-1 text-xs" onclick="deleteAudio('${audio.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 list.appendChild(item);
             });
-            updateStats();
+            // 스크롤 맨 아래로 이동
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
 
-        document.getElementById('add-audio-btn').addEventListener('click', () => {
-            let title = document.getElementById('audio-title').value.trim();
-            const fileInput = document.getElementById('audio-file');
-            const urlInput = document.getElementById('audio-url').value.trim();
-            if(fileInput.files.length === 0 && !urlInput) { showToast('파일이나 링크를 입력해주세요.', 'error'); return; }
-            closeModal('audio-modal');
+        document.getElementById('add-post-btn').addEventListener('click', async () => {
+            const input = document.getElementById('board-input');
+            const text = input.value.trim();
+            if(!text) return;
             
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                if (!title) title = file.name;
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
-                    resetAudioForm();
-                    showToast('음원이 업로드되었습니다.', 'success');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                if (!title) title = urlInput;
-                dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() }).then(() => {
-                    resetAudioForm();
-                    showToast('음원 링크가 등록되었습니다.', 'success');
-                });
+            const btn = document.getElementById('add-post-btn');
+            btn.disabled = true;
+            
+            const now = new Date();
+            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            
+            await dbAdd('board', { text, time: timeStr, createdAt: Date.now() });
+            
+            input.value = '';
+            btn.disabled = false;
+            // 스크롤 다운을 위해 약간의 딜레이
+            setTimeout(() => {
+                const list = document.getElementById('board-list');
+                list.scrollTop = list.scrollHeight;
+            }, 100);
+        });
+
+        // Shift+Enter 로 줄바꿈, Enter 로 등록
+        document.getElementById('board-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // 기본 줄바꿈 방지
+                document.getElementById('add-post-btn').click();
             }
         });
 
-        function resetAudioForm() {
-            document.getElementById('audio-title').value = '';
-            document.getElementById('audio-file').value = '';
-            document.getElementById('audio-url').value = '';
-        }
-
-        window.deleteAudio = async (id) => { await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info'); };
+        window.deletePost = async (id) => { 
+            showCustomConfirm('게시글 삭제', '이 내용을 삭제하시겠습니까?', async () => {
+                await dbDelete('board', id); 
+            });
+        };
 
         function openModal(id) {
             if (id === 'sheet-modal') {
                 document.getElementById('sheet-edit-id').value = '';
                 document.getElementById('sheet-title').value = '';
                 document.getElementById('sheet-file').value = '';
+                document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
                 document.getElementById('sheet-modal-title').textContent = '새 악보 등록';
             } else if (id === 'konti-modal') {
                 document.getElementById('konti-edit-id').value = '';
@@ -1280,47 +1594,15 @@
                 document.getElementById('konti-modal-title').textContent = '새 콘티 만들기';
                 if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
                 renderKontiSheetCheckboxes();
-            } else if (id === 'audio-modal') resetAudioForm();
+            } else if (id === 'audio-modal') {
+                document.getElementById('audio-title').value = '';
+                document.getElementById('audio-file').value = '';
+                document.getElementById('audio-url').value = '';
+            }
             document.getElementById(id).classList.remove('hidden');
         }
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function loadBoard() {
-            const list = document.getElementById('board-list');
-            const posts = getCollectionData('board');
-            list.innerHTML = '';
-            if(posts.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-10 flex-1 flex items-center justify-center text-xs sm:text-sm"><p>첫 게시글을 남겨보세요.</p></div>`;
-                return;
-            }
-            posts.forEach(post => {
-                const item = document.createElement('div');
-                item.className = 'flex flex-col max-w-[85%] sm:max-w-[80%] self-start items-start mb-2 group';
-                item.innerHTML = `
-                    <div class="flex items-end gap-1 sm:gap-2">
-                        <div class="px-3.5 py-2 sm:px-4 rounded-2xl bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm text-xs sm:text-sm whitespace-pre-wrap">${escapeHtml(post.text)}</div>
-                        <span class="text-[9px] text-gray-400 mb-1">${post.time}</span>
-                        <button class="text-gray-300 hover:text-red-500 transition text-[10px] mb-1" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            list.scrollTop = list.scrollHeight;
-        }
-
-        document.getElementById('add-post-btn').addEventListener('click', async () => {
-            const input = document.getElementById('board-input');
-            const text = input.value.trim();
-            if(!text) return;
-            const now = new Date();
-            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            await dbAdd('board', { text, time: timeStr, createdAt: Date.now() });
-            input.value = '';
-            showToast('게시글이 등록되었습니다.', 'success');
-        });
-
-        window.deletePost = async (id) => { await dbDelete('board', id); showToast('게시글이 삭제되었습니다.', 'info'); };
 
         function escapeHtml(unsafe) {
             return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
