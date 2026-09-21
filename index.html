@@ -144,7 +144,7 @@
 
             <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[57px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
                 <ul class="space-y-1 px-3">
-                    <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈 (오버뷰)</span></button></li>
+                    <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
                     <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
                     <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-gray-400"></i><span>투두리스트</span></button></li>
                     <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-gray-400"></i><span>악보</span></button></li>
@@ -160,10 +160,9 @@
 
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 scroll-smooth w-full">
                 
-                <!-- View: Home Dashboard -->
+                <!-- View: Home -->
                 <section id="view-dashboard" class="view-section fade-in">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">팀 오버뷰</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
                         <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-check"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">남은 할 일</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-todos">0</p></div>
@@ -179,6 +178,34 @@
                         <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xl flex-shrink-0"><i class="fa-solid fa-music"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">공유된 음원</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-audio">0</p></div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">빠른 메뉴 이동</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div onclick="navigateToView('view-calendar')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-regular fa-calendar-days"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">캘린더</h4><p class="text-xs text-gray-500">팀 일정 및 모임 확인</p></div>
+                        </div>
+                        <div onclick="navigateToView('view-todos')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition"><i class="fa-solid fa-check-double"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">투두리스트</h4><p class="text-xs text-gray-500">팀원 할 일 및 체크리스트</p></div>
+                        </div>
+                        <div onclick="navigateToView('view-sheetmusic')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl group-hover:bg-emerald-600 group-hover:text-white transition"><i class="fa-solid fa-file-audio"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">악보</h4><p class="text-xs text-gray-500">찬양 악보 PDF 및 이미지 공유</p></div>
+                        </div>
+                        <div onclick="navigateToView('view-audio')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-headphones"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">음원</h4><p class="text-xs text-gray-500">파트별 음원 및 링크 듣기</p></div>
+                        </div>
+                        <div onclick="navigateToView('view-konti')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-solid fa-list-ol"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">콘티</h4><p class="text-xs text-gray-500">예배 콘티 및 통합 PDF</p></div>
+                        </div>
+                        <div onclick="navigateToView('view-board')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-amber-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
+                            <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-600 group-hover:text-white transition"><i class="fa-regular fa-comments"></i></div>
+                            <div><h4 class="font-bold text-gray-800 text-base mb-1">게시판</h4><p class="text-xs text-gray-500">팀원들과 자유로운 소통</p></div>
                         </div>
                     </div>
                 </section>
@@ -484,7 +511,7 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.id === 'board-input') {
-                    return; // Let textarea handle text entry or submit separately
+                    return; // Let textarea handle enter for board submission
                 }
 
                 const alertModal = document.getElementById('custom-alert-modal');
@@ -555,7 +582,7 @@
                 initFirebaseListeners();
                 
             } catch (err) {
-                console.warn("Firebase 연결 실패 (로컬 모드):", err);
+                console.warn("Firebase connection failed (Local Mode):", err);
                 isCloudMode = false;
                 initLocalFallback();
             } finally {
@@ -571,7 +598,7 @@
             const dashDot = document.getElementById('dash-connection-dot');
             const dashText = document.getElementById('connection-status-text');
             const colorClass = isCloudMode ? 'bg-emerald-500' : 'bg-amber-400';
-            const titleText = isCloudMode ? '클라우드 동기화 됨' : '로컬 모드';
+            const titleText = isCloudMode ? 'Cloud Synchronized' : 'Local Mode';
             
             if(authDot) { authDot.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${colorClass}`; authDot.title = titleText; }
             if(dashDot) { dashDot.className = `absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${colorClass}`; dashDot.title = titleText; }
@@ -880,6 +907,17 @@
             });
         });
 
+        window.navigateToView = (targetId) => {
+            navItems.forEach(nav => {
+                if (nav.getAttribute('data-target') === targetId) nav.classList.add('active');
+                else nav.classList.remove('active');
+            });
+            viewSections.forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(targetId).classList.remove('hidden');
+            if (targetId === 'view-konti') renderKontiSheetCheckboxes();
+            if (window.innerWidth < 768) document.getElementById('sidebar-nav').classList.add('hidden');
+        };
+
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('sidebar-nav').classList.toggle('hidden');
         });
@@ -1037,7 +1075,6 @@
             showToast('일정이 삭제되었습니다.', 'info');
         };
 
-        // [악보]
         function loadSheets() {
             const list = document.getElementById('sheet-list');
             const search = (document.getElementById('sheet-search')?.value || '').toLowerCase();
@@ -1163,7 +1200,6 @@
             });
         };
 
-        // [음원]
         function loadAudio() {
             const list = document.getElementById('audio-list');
             const search = (document.getElementById('audio-search')?.value || '').toLowerCase();
@@ -1267,7 +1303,6 @@
             });
         };
 
-        // [콘티]
         function renderKontiSheetCheckboxes(selectedIds = []) {
             const container = document.getElementById('konti-sheets-checkboxes');
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
@@ -1404,7 +1439,6 @@
             }, 50);
         };
 
-        // [게시판]
         function loadBoard() {
             const list = document.getElementById('board-list');
             const posts = getCollectionData('board');
@@ -1446,7 +1480,7 @@
         boardInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 if (e.shiftKey) {
-                    return; // Shift+Enter allows line break
+                    return; // Allow Shift+Enter for newline
                 } else {
                     e.preventDefault();
                     if (e.isComposing) return;
