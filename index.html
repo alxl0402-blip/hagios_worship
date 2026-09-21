@@ -109,17 +109,17 @@
         
         <!-- 사이드바 -->
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
-            <div class="p-3 md:p-3.5 flex items-center justify-between border-b border-gray-100">
+            <div class="p-3.5 md:p-4 flex items-center justify-between border-b border-gray-100">
                 <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2 overflow-hidden cursor-pointer group py-0.5" title="홈으로 이동">
-                    <div class="w-8 h-8 md:w-8 md:h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 group-hover:bg-indigo-700 transition">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 group-hover:bg-indigo-700 transition">
                         <i class="fa-solid fa-music text-white text-sm"></i>
                     </div>
                     <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios Worship</span>
                 </div>
-                <!-- 모바일 헤더 버튼 (크기 및 터치 영역 확대) -->
+                <!-- 모바일 헤더 버튼 (터치 크기 약간 키움) -->
                 <div class="flex items-center gap-2 md:hidden">
-                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-2xs"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
-                    <button onclick="handleLogout()" class="text-gray-600 hover:text-red-600 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-bold transition" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap shadow-2xs"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
+                    <button onclick="handleLogout()" class="text-gray-600 hover:text-red-600 px-3 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-bold transition" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃</button>
                     <button id="mobile-menu-btn" class="text-gray-600 hover:text-indigo-600 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-bold transition"><i class="fa-solid fa-bars"></i></button>
                 </div>
             </div>
@@ -133,22 +133,22 @@
                 </div>
             </div>
 
-            <!-- 사이드바 네비게이션 -->
-            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-1 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[53px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
-                <ul class="space-y-0.5 px-2 md:px-3">
-                    <li><button class="nav-item active w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-gray-400"></i><span>투두리스트</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-gray-400"></i><span>악보</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-audio"><i class="fa-solid fa-headphones w-5 text-center text-gray-400"></i><span>음원</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-gray-400"></i><span>콘티</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs md:text-sm" data-target="view-board"><i class="fa-regular fa-comments w-5 text-center text-gray-400"></i><span>게시판</span></button></li>
+            <!-- 사이드바 네비게이션 (모바일 글씨 및 탭 크기 약간 키움) -->
+            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-1.5 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[57px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
+                <ul class="space-y-1 px-2.5 md:px-3">
+                    <li><button class="nav-item active w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-gray-400"></i><span>투두리스트</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-gray-400"></i><span>악보</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-audio"><i class="fa-solid fa-headphones w-5 text-center text-gray-400"></i><span>음원</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-gray-400"></i><span>콘티</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 md:px-4 md:py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-xs sm:text-sm md:text-sm font-medium" data-target="view-board"><i class="fa-regular fa-comments w-5 text-center text-gray-400"></i><span>게시판</span></button></li>
                 </ul>
             </nav>
         </aside>
 
         <!-- 메인 컨텐츠 영역 -->
-        <main class="flex-1 flex flex-col h-[calc(100vh-53px)] md:h-screen overflow-y-auto bg-gray-50 relative">
+        <main class="flex-1 flex flex-col h-[calc(100vh-57px)] md:h-screen overflow-y-auto bg-gray-50 relative">
             <div id="toast-container" class="absolute bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
 
             <div class="flex-1 p-2.5 sm:p-4 md:p-6 scroll-smooth w-full min-w-0 max-w-5xl mx-auto">
@@ -842,8 +842,8 @@
             const toast = document.createElement('div');
             const colors = {
                 'success': 'bg-green-100 text-green-800 border-green-200',
-                'error': 'bg-red-100 text-red-800 border-red-200',
-                'info': 'bg-blue-100 text-blue-800 border-blue-200'
+                'error': 'bg-red-100 text-red-800 border-green-200',
+                'info': 'bg-blue-100 text-blue-800 border-green-200'
             };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
             toast.className = `flex items-center gap-2 px-3 py-2 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto text-xs`;
@@ -1066,7 +1066,7 @@
             const todos = getCollectionData('todos');
             list.innerHTML = '';
             if(todos.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs">등록된 할 일이 없습니다.</div>`;
                 return;
             }
             todos.forEach((todo) => {
@@ -1134,7 +1134,7 @@
             if (search) sheets = sheets.filter(s => s.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(sheets.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 악보가 없습니다.</div>`;
                 return;
             }
             sheets.forEach(sheet => {
@@ -1254,7 +1254,7 @@
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
             const sheets = getCollectionData('sheets');
             container.innerHTML = '';
-            if (sheets.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2"></p>`; return; }
+            if (sheets.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2">등록된 악보가 없습니다.</p>`; return; }
             sheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
                 container.innerHTML += `
@@ -1293,12 +1293,12 @@
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search));
             list.innerHTML = '';
             if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 콘티가 없습니다.</div>`;
                 return;
             }
             kontiList.forEach(konti => {
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic"></p>` : '';
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic">포함된 악보가 없습니다.</p>` : '';
                 kontiSheets.forEach((sheet, idx) => {
                     sheetsHtml += `
                         <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
@@ -1424,7 +1424,7 @@
             if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(audios.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 음원이 없습니다.</div>`;
                 return;
             }
             audios.forEach(audio => {
@@ -1546,7 +1546,7 @@
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
             list.innerHTML = '';
             if(posts.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs"></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs">첫 게시글을 남겨보세요.</div>`;
                 return;
             }
             posts.forEach(post => {
