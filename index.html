@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hagios Worship 팀 워크스페이스</title>
+    <title>Hagios Worship</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -45,15 +45,15 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center">
 
-    <!-- 로그인 및 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 fade-in">
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200">
                     <i class="fa-solid fa-music"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
-                <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 워크스페이스에 로그인하세요</p>
+                <!-- "워크스페이스" 단어 삭제 -->
+                <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">환영합니다. 로그인해주세요.</p>
             </div>
 
             <!-- 로그인 폼 -->
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- 회원가입 폼 (이름, 비번만) -->
+            <!-- 회원가입 폼 -->
             <div id="signup-form" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
@@ -98,10 +98,11 @@
                     <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow">
                         <i class="fa-solid fa-music text-white text-sm"></i>
                     </div>
-                    <span class="font-bold text-base sm:text-lg text-gray-800">Hagios Worship</span>
+                    <span class="font-bold text-base sm:text-lg text-gray-800">Hagios</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <button id="admin-menu-btn" onclick="openAdminModal()" class="hidden text-[11px] bg-amber-100 text-amber-700 hover:bg-amber-200 px-2.5 py-1.5 rounded-lg font-semibold transition"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
+                    <!-- 로그아웃 버튼 -->
                     <button onclick="handleLogout()" class="text-xs text-gray-500 hover:text-red-600 p-2" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     <button id="mobile-menu-btn" class="md:hidden text-gray-500 hover:text-indigo-600 p-2">
                         <i class="fa-solid fa-bars text-xl"></i>
@@ -109,6 +110,7 @@
                 </div>
             </div>
             
+            <!-- 탭 순서: 캘린더 -> 투두리스트 -> 악보 -> 음원 -> 콘티 -> 게시판 -->
             <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[65px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
                 <ul class="space-y-1 px-3">
                     <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈 (오버뷰)</span></button></li>
@@ -174,7 +176,6 @@
                     </div>
                 </section>
 
-                <!-- View: Todo List -->
                 <section id="view-todos" class="view-section hidden fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">투두리스트</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
@@ -261,16 +262,15 @@
         </main>
     </div>
 
-    <!-- Modals -->
-    <!-- 관리자 승인 모달 -->
+    <!-- 관리자 승인 모달 (반응형 및 글씨 깨짐 방지 적용) -->
     <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-3">
                 <h3 class="font-bold text-gray-800 text-base sm:text-lg">회원가입 승인 관리</h3>
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <p class="text-xs text-gray-500 mb-4">가입 신청한 팀원을 승인해야 앱에 접속할 수 있습니다.</p>
-            <div id="pending-users-list" class="space-y-3"></div>
+            <div id="pending-users-list" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
         </div>
     </div>
 
@@ -352,11 +352,11 @@
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
                 document.getElementById('signup-form').classList.remove('hidden');
-                document.getElementById('auth-subtitle').innerText = '간편하게 팀 계정을 만드세요';
+                document.getElementById('auth-subtitle').innerText = '환영합니다. 계정을 만들어주세요.';
             } else {
                 document.getElementById('signup-form').classList.add('hidden');
                 document.getElementById('login-form').classList.remove('hidden');
-                document.getElementById('auth-subtitle').innerText = '팀 워크스페이스에 로그인하세요';
+                document.getElementById('auth-subtitle').innerText = '환영합니다. 로그인해주세요.';
             }
         }
 
@@ -372,10 +372,13 @@
                 showToast('이미 존재하는 이름입니다.', 'error');
                 return;
             }
-            // 일반 사용자는 승인 대기 상태
+            
+            // 일반 사용자는 승인 대기(pending) 상태로 저장됨
             users.push({ username, password, status: 'pending', isAdmin: false });
             localStorage.setItem('hagios_users', JSON.stringify(users));
-            showToast('가입 신청되었습니다. 관리자 승인을 기다려주세요.', 'success');
+            
+            // 명확한 안내 메시지 띄우기
+            showToast('가입 신청되었습니다. 관리자 승인 시 로그인이 가능합니다.', 'success');
             toggleAuthMode('login');
         }
 
@@ -383,7 +386,7 @@
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
-            // 관리자 계정 하드코딩 검증 (관리자 / hagios)
+            // 관리자 계정 하드코딩 (관리자 / hagios)
             if(username === '관리자' && password === 'hagios') {
                 currentUser = { username: '관리자', isAdmin: true, status: 'approved' };
                 localStorage.setItem('hagios_current_user', JSON.stringify(currentUser));
@@ -392,14 +395,19 @@
             }
 
             let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
-            const user = users.find(u => u.username === username && u.password === password);
+            const user = users.find(u => u.username === username);
 
+            // 로그인 실패 사유 상세화
             if(!user) {
-                showToast('이름 또는 비밀번호가 올바르지 않습니다.', 'error');
+                showToast('가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error');
+                return;
+            }
+            if(user.password !== password) {
+                showToast('비밀번호가 일치하지 않습니다.', 'error');
                 return;
             }
             if(user.status !== 'approved') {
-                showToast('아직 관리자 승인이 완료되지 않은 계정입니다.', 'error');
+                showToast('관리자 승인을 기다리고 있습니다. 승인 후 로그인해주세요.', 'error');
                 return;
             }
 
@@ -417,17 +425,24 @@
             let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
             const listEl = document.getElementById('pending-users-list');
             listEl.innerHTML = '';
-            if(users.length === 0) {
+            
+            // 일반 회원 목록 필터링 (하드코딩된 '관리자' 계정 제외)
+            const regularUsers = users.filter(u => !u.isAdmin);
+
+            if(regularUsers.length === 0) {
                 listEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">가입 대기 중인 회원이 없습니다.</p>';
             } else {
                 users.forEach((u, idx) => {
+                    if(u.isAdmin) return; // 최고 관리자는 리스트에서 숨김
+
+                    // 반응형 레이아웃 적용 및 긴 이름 잘림(truncate) 방지
                     listEl.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-                            <div>
-                                <p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full ${u.status==='approved'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${u.status==='approved'?'승인됨':'대기중'}</span>
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 gap-2">
+                            <div class="flex-1 min-w-0 flex flex-col items-start gap-1">
+                                <p class="font-bold text-sm text-gray-800 truncate w-full">${escapeHtml(u.username)}</p>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap ${u.status==='approved'?'bg-green-100 text-green-700':'bg-amber-100 text-amber-700'}">${u.status==='approved'?'승인 완료':'대기중'}</span>
                             </div>
-                            ${u.status==='pending' ? `<button onclick="approveUser(${idx})" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition">승인</button>` : ''}
+                            ${u.status==='pending' ? `<button onclick="approveUser(${idx})" class="flex-shrink-0 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">승인하기</button>` : ''}
                         </div>
                     `;
                 });
@@ -443,8 +458,8 @@
             let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
             users[idx].status = 'approved';
             localStorage.setItem('hagios_users', JSON.stringify(users));
-            openAdminModal();
-            showToast('회원 승인이 완료되었습니다.', 'success');
+            openAdminModal(); // 목록 새로고침
+            showToast(`${users[idx].username}님의 권한이 승인되었습니다.`, 'success');
         }
 
         function startWorkspace() {
@@ -468,10 +483,6 @@
                 } else {
                     await signInAnonymously(auth);
                 }
-                
-                // Remove currentUser = auth.currentUser; here so it doesn't conflict with our custom auth.
-                // We rely on localStorage for our custom name/password auth state.
-                
                 initFirebaseListeners();
             } catch (err) {
                 console.error("Firebase init error:", err);
@@ -560,8 +571,8 @@
             const toast = document.createElement('div');
             const colors = {
                 'success': 'bg-green-100 text-green-800 border-green-200',
-                'error': 'bg-red-100 text-red-800 border-green-200',
-                'info': 'bg-blue-100 text-blue-800 border-green-200'
+                'error': 'bg-red-100 text-red-800 border-red-200',
+                'info': 'bg-blue-100 text-blue-800 border-blue-200'
             };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-info-circle');
             toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto`;
@@ -698,13 +709,13 @@
             if(!text) return;
             await dbAdd('todos', { text, dueDate: dateInput.value, completed: false, createdAt: Date.now() });
             input.value = ''; dateInput.value = '';
-            showToast('할 일이 추가되었습니다.', 'success');
+            showToast('추가되었습니다.', 'success');
         });
 
         window.openEditTodo = (id, currentText, currentDate) => {
-            const newText = prompt("할 일 수정:", currentText);
+            const newText = prompt("수정할 내용을 입력하세요:", currentText);
             if (newText === null || !newText.trim()) return;
-            const newDate = prompt("기한 수정 (YYYY-MM-DD):", currentDate);
+            const newDate = prompt("기한을 수정하세요 (YYYY-MM-DD):", currentDate);
             if (newDate === null) return;
             dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() });
             showToast('수정되었습니다.', 'success');
@@ -801,7 +812,7 @@
                         const reader = new FileReader();
                         reader.onload = async function(e) {
                             closeModal('sheet-modal');
-                            showToast('악보가 수정되었습니다.', 'success');
+                            showToast('수정되었습니다.', 'success');
                             await dbUpdate('sheets', editId, { title, data: e.target.result, filename: file.name });
                         };
                         reader.readAsDataURL(file);
@@ -818,7 +829,7 @@
                 const file = fileInput.files[0];
                 if (!title) title = file.name;
                 closeModal('sheet-modal');
-                showToast('악보가 업로드되었습니다.', 'success');
+                showToast('업로드되었습니다.', 'success');
 
                 const reader = new FileReader();
                 reader.onload = async function(e) {
@@ -906,7 +917,7 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
                         <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 통합 PDF 다운로드</button>
+                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF 다운로드</button>
                             <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
@@ -922,9 +933,9 @@
             const editId = document.getElementById('konti-edit-id').value;
             const name = document.getElementById('konti-name').value.trim();
             const sheetIds = Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value);
-            if(!name) { showToast('콘티 이름을 입력해주세요.', 'error'); return; }
+            if(!name) { showToast('이름을 입력해주세요.', 'error'); return; }
             closeModal('konti-modal');
-            showToast('콘티가 저장되었습니다.', 'success');
+            showToast('저장되었습니다.', 'success');
             if (editId) await dbUpdate('konti', editId, { name, sheetIds });
             else await dbAdd('konti', { name, sheetIds, createdAt: Date.now() });
             document.getElementById('konti-name').value = '';
@@ -950,7 +961,7 @@
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
             if (kontiSheets.length === 0) { showToast('포함된 악보가 없습니다.', 'error'); return; }
 
-            showToast(`[${konti.name}] 통합 PDF 생성 중...`, 'info');
+            showToast(`[${konti.name}] PDF 생성 중...`, 'info');
             try {
                 const { PDFDocument } = PDFLib;
                 const mergedPdf = await PDFDocument.create();
@@ -981,7 +992,12 @@
                                 embeddedImage = await mergedPdf.embedJpg(bytes);
                             }
                             const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
-                            page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
+                            page.drawImage(embeddedImage, {
+                                x: 0,
+                                y: 0,
+                                width: embeddedImage.width,
+                                height: embeddedImage.height,
+                            });
                         }
                     } catch (e) {
                         console.error("Error processing sheet file:", e);
@@ -994,10 +1010,10 @@
                 link.href = URL.createObjectURL(blob);
                 link.download = `${konti.name}_통합콘티악보.pdf`;
                 link.click();
-                showToast('통합 PDF 다운로드 완료!', 'success');
+                showToast('다운로드가 완료되었습니다.', 'success');
             } catch (err) {
                 console.error("PDF merge error:", err);
-                showToast('PDF 병합 중 오류가 발생했습니다.', 'error');
+                showToast('오류가 발생했습니다.', 'error');
             }
         };
 
@@ -1014,7 +1030,7 @@
             audios.forEach(audio => {
                 const item = document.createElement('div');
                 item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
-                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-72 h-9 mt-2"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 링크 바로가기</a>`;
+                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-72 h-9 mt-2"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 바로가기</a>`;
                 item.innerHTML = `
                     <div class="flex items-center gap-3.5 w-full sm:w-auto flex-1 overflow-hidden">
                         <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0 text-base"><i class="fa-solid fa-headphones"></i></div>
@@ -1031,9 +1047,9 @@
             let title = document.getElementById('audio-title').value.trim();
             const fileInput = document.getElementById('audio-file');
             const urlInput = document.getElementById('audio-url').value.trim();
-            if(fileInput.files.length === 0 && !urlInput) { showToast('파일이나 링크를 입력해주세요.', 'error'); return; }
+            if(fileInput.files.length === 0 && !urlInput) { showToast('파일이나 링크를 입력하세요.', 'error'); return; }
             closeModal('audio-modal');
-            showToast('음원이 등록되었습니다.', 'success');
+            showToast('등록되었습니다.', 'success');
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 if (!title) title = file.name;
@@ -1062,7 +1078,7 @@
                 document.getElementById('sheet-edit-id').value = '';
                 document.getElementById('sheet-title').value = '';
                 document.getElementById('sheet-file').value = '';
-                document.getElementById('sheet-modal-title').textContent = '새 악보 파일 등록';
+                document.getElementById('sheet-modal-title').textContent = '새 악보 등록';
             } else if (id === 'konti-modal') {
                 document.getElementById('konti-edit-id').value = '';
                 document.getElementById('konti-name').value = '';
@@ -1080,7 +1096,7 @@
             const posts = getCollectionData('board');
             list.innerHTML = '';
             if(posts.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-10 flex-1 flex items-center justify-center text-xs sm:text-sm"><p>작성된 게시글이 없습니다.</p></div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 flex-1 flex items-center justify-center text-xs sm:text-sm"><p>게시글이 없습니다.</p></div>`;
                 return;
             }
             posts.forEach(post => {
@@ -1106,7 +1122,7 @@
             const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             await dbAdd('board', { text, time: timeStr, createdAt: Date.now() });
             input.value = '';
-            showToast('게시글이 등록되었습니다.', 'success');
+            showToast('등록되었습니다.', 'success');
         });
 
         window.deletePost = async (id) => { await dbDelete('board', id); showToast('삭제되었습니다.', 'info'); };
