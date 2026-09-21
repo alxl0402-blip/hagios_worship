@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- pdf-lib for multi-page PDF merging -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <!-- PDF.js for rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -324,7 +322,6 @@
         </div>
     </div>
 
-    <!-- 관리자 모달 -->
     <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[85vh] fade-in">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
@@ -362,7 +359,6 @@
         </div>
     </div>
 
-    <!-- 악보 업로드/수정 모달 -->
     <div id="sheet-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
@@ -386,7 +382,6 @@
         </div>
     </div>
 
-    <!-- 음원 등록/수정 모달 -->
     <div id="audio-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
             <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
@@ -484,9 +479,14 @@
             closeCustomConfirm();
         });
 
-        // Global Enter key listener for modals and popups
+        // Global Enter key listener for all open modals, popups, and dialogs
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
+                // Ignore if typing inside the board textarea (so user can line break)
+                if (document.activeElement && document.activeElement.id === 'board-input') {
+                    return;
+                }
+
                 // If custom alert modal is open
                 const alertModal = document.getElementById('custom-alert-modal');
                 if (alertModal && !alertModal.classList.contains('hidden')) {
@@ -494,11 +494,44 @@
                     closeAlert();
                     return;
                 }
+                
                 // If custom confirm modal is open
                 const confirmModal = document.getElementById('custom-confirm-modal');
                 if (confirmModal && !confirmModal.classList.contains('hidden')) {
                     e.preventDefault();
                     document.getElementById('confirm-action-btn').click();
+                    return;
+                }
+
+                // If calendar modal is open
+                const calModal = document.getElementById('calendar-event-modal');
+                if (calModal && !calModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    document.getElementById('save-cal-event-btn').click();
+                    return;
+                }
+
+                // If konti modal is open
+                const kontiModal = document.getElementById('konti-modal');
+                if (kontiModal && !kontiModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    document.getElementById('save-konti-btn').click();
+                    return;
+                }
+
+                // If sheet modal is open
+                const sheetModal = document.getElementById('sheet-modal');
+                if (sheetModal && !sheetModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    document.getElementById('add-sheet-btn').click();
+                    return;
+                }
+
+                // If audio modal is open
+                const audioModal = document.getElementById('audio-modal');
+                if (audioModal && !audioModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    document.getElementById('add-audio-btn').click();
                     return;
                 }
             }
@@ -1351,7 +1384,7 @@
         boardInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 if (e.shiftKey) {
-                    return; // Shift+Enter는 줄바꿈 허용
+                    return; // Shift+Enter allows line break
                 } else {
                     e.preventDefault();
                     if (e.isComposing) return;
