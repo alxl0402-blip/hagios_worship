@@ -479,15 +479,13 @@
             closeCustomConfirm();
         });
 
-        // Global Enter key listener for all open modals, popups, and dialogs
+        // Global Enter key handler for modals and popups
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                // Ignore if typing inside the board textarea (so user can line break)
                 if (document.activeElement && document.activeElement.id === 'board-input') {
-                    return;
+                    return; // Let textarea handle text entry or submit separately
                 }
 
-                // If custom alert modal is open
                 const alertModal = document.getElementById('custom-alert-modal');
                 if (alertModal && !alertModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -495,7 +493,6 @@
                     return;
                 }
                 
-                // If custom confirm modal is open
                 const confirmModal = document.getElementById('custom-confirm-modal');
                 if (confirmModal && !confirmModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -503,7 +500,6 @@
                     return;
                 }
 
-                // If calendar modal is open
                 const calModal = document.getElementById('calendar-event-modal');
                 if (calModal && !calModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -511,7 +507,6 @@
                     return;
                 }
 
-                // If konti modal is open
                 const kontiModal = document.getElementById('konti-modal');
                 if (kontiModal && !kontiModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -519,7 +514,6 @@
                     return;
                 }
 
-                // If sheet modal is open
                 const sheetModal = document.getElementById('sheet-modal');
                 if (sheetModal && !sheetModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -527,7 +521,6 @@
                     return;
                 }
 
-                // If audio modal is open
                 const audioModal = document.getElementById('audio-modal');
                 if (audioModal && !audioModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -1026,7 +1019,7 @@
                     <div class="flex-1 overflow-hidden pr-12">
                         <h4 class="font-bold text-gray-800 text-sm truncate">${escapeHtml(sheet.title)}</h4>
                         <div class="flex items-center gap-3 mt-3">
-                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="inline-flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-emerald-100 text-gray-700 hover:text-emerald-700 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-download"></i> 다운로드</a>
+                            <button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-emerald-100 text-gray-700 hover:text-emerald-700 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     </div>
                     <div class="absolute top-4 right-4 flex gap-1">
@@ -1038,6 +1031,22 @@
             });
             updateStats();
         }
+
+        window.downloadSheet = (id) => {
+            const sheet = getCollectionData('sheets').find(s => s.id == id);
+            if (!sheet || !sheet.data) { showToast('악보 파일을 찾을 수 없습니다.', 'error'); return; }
+            try {
+                const link = document.createElement('a');
+                link.href = sheet.data;
+                link.download = `${sheet.title || 'sheet'}_악보`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('다운로드가 시작되었습니다.', 'success');
+            } catch (e) {
+                showToast('다운로드 중 오류가 발생했습니다.', 'error');
+            }
+        };
 
         document.getElementById('sheet-file').addEventListener('change', function(e) {
             document.getElementById('sheet-file-name').textContent = e.target.files[0] ? e.target.files[0].name : "선택된 파일 없음";
@@ -1251,7 +1260,7 @@
                                 <span class="w-5 h-5 rounded bg-white text-gray-600 font-bold text-xs flex items-center justify-center">${idx + 1}</span>
                                 <span class="text-xs sm:text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
                             </div>
-                            <a href="${sheet.data}" download="${escapeHtml(sheet.filename || 'sheet')}" class="text-xs text-indigo-600 font-semibold hover:underline"><i class="fa-solid fa-download"></i> 다운로드</a>
+                            <button onclick="downloadSheet('${sheet.id}')" class="text-xs text-indigo-600 font-semibold hover:underline"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     `;
                 });
