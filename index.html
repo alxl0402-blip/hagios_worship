@@ -45,6 +45,7 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center">
 
+    <!-- 로그인 및 회원가입 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 fade-in">
             <div class="text-center mb-8">
@@ -52,7 +53,6 @@
                     <i class="fa-solid fa-music"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
-                <!-- "워크스페이스" 단어 삭제 -->
                 <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">환영합니다. 로그인해주세요.</p>
             </div>
 
@@ -90,28 +90,30 @@
         </div>
     </div>
 
+    <!-- 메인 대시보드 -->
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row bg-gray-50 overflow-hidden hidden">
         
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
-            <div class="p-4 flex items-center justify-between md:justify-center border-b border-gray-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow">
-                        <i class="fa-solid fa-music text-white text-sm"></i>
+            <!-- 모바일 글씨 깨짐 방지를 위해 디자인 수정 -->
+            <div class="p-3 sm:p-4 flex items-center justify-between border-b border-gray-100">
+                <div class="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0">
+                        <i class="fa-solid fa-music text-white text-xs sm:text-sm"></i>
                     </div>
-                    <span class="font-bold text-base sm:text-lg text-gray-800">Hagios</span>
+                    <span class="font-bold text-sm sm:text-lg text-gray-800 truncate whitespace-nowrap">Hagios Worship</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="admin-menu-btn" onclick="openAdminModal()" class="hidden text-[11px] bg-amber-100 text-amber-700 hover:bg-amber-200 px-2.5 py-1.5 rounded-lg font-semibold transition"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
+                <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                    <button id="admin-menu-btn" onclick="openAdminModal()" class="hidden text-[11px] bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg font-semibold transition flex items-center"><i class="fa-solid fa-shield-halved"></i><span class="hidden xl:inline ml-1">회원관리</span></button>
                     <!-- 로그아웃 버튼 -->
-                    <button onclick="handleLogout()" class="text-xs text-gray-500 hover:text-red-600 p-2" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                    <button id="mobile-menu-btn" class="md:hidden text-gray-500 hover:text-indigo-600 p-2">
-                        <i class="fa-solid fa-bars text-xl"></i>
+                    <button onclick="handleLogout()" class="text-xs text-gray-500 hover:text-red-600 p-1.5 sm:p-2 bg-gray-100 hover:bg-red-50 rounded-lg transition" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-500 hover:text-indigo-600 p-1.5 sm:p-2">
+                        <i class="fa-solid fa-bars text-lg"></i>
                     </button>
                 </div>
             </div>
             
             <!-- 탭 순서: 캘린더 -> 투두리스트 -> 악보 -> 음원 -> 콘티 -> 게시판 -->
-            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[65px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
+            <nav id="sidebar-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto py-2 md:py-4 bg-white md:bg-transparent border-b md:border-0 border-gray-200 absolute md:relative top-[60px] sm:top-[65px] md:top-0 left-0 w-full md:w-auto z-30 shadow-lg md:shadow-none">
                 <ul class="space-y-1 px-3">
                     <li><button class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-gray-400"></i><span>홈 (오버뷰)</span></button></li>
                     <li><button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 rounded-lg hover:bg-gray-50 transition text-left text-sm" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-gray-400"></i><span>캘린더</span></button></li>
@@ -124,7 +126,7 @@
             </nav>
         </aside>
 
-        <main class="flex-1 flex flex-col h-[calc(100vh-65px)] md:h-screen overflow-hidden bg-gray-50 relative">
+        <main class="flex-1 flex flex-col h-[calc(100vh-60px)] sm:h-[calc(100vh-65px)] md:h-screen overflow-hidden bg-gray-50 relative">
             <div id="toast-container" class="absolute bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
 
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 scroll-smooth w-full">
@@ -176,6 +178,7 @@
                     </div>
                 </section>
 
+                <!-- View: Todo List -->
                 <section id="view-todos" class="view-section hidden fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">투두리스트</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
@@ -262,7 +265,7 @@
         </main>
     </div>
 
-    <!-- 관리자 승인 모달 (반응형 및 글씨 깨짐 방지 적용) -->
+    <!-- 관리자 승인 모달 -->
     <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-3">
@@ -270,21 +273,19 @@
                 <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <!-- 관리자 탭 (대기/기존회원 분리) -->
-            <div class="flex border-b border-gray-200 mb-4">
+            <div class="flex border-b border-gray-200 mb-4 flex-shrink-0">
                 <button onclick="switchAdminTab('pending')" id="admin-tab-pending" class="flex-1 py-2 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600">가입 대기</button>
                 <button onclick="switchAdminTab('approved')" id="admin-tab-approved" class="flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700">기존 팀원 관리</button>
             </div>
 
-            <!-- 대기 중인 회원 뷰 -->
+            <!-- 대기 뷰 -->
             <div id="admin-pending-view" class="flex-1 overflow-y-auto pr-1 space-y-3"></div>
-            
-            <!-- 승인된 회원 뷰 -->
+            <!-- 승인 뷰 -->
             <div id="admin-approved-view" class="flex-1 overflow-y-auto pr-1 space-y-3 hidden"></div>
         </div>
     </div>
 
-    <!-- 커스텀 확인(Confirm) 모달 -->
+    <!-- 커스텀 확인(Confirm) 모달 (안전 삭제용) -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
@@ -299,6 +300,7 @@
         </div>
     </div>
 
+    <!-- 기타 모달 (콘티, 악보, 음원, 캘린더) -->
     <div id="konti-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -372,7 +374,7 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hagios-worship-app';
         let currentCalendarDate = new Date();
 
-        // ---------------- AUTHENTICATION & ADMIN SYSTEM ----------------
+        // --- 인증 및 로그인 시스템 ---
         function toggleAuthMode(mode) {
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -385,24 +387,24 @@
             }
         }
 
-        function handleSignup() {
+        async function handleSignup() {
             const username = document.getElementById('signup-username').value.trim();
             const password = document.getElementById('signup-password').value.trim();
             if(!username || !password) {
                 showToast('이름과 비밀번호를 모두 입력해주세요.', 'error');
                 return;
             }
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            
+            // 파이어베이스 데이터베이스에서 가입 내역 동기화 검색
+            const users = getCollectionData('users');
             if(users.find(u => u.username === username)) {
                 showToast('이미 존재하는 이름입니다.', 'error');
                 return;
             }
             
-            // 일반 사용자는 승인 대기(pending) 상태로 저장됨
-            users.push({ username, password, status: 'pending', isAdmin: false });
-            localStorage.setItem('hagios_users', JSON.stringify(users));
+            // 파이어베이스 데이터베이스에 즉시 업로드 (관리자에게 바로 보임)
+            await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
             
-            // 명확한 안내 메시지 띄우기
             showToast('가입 신청되었습니다. 관리자 승인 시 로그인이 가능합니다.', 'success');
             toggleAuthMode('login');
         }
@@ -411,18 +413,16 @@
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
-            // 관리자 계정 하드코딩 (관리자 / hagios)
             if(username === '관리자' && password === 'hagios') {
-                currentUser = { username: '관리자', isAdmin: true, status: 'approved' };
+                currentUser = { id: 'admin_main', username: '관리자', isAdmin: true, status: 'approved' };
                 localStorage.setItem('hagios_current_user', JSON.stringify(currentUser));
                 startWorkspace();
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            const users = getCollectionData('users');
             const user = users.find(u => u.username === username);
 
-            // 로그인 실패 사유 상세화
             if(!user) {
                 showToast('가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error');
                 return;
@@ -450,7 +450,16 @@
             location.reload();
         }
 
-        // --- 커스텀 확인 창 로직 ---
+        function startWorkspace() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            if(currentUser.isAdmin) {
+                document.getElementById('admin-menu-btn').classList.remove('hidden');
+            }
+            showToast(`${currentUser.username}님 환영합니다!`, 'success');
+        }
+
+        // --- 관리자 모달 및 기능 ---
         let confirmCallback = null;
 
         function showCustomConfirm(title, message, callback) {
@@ -465,12 +474,11 @@
             confirmCallback = null;
         }
 
-        document.getElementById('confirm-action-btn').addEventListener('click', () => {
-            if (confirmCallback) confirmCallback();
+        document.getElementById('confirm-action-btn').addEventListener('click', async () => {
+            if (confirmCallback) await confirmCallback();
             closeCustomConfirm();
         });
 
-        // --- 관리자 모달 탭 로직 ---
         function switchAdminTab(tab) {
             const pendingTab = document.getElementById('admin-tab-pending');
             const approvedTab = document.getElementById('admin-tab-approved');
@@ -493,7 +501,7 @@
         function openAdminModal() {
             renderAdminLists();
             document.getElementById('admin-modal').classList.remove('hidden');
-            switchAdminTab('pending'); // 열 때 기본으로 대기 탭 표시
+            switchAdminTab('pending');
         }
 
         function closeAdminModal() {
@@ -501,24 +509,21 @@
         }
 
         function renderAdminLists() {
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            let users = getCollectionData('users');
             const pendingEl = document.getElementById('admin-pending-view');
             const approvedEl = document.getElementById('admin-approved-view');
             
             pendingEl.innerHTML = '';
             approvedEl.innerHTML = '';
             
-            // 일반 회원 목록 필터링 (하드코딩된 '관리자' 제외)
             const regularUsers = users.filter(u => !u.isAdmin);
             const pendingUsers = regularUsers.filter(u => u.status === 'pending');
             const approvedOrSuspendedUsers = regularUsers.filter(u => u.status === 'approved' || u.status === 'suspended');
 
-            // 1. 대기 탭 렌더링
             if(pendingUsers.length === 0) {
                 pendingEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">가입 대기 중인 회원이 없습니다.</p>';
             } else {
-                users.forEach((u, idx) => {
-                    if(u.isAdmin || u.status !== 'pending') return;
+                pendingUsers.forEach(u => {
                     pendingEl.innerHTML += `
                         <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-100 gap-2">
                             <div class="flex-1 min-w-0 flex flex-col items-start gap-1">
@@ -526,21 +531,18 @@
                                 <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">대기중</span>
                             </div>
                             <div class="flex gap-1.5 flex-shrink-0">
-                                <button onclick="approveUser(${idx})" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">승인</button>
-                                <button onclick="promptDeleteUser(${idx})" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
+                                <button onclick="approveUser('${u.id}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">승인</button>
+                                <button onclick="promptDeleteUser('${u.id}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
                             </div>
                         </div>
                     `;
                 });
             }
 
-            // 2. 승인/정지 회원 탭 렌더링
             if(approvedOrSuspendedUsers.length === 0) {
                 approvedEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">관리 중인 기존 회원이 없습니다.</p>';
             } else {
-                users.forEach((u, idx) => {
-                    if(u.isAdmin || u.status === 'pending') return;
-                    
+                approvedOrSuspendedUsers.forEach(u => {
                     const isSuspended = u.status === 'suspended';
                     const statusBadge = isSuspended 
                         ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 whitespace-nowrap">일시 정지됨</span>'
@@ -558,8 +560,8 @@
                                 ${statusBadge}
                             </div>
                             <div class="flex gap-1.5 flex-shrink-0">
-                                <button onclick="toggleSuspendUser(${idx})" class="px-2.5 py-1.5 ${suspendBtnClass} text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">${suspendBtnText}</button>
-                                <button onclick="promptDeleteUser(${idx})" class="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
+                                <button onclick="toggleSuspendUser('${u.id}', '${u.status}', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 ${suspendBtnClass} text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">${suspendBtnText}</button>
+                                <button onclick="promptDeleteUser('${u.id}', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-lg font-medium transition shadow-sm whitespace-nowrap">삭제</button>
                             </div>
                         </div>
                     `;
@@ -567,47 +569,29 @@
             }
         }
 
-        function approveUser(idx) {
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
-            users[idx].status = 'approved';
-            localStorage.setItem('hagios_users', JSON.stringify(users));
-            renderAdminLists(); // 목록 새로고침
-            showToast(`${users[idx].username}님의 권한이 승인되었습니다.`, 'success');
+        async function approveUser(id, username) {
+            await dbUpdate('users', id, { status: 'approved' });
+            showToast(`${username}님의 권한이 승인되었습니다.`, 'success');
         }
 
-        function toggleSuspendUser(idx) {
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
-            if (users[idx].status === 'approved') {
-                users[idx].status = 'suspended';
-                showToast(`${users[idx].username}님의 계정이 일시 정지되었습니다.`, 'info');
+        async function toggleSuspendUser(id, currentStatus, username) {
+            const newStatus = currentStatus === 'approved' ? 'suspended' : 'approved';
+            await dbUpdate('users', id, { status: newStatus });
+            if(newStatus === 'suspended') {
+                showToast(`${username}님의 계정이 일시 정지되었습니다.`, 'info');
             } else {
-                users[idx].status = 'approved';
-                showToast(`${users[idx].username}님의 정지가 해제되었습니다.`, 'success');
+                showToast(`${username}님의 정지가 해제되었습니다.`, 'success');
             }
-            localStorage.setItem('hagios_users', JSON.stringify(users));
-            renderAdminLists();
         }
 
-        function promptDeleteUser(idx) {
-            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
-            showCustomConfirm('계정 삭제', `${users[idx].username}님의 계정을 완전히 삭제하시겠습니까?`, () => {
-                const deletedName = users[idx].username;
-                users.splice(idx, 1); // 배열에서 완전히 삭제
-                localStorage.setItem('hagios_users', JSON.stringify(users));
-                renderAdminLists();
-                showToast(`${deletedName}님의 계정이 삭제되었습니다.`, 'success');
+        function promptDeleteUser(id, username) {
+            showCustomConfirm('계정 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => {
+                await dbDelete('users', id);
+                showToast(`${username}님의 계정이 삭제되었습니다.`, 'success');
             });
         }
 
-        function startWorkspace() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-screen').classList.remove('hidden');
-            if(currentUser.isAdmin) {
-                document.getElementById('admin-menu-btn').classList.remove('hidden');
-            }
-            showToast(`${currentUser.username}님 환영합니다!`, 'success');
-        }
-
+        // --- 파이어베이스 및 코어 시스템 ---
         window.addEventListener('firebaseReady', async () => {
             const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore } = window.firebaseAppModules;
             try {
@@ -628,13 +612,13 @@
         });
 
         function initLocalFallback() {
-            ['todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(key => {
+            ['todos', 'calendar', 'sheets', 'audio', 'board', 'konti', 'users'].forEach(key => {
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
             });
             refreshUI();
         }
 
-        let store = { todos: [], calendar: [], sheets: [], audio: [], board: [], konti: [] };
+        let store = { todos: [], calendar: [], sheets: [], audio: [], board: [], konti: [], users: [] };
 
         function initFirebaseListeners() {
             const { collection, onSnapshot, query } = window.firebaseAppModules;
@@ -643,10 +627,15 @@
                 onSnapshot(q, (snapshot) => {
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
-                    refreshUI();
+                    
+                    if (storeKey === 'users' && !document.getElementById('admin-modal').classList.contains('hidden')) {
+                        renderAdminLists();
+                    } else if (storeKey !== 'users') {
+                        refreshUI();
+                    }
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
             };
-            ['todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(k => attachListener(k, k));
+            ['todos', 'calendar', 'sheets', 'audio', 'board', 'konti', 'users'].forEach(k => attachListener(k, k));
         }
 
         function refreshUI() {
@@ -1054,7 +1043,7 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
                         <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF 다운로드</button>
+                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 통합 PDF 다운로드</button>
                             <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
@@ -1098,7 +1087,7 @@
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
             if (kontiSheets.length === 0) { showToast('포함된 악보가 없습니다.', 'error'); return; }
 
-            showToast(`[${konti.name}] PDF 생성 중...`, 'info');
+            showToast(`[${konti.name}] 통합 PDF 생성 중...`, 'info');
             try {
                 const { PDFDocument } = PDFLib;
                 const mergedPdf = await PDFDocument.create();
