@@ -897,17 +897,23 @@
             if(action === 'approve') {
                 await dbUpdate('users', id, { status: 'approved' });
                 showToast(`${username}님의 권한이 승인되었습니다.`, 'success');
+                renderAdminViews();
+                updateAdminBadge();
             } 
             else if(action === 'suspend') {
                 showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => {
                     await dbUpdate('users', id, { status: 'suspended' });
                     showToast(`${username}님의 계정이 정지되었습니다.`, 'info');
+                    renderAdminViews();
+                    updateAdminBadge();
                 });
             }
             else if(action === 'delete') {
                 showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, async () => {
                     await dbDelete('users', id);
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info');
+                    renderAdminViews();
+                    updateAdminBadge();
                 });
             }
         }
@@ -1529,8 +1535,12 @@
             posts.forEach(post => {
                 const item = document.createElement('div');
                 // 모든 메시지는 좌측 정렬 (채팅보다는 게시판 느낌)
-                item.className = 'flex flex-col w-full sm:w-[90%] self-start items-start mb-1 group';
+                item.className = 'flex flex-col w-full sm:w-[90%] self-start items-start mb-3 group';
+                
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-gray-600 ml-2 mb-1">${escapeHtml(post.author)}</div>` : '';
+
                 item.innerHTML = `
+                    ${authorName}
                     <div class="flex items-end gap-2 w-full">
                         <div class="px-4 py-3 rounded-2xl bg-white border border-gray-200 text-gray-800 shadow-sm text-sm whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
                         <div class="flex flex-col items-start gap-1 flex-shrink-0 min-w-[50px]">
@@ -1555,8 +1565,9 @@
             
             const now = new Date();
             const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const authorName = currentUser ? currentUser.username : '알 수 없음';
             
-            await dbAdd('board', { text, time: timeStr, createdAt: Date.now() });
+            await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
             
             input.value = '';
             btn.disabled = false;
