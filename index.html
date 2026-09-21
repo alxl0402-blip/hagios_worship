@@ -53,23 +53,15 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item.active { background-color: #e0e7ff; color: #4f46e5; font-weight: 600; }
         .nav-item.active i { color: #4f46e5; }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        input:disabled { background-color: #f1f5f9; cursor: not-allowed; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-50">
 
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in relative overflow-hidden">
-            <div id="auth-loading-overlay" class="absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity duration-300">
-                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-indigo-600 mb-3"></i>
-                <p class="text-sm font-medium text-gray-600">서버 연결 중...</p>
-            </div>
-
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 fade-in">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200 relative">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200">
                     <i class="fa-solid fa-music"></i>
-                    <div id="auth-connection-dot" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white bg-gray-400" title="연결 상태 확인 중"></div>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
                 <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 계정에 로그인하세요</p>
@@ -78,30 +70,30 @@
             <div id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용자 이름</label>
-                    <input type="text" id="login-username" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="" disabled>
+                    <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="이름을 입력하세요">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="login-password" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="" disabled>
+                    <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="비밀번호">
                 </div>
-                <button onclick="handleLogin()" id="login-btn" class="auth-btn w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm" disabled>로그인</button>
+                <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm">로그인</button>
                 <div class="text-center mt-4">
-                    <button onclick="toggleAuthMode('signup')" class="auth-btn text-xs text-indigo-600 hover:underline" disabled>계정이 없으신가요? 회원가입</button>
+                    <button onclick="toggleAuthMode('signup')" class="text-xs text-indigo-600 hover:underline">계정이 없으신가요? 회원가입</button>
                 </div>
             </div>
 
             <div id="signup-form" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
-                    <input type="text" id="signup-username" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="" disabled>
+                    <input type="text" id="signup-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="예: 김찬양">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
-                    <input type="password" id="signup-password" class="auth-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="" disabled>
+                    <input type="password" id="signup-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="사용할 비밀번호">
                 </div>
-                <button onclick="handleSignup()" id="signup-btn" class="auth-btn w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm" disabled>회원가입 신청</button>
+                <button onclick="handleSignup()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm">회원가입 신청</button>
                 <div class="text-center mt-4">
-                    <button onclick="toggleAuthMode('login')" class="auth-btn text-xs text-slate-600 hover:underline" disabled>이미 계정이 있으신가요? 로그인</button>
+                    <button onclick="toggleAuthMode('login')" class="text-xs text-slate-600 hover:underline">이미 계정이 있으신가요? 로그인</button>
                 </div>
             </div>
         </div>
@@ -112,32 +104,22 @@
         <aside class="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex flex-col shadow-sm flex-shrink-0 z-20">
             <div class="p-3 md:p-4 flex items-center justify-between border-b border-gray-100">
                 <div class="flex items-center gap-2 overflow-hidden">
-                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 relative">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0">
                         <i class="fa-solid fa-music text-white text-sm"></i>
-                        <div id="dash-connection-dot" class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white bg-gray-400" title="연결 상태"></div>
                     </div>
                     <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap">Hagios Worship</span>
                 </div>
                 <div class="flex items-center gap-1.5 md:hidden">
-                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden relative bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap">
-                        <i class="fa-solid fa-shield-halved mr-1"></i>관리
-                        <span id="admin-badge-mobile" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
-                    </button>
+                    <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-100 text-amber-700 hover:bg-amber-200 px-2 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap"><i class="fa-solid fa-shield-halved mr-1"></i>회원관리</button>
                     <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 p-1.5 bg-gray-100 rounded-lg" title="로그아웃"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     <button id="mobile-menu-btn" class="text-gray-500 hover:text-indigo-600 p-1.5 bg-gray-100 rounded-lg"><i class="fa-solid fa-bars"></i></button>
                 </div>
             </div>
             
             <div class="hidden md:flex flex-col gap-2 p-3 border-b border-gray-100">
-                <div class="text-xs text-gray-500 mb-1 px-1 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></span>
-                    <span id="connection-status-text" class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">확인중</span>
-                </div>
+                <div class="text-xs text-gray-500 mb-1 px-1 flex items-center gap-2"><i class="fa-solid fa-user"></i> <span id="current-user-name">사용자</span></div>
                 <div class="flex gap-2">
-                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden relative flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-shield-halved"></i> 회원관리
-                        <span id="admin-badge-desktop" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</span>
-                    </button>
+                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"><i class="fa-solid fa-shield-halved"></i> 회원관리</button>
                     <button onclick="handleLogout()" class="flex-1 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-red-600 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
                 </div>
             </div>
@@ -160,28 +142,28 @@
 
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 scroll-smooth w-full">
                 
-                <!-- View: Home -->
+                <!-- View: Home Dashboard with Quick Navigation Cards -->
                 <section id="view-dashboard" class="view-section fade-in">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-check"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">남은 할 일</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-todos">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xl flex-shrink-0"><i class="fa-solid fa-list-ol"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 콘티</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-konti">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl flex-shrink-0"><i class="fa-solid fa-file-lines"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">등록된 악보</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-sheet">0</p></div>
                         </div>
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
+                        <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xl flex-shrink-0"><i class="fa-solid fa-music"></i></div>
                             <div><p class="text-xs sm:text-sm text-gray-500 font-medium">공유된 음원</p><p class="text-xl sm:text-2xl font-bold text-gray-800" id="stat-audio">0</p></div>
                         </div>
                     </div>
 
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">빠른 메뉴 이동</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">메뉴 바로가기</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div onclick="navigateToView('view-calendar')" class="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
                             <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-regular fa-calendar-days"></i></div>
@@ -210,7 +192,7 @@
                     </div>
                 </section>
 
-                <!-- View: Calendar -->
+                <!-- View: Calendar with Detail Viewer Panel -->
                 <section id="view-calendar" class="view-section hidden fade-in">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-800">캘린더</h2>
@@ -218,19 +200,30 @@
                             <i class="fa-solid fa-plus"></i> 일정 추가
                         </button>
                     </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
-                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800 w-28 text-center">2026년 9월</h3>
-                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <h3 id="calendar-title" class="font-bold text-sm sm:text-lg text-gray-800">2026년 9월</h3>
+                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                             </div>
                             <button onclick="resetCalendarToCurrent()" class="text-xs text-indigo-600 font-semibold hover:underline">오늘로 이동</button>
                         </div>
                         <div class="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-xs sm:text-sm font-medium text-gray-500">
-                            <div class="text-red-500">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="text-blue-500">토</div>
+                            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
                         </div>
                         <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm" id="calendar-grid"></div>
+                    </div>
+
+                    <!-- Calendar Day Details Panel -->
+                    <div id="calendar-detail-panel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
+                        <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100">
+                            <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-base">날짜를 선택하세요</h3>
+                            <button onclick="openCalendarEventModal()" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition"><i class="fa-solid fa-plus mr-1"></i> 이 날 일정 추가</button>
+                        </div>
+                        <div id="calendar-detail-content" class="text-sm text-gray-600 space-y-3">
+                            <p class="text-gray-400 italic">달력의 날짜를 클릭하면 해당 날짜의 세부 일정과 내용이 여기에 표시됩니다.</p>
+                        </div>
                     </div>
                 </section>
 
@@ -239,10 +232,10 @@
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">투두리스트</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
                         <div class="p-3 sm:p-4 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="todo-input" class="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="">
+                            <input type="text" id="todo-input" class="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="할 일을 입력하세요">
                             <div class="flex items-center gap-1">
                                 <span class="text-xs text-gray-500 font-medium whitespace-nowrap">기한:</span>
-                                <input type="date" id="todo-date" class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white cursor-pointer">
+                                <input type="date" id="todo-date" class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white">
                             </div>
                             <button id="add-todo-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg font-medium transition shadow-sm whitespace-nowrap">추가</button>
                         </div>
@@ -261,7 +254,7 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none shadow-sm transition" placeholder="">
+                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none shadow-sm" placeholder="악보 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="sheet-list"></div>
@@ -278,7 +271,7 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none shadow-sm transition" placeholder="">
+                            <input type="text" id="audio-search" oninput="loadAudio()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none shadow-sm" placeholder="음원 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4" id="audio-list"></div>
@@ -295,7 +288,7 @@
                     <div class="mb-6">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm transition" placeholder="">
+                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-11 pr-4 py-2.5 text-xs sm:text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm" placeholder="콘티 검색...">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4" id="konti-list"></div>
@@ -305,12 +298,12 @@
                 <section id="view-board" class="view-section hidden fade-in">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">게시판</h2>
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px] sm:h-[600px] max-h-[70vh]">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50/50 flex flex-col gap-4" id="board-list"></div>
+                        <div class="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 flex flex-col gap-4" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-200 bg-white">
                             <div class="flex gap-2">
-                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition" placeholder=""></textarea>
-                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center group">
-                                    <i class="fa-solid fa-paper-plane text-sm sm:text-base group-hover:scale-110 transition-transform"></i>
+                                <textarea id="board-input" rows="2" class="flex-1 px-3 sm:px-4 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none" placeholder="팀원들에게 나눌 공지나 이야기를 남겨보세요..."></textarea>
+                                <button id="add-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 rounded-xl font-medium transition shadow-sm flex items-center justify-center">
+                                    <i class="fa-solid fa-paper-plane text-sm sm:text-base"></i>
                                 </button>
                             </div>
                         </div>
@@ -321,126 +314,116 @@
         </main>
     </div>
 
-    <div id="custom-alert-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[70] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center transform transition-all scale-100">
+    <!-- Modals -->
+    <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
                 <i id="alert-icon" class="fa-solid fa-circle-info"></i>
             </div>
             <h3 class="font-bold text-gray-800 text-lg mb-2" id="alert-title">안내</h3>
-            <p class="text-sm text-gray-600 mb-6 whitespace-pre-line leading-relaxed" id="alert-message">메시지 내용</p>
+            <p class="text-sm text-gray-500 mb-6 whitespace-pre-line" id="alert-message">메시지 내용</p>
             <button id="alert-action-btn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm">확인</button>
         </div>
     </div>
 
-    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl fade-in text-center">
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl fade-in text-center">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="font-bold text-gray-800 text-lg mb-2" id="confirm-title">확인</h3>
-            <p class="text-sm text-gray-600 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
+            <p class="text-sm text-gray-500 mb-6" id="confirm-message">정말 진행하시겠습니까?</p>
             <div class="flex gap-3">
                 <button onclick="closeCustomConfirm()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition text-sm">취소</button>
-                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">확인</button>
+                <button id="confirm-action-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm">삭제</button>
             </div>
         </div>
     </div>
 
-    <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden flex flex-col max-h-[85vh] fade-in">
+    <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
-                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex border-b border-gray-200 bg-white">
-                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">
-                    가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full shadow-sm">0</span>
-                </button>
+                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
                 <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition">기존 팀원</button>
             </div>
-            <div class="flex-1 overflow-y-auto p-4 bg-gray-50/50">
+            <div class="flex-1 overflow-y-auto p-4 bg-white">
                 <div id="admin-pending-view" class="space-y-3 fade-in"></div>
                 <div id="admin-active-view" class="space-y-3 hidden fade-in"></div>
             </div>
         </div>
     </div>
 
-    <div id="konti-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
-                <h3 class="font-bold text-gray-800 text-lg" id="konti-modal-title">새 콘티 만들기</h3>
-                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <div id="konti-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="konti-modal-title">새 콘티 만들기</h3>
+                <button onclick="closeModal('konti-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="konti-edit-id" value="">
-            <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder=""></div>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
                 <div>
-                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-semibold text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="" class="px-3 py-1.5 text-xs border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition w-40"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-xl p-3 flex flex-col gap-1 bg-gray-50/50"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-xs font-medium text-gray-700">포함할 악보 선택 및 순서 정렬</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="" class="px-3 py-1 text-xs border border-gray-200 rounded-lg outline-none focus:border-indigo-500 w-40"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-3 flex flex-col gap-2"></div>
                 </div>
-                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">콘티 저장하기</button>
+                <button id="save-konti-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">콘티 저장</button>
             </div>
         </div>
     </div>
 
-    <div id="sheet-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
-            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
-                <h3 class="font-bold text-gray-800 text-lg" id="sheet-modal-title">새 악보 파일 등록</h3>
-                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <div id="sheet-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="sheet-modal-title">새 악보 파일 등록</h3>
+                <button onclick="closeModal('sheet-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
-            <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목</label><input type="text" id="sheet-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder=""></div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">악보 파일 <span class="text-gray-400 font-normal">(PDF 또는 이미지)</span></label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:bg-gray-50 transition cursor-pointer relative">
-                        <input type="file" id="sheet-file" accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-emerald-500 mb-2"></i>
-                        <p class="text-sm text-gray-600 font-medium">클릭하여 파일 선택</p>
-                        <p class="text-[10px] text-gray-400 mt-1" id="sheet-file-name">선택된 파일 없음</p>
-                    </div>
-                </div>
-                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">업로드 완료</button>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목</label><input type="text" id="sheet-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder=""></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">악보 파일 (PDF 또는 이미지)</label><input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"></div>
+                <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장 완료</button>
             </div>
         </div>
     </div>
 
-    <div id="audio-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
-            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
-                <h3 class="font-bold text-gray-800 text-lg" id="audio-modal-title">새 음원 등록</h3>
-                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <div id="audio-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="audio-modal-title">새 음원 등록</h3>
+                <button onclick="closeModal('audio-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="audio-edit-id" value="">
-            <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder=""></div>
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">MP3 파일 직접 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition cursor-pointer"></div>
-                <div class="flex items-center gap-3"><div class="h-px bg-gray-200 flex-1"></div><span class="text-xs text-gray-400 font-medium">또는</span><div class="h-px bg-gray-200 flex-1"></div></div>
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">외부 링크 등록 <span class="text-gray-400 font-normal">(유튜브 등)</span></label><input type="url" id="audio-url" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder=""></div>
-                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-sm rounded-xl font-medium transition shadow-sm mt-2">등록 완료</button>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">곡 제목 및 파트</label><input type="text" id="audio-title" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">오디오 파일 업로드</label><input type="file" id="audio-file" accept="audio/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"></div>
+                <div class="text-center text-xs text-gray-400">- 또는 -</div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">링크 입력 (유튜브 등)</label><input type="url" id="audio-url" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-purple-500" placeholder=""></div>
+                <button id="add-audio-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">등록 완료</button>
             </div>
         </div>
     </div>
 
-    <div id="calendar-event-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
-            <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
-                <h3 class="font-bold text-gray-800 text-lg" id="cal-modal-title">일정 추가</h3>
-                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <!-- Calendar Event Modal with Optional Time and Detail Content -->
+    <div id="calendar-event-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800 text-base sm:text-lg" id="cal-modal-title">일정 추가</h3>
+                <button onclick="closeModal('calendar-event-modal')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <input type="hidden" id="cal-edit-id" value="">
-            <div class="flex flex-col gap-5">
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder=""></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition cursor-pointer"></div>
-                    <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">종료 날짜 <span class="text-gray-400 font-normal">(선택)</span></label><input type="date" id="cal-event-end" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition cursor-pointer"></div>
+            <div class="flex flex-col gap-4">
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder=""></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="block text-xs font-medium text-gray-700 mb-1">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+                    <div><label class="block text-xs font-medium text-gray-700 mb-1">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">시간 <span class="text-gray-400 font-normal">(선택사항)</span></label><input type="time" id="cal-event-time" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition cursor-pointer"></div>
-                <div class="flex gap-2">
-                    <button id="delete-cal-event-btn" onclick="deleteCalendarEventFromModal()" class="hidden py-3 px-4 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl font-medium transition text-sm">삭제</button>
-                    <button id="save-cal-event-btn" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm">일정 저장</button>
-                </div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 bg-white"></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">세부 내용</label><textarea id="cal-event-detail" rows="3" class="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg outline-none focus:border-indigo-500 resize-none" placeholder="세부 내용을 입력하세요..."></textarea></div>
+                <button id="save-cal-event-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 text-xs sm:text-sm rounded-xl font-medium transition mt-2">저장하기</button>
             </div>
         </div>
     </div>
@@ -451,10 +434,8 @@
         let currentUser = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hagios-worship-app';
         let currentCalendarDate = new Date();
+        let selectedCalendarDateStr = null;
         let store = { users: [], todos: [], calendar: [], sheets: [], audio: [], board: [], konti: [] };
-        
-        let isFirebaseReady = false;
-        let isCloudMode = false;
 
         let alertCallback = null;
         function showAlert(title, message, type = 'info', buttonText = '확인', callback = null) {
@@ -466,17 +447,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-2xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-2xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             } else {
-                iconContainer.className = 'w-14 h-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-2xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-sm shadow-sm';
             }
 
             alertCallback = callback;
@@ -507,48 +488,42 @@
             closeCustomConfirm();
         });
 
-        // Global Enter key handler for modals and popups
+        // Global Enter key handler for modals
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.id === 'board-input') {
-                    return; // Let textarea handle enter for board submission
+                    return; // Let textarea handle enter normally
                 }
-
                 const alertModal = document.getElementById('custom-alert-modal');
                 if (alertModal && !alertModal.classList.contains('hidden')) {
                     e.preventDefault();
                     closeAlert();
                     return;
                 }
-                
                 const confirmModal = document.getElementById('custom-confirm-modal');
                 if (confirmModal && !confirmModal.classList.contains('hidden')) {
                     e.preventDefault();
                     document.getElementById('confirm-action-btn').click();
                     return;
                 }
-
                 const calModal = document.getElementById('calendar-event-modal');
                 if (calModal && !calModal.classList.contains('hidden')) {
                     e.preventDefault();
                     document.getElementById('save-cal-event-btn').click();
                     return;
                 }
-
                 const kontiModal = document.getElementById('konti-modal');
                 if (kontiModal && !kontiModal.classList.contains('hidden')) {
                     e.preventDefault();
                     document.getElementById('save-konti-btn').click();
                     return;
                 }
-
                 const sheetModal = document.getElementById('sheet-modal');
                 if (sheetModal && !sheetModal.classList.contains('hidden')) {
                     e.preventDefault();
                     document.getElementById('add-sheet-btn').click();
                     return;
                 }
-
                 const audioModal = document.getElementById('audio-modal');
                 if (audioModal && !audioModal.classList.contains('hidden')) {
                     e.preventDefault();
@@ -561,13 +536,7 @@
         window.addEventListener('firebaseReady', async () => {
             const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore } = window.firebaseAppModules;
             try {
-                const configStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-                const firebaseConfig = JSON.parse(configStr);
-                
-                if (Object.keys(firebaseConfig).length === 0) {
-                    throw new Error("No Firebase config provided.");
-                }
-
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -578,56 +547,26 @@
                     await signInAnonymously(auth);
                 }
                 
-                isCloudMode = true;
                 initFirebaseListeners();
-                
+                checkSavedLogin();
             } catch (err) {
-                console.warn("Firebase connection failed (Local Mode):", err);
-                isCloudMode = false;
+                console.error("Firebase init error:", err);
                 initLocalFallback();
-            } finally {
-                isFirebaseReady = true;
-                updateConnectionStatusUI();
-                enableAuthForms();
-                setTimeout(() => { checkSavedLogin(); }, 100);
+                checkSavedLogin();
             }
         });
-
-        function updateConnectionStatusUI() {
-            const authDot = document.getElementById('auth-connection-dot');
-            const dashDot = document.getElementById('dash-connection-dot');
-            const dashText = document.getElementById('connection-status-text');
-            const colorClass = isCloudMode ? 'bg-emerald-500' : 'bg-amber-400';
-            const titleText = isCloudMode ? 'Cloud Synchronized' : 'Local Mode';
-            
-            if(authDot) { authDot.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${colorClass}`; authDot.title = titleText; }
-            if(dashDot) { dashDot.className = `absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${colorClass}`; dashDot.title = titleText; }
-            if(dashText) {
-                dashText.textContent = isCloudMode ? 'Cloud' : 'Local';
-                dashText.className = `text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm ${isCloudMode ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`;
-            }
-        }
-
-        function enableAuthForms() {
-            const overlay = document.getElementById('auth-loading-overlay');
-            if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 300); }
-            document.querySelectorAll('.auth-input, .auth-btn').forEach(el => el.removeAttribute('disabled'));
-        }
 
         function checkSavedLogin() {
             const savedUser = localStorage.getItem('hagios_current_user');
             if(savedUser) {
-                try {
-                    currentUser = JSON.parse(savedUser);
-                    startWorkspace();
-                } catch(e) { localStorage.removeItem('hagios_current_user'); }
+                currentUser = JSON.parse(savedUser);
+                startWorkspace();
             }
         }
 
         function initLocalFallback() {
             ['users', 'todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(key => {
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
-                store[key] = JSON.parse(localStorage.getItem('ccm_' + key)) || [];
             });
             refreshUI();
         }
@@ -639,29 +578,14 @@
                 onSnapshot(q, (snapshot) => {
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
-                    if(collectionName === 'users') {
-                        updateAdminBadge();
-                        if(currentUser && currentUser.isAdmin) renderAdminViews();
+                    
+                    if(collectionName === 'users' && currentUser && currentUser.isAdmin) {
+                        renderAdminViews();
                     }
                     if(currentUser) refreshUI();
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
             };
             ['users', 'todos', 'calendar', 'sheets', 'audio', 'board', 'konti'].forEach(k => attachListener(k, k));
-        }
-        
-        function updateAdminBadge() {
-            if (!currentUser || !currentUser.isAdmin) return;
-            const users = getCollectionData('users');
-            const pendingCount = users.filter(u => u.status === 'pending').length;
-            const desktopBadge = document.getElementById('admin-badge-desktop');
-            const mobileBadge = document.getElementById('admin-badge-mobile');
-            if (pendingCount > 0) {
-                if(desktopBadge) { desktopBadge.textContent = pendingCount; desktopBadge.classList.remove('hidden'); }
-                if(mobileBadge) { mobileBadge.textContent = pendingCount; mobileBadge.classList.remove('hidden'); }
-            } else {
-                if(desktopBadge) desktopBadge.classList.add('hidden');
-                if(mobileBadge) mobileBadge.classList.add('hidden');
-            }
         }
 
         function refreshUI() {
@@ -675,25 +599,20 @@
         }
 
         async function dbAdd(collectionName, data) {
-            if (!isFirebaseReady) return false;
-            if (isCloudMode && db && auth && auth.currentUser) {
-                try {
-                    const { collection, addDoc } = window.firebaseAppModules;
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', collectionName), data);
-                    return true;
-                } catch(e) { console.error("Cloud Add Error:", e); return false; }
+            if (db && auth && auth.currentUser) {
+                const { collection, addDoc } = window.firebaseAppModules;
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', collectionName), data);
             } else {
                 let list = JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
                 list.unshift({ id: 'local_' + Date.now(), ...data });
                 localStorage.setItem(`ccm_${collectionName}`, JSON.stringify(list));
                 store[collectionName] = list;
                 refreshUI();
-                return true;
             }
         }
 
         async function dbUpdate(collectionName, id, data) {
-            if (isCloudMode && db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
+            if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, updateDoc } = window.firebaseAppModules;
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), data);
             } else {
@@ -706,7 +625,7 @@
         }
 
         async function dbDelete(collectionName, id) {
-            if (isCloudMode && db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
+            if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, deleteDoc } = window.firebaseAppModules;
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
             } else {
@@ -719,7 +638,7 @@
         }
 
         function getCollectionData(collectionName) {
-            if (store[collectionName] && store[collectionName].length > 0) return store[collectionName];
+            if (db && auth && auth.currentUser) return store[collectionName] || [];
             return JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
         }
 
@@ -736,26 +655,34 @@
         }
 
         async function handleSignup() {
-            if (!isFirebaseReady) return;
             const username = document.getElementById('signup-username').value.trim();
             const password = document.getElementById('signup-password').value.trim();
-            if(!username || !password) { showToast('이름과 비밀번호를 모두 입력해주세요.', 'error'); return; }
+            if(!username || !password) {
+                showToast('이름과 비밀번호를 모두 입력해주세요.', 'error');
+                return;
+            }
             
             const users = getCollectionData('users');
-            if(users.find(u => u.username === username)) { showToast('이미 존재하는 이름입니다.', 'error'); return; }
-            
-            const success = await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
-            if (success) {
-                document.getElementById('signup-username').value = '';
-                document.getElementById('signup-password').value = '';
-                showAlert('가입 신청 완료', '회원가입 신청이 완료되었습니다.\n관리자 승인 후 로그인이 가능합니다.', 'success', '로그인 화면으로', () => { toggleAuthMode('login'); });
-            } else {
-                showToast('회원가입 처리 중 문제가 발생했습니다.', 'error');
+            if(users.find(u => u.username === username)) {
+                showToast('이미 존재하는 이름입니다.', 'error');
+                return;
             }
+            
+            await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
+            
+            document.getElementById('signup-username').value = '';
+            document.getElementById('signup-password').value = '';
+
+            showAlert(
+                '가입 신청 완료',
+                '회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.',
+                'success',
+                '로그인 화면으로 돌아가기',
+                () => { toggleAuthMode('login'); }
+            );
         }
 
         function handleLogin() {
-            if (!isFirebaseReady) return;
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
@@ -769,10 +696,22 @@
             const users = getCollectionData('users');
             const user = users.find(u => u.username === username);
 
-            if(!user) { showAlert('로그인 실패', '가입되지 않은 이름입니다.', 'error'); return; }
-            if(user.password !== password) { showAlert('로그인 실패', '비밀번호 오류입니다.', 'error'); return; }
-            if(user.status === 'pending') { showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.', 'info'); return; }
-            if(user.status === 'suspended') { showAlert('이용 정지', '일시 정지된 계정입니다.', 'error'); return; }
+            if(!user) {
+                showAlert('로그인 실패', '가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error');
+                return;
+            }
+            if(user.password !== password) {
+                showAlert('로그인 실패', '비밀번호 오류입니다.', 'error', '다시 입력하기');
+                return;
+            }
+            if(user.status === 'pending') {
+                showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.\n승인 후 로그인해주세요.', 'info', '확인');
+                return;
+            }
+            if(user.status === 'suspended') {
+                showAlert('이용 정지', '일시 정지된 계정입니다.\n관리자에게 문의하세요.', 'error', '확인');
+                return;
+            }
 
             currentUser = user;
             localStorage.setItem('hagios_current_user', JSON.stringify(user));
@@ -788,26 +727,40 @@
         function startWorkspace() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '👑' : ''}`;
+            
+            document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '(관리자)' : ''}`;
             
             if(currentUser.isAdmin) {
                 document.getElementById('admin-menu-btn-desktop').classList.remove('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.remove('hidden');
-                updateAdminBadge();
+                renderAdminViews();
             } else {
                 document.getElementById('admin-menu-btn-desktop').classList.add('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.add('hidden');
             }
+            
             refreshUI();
             showToast(`${currentUser.username}님 환영합니다!`, 'success');
         }
 
-        function openAdminModal() { renderAdminViews(); document.getElementById('admin-modal').classList.remove('hidden'); }
-        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+        function openAdminModal() {
+            renderAdminViews();
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
 
         function switchAdminTab(tab) {
-            document.getElementById('tab-admin-pending').className = tab === 'pending' ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
-            document.getElementById('tab-admin-active').className = tab === 'active' ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+            document.getElementById('tab-admin-pending').className = tab === 'pending' 
+                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
+                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+            
+            document.getElementById('tab-admin-active').className = tab === 'active' 
+                ? 'flex-1 py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 transition' 
+                : 'flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
+
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
             document.getElementById('admin-active-view').style.display = tab === 'active' ? 'block' : 'none';
         }
@@ -815,22 +768,25 @@
         function renderAdminViews() {
             const users = getCollectionData('users');
             const pendingUsers = users.filter(u => u.status === 'pending');
-            const activeUsers = users.filter(u => u.status !== 'pending' && u.id !== 'admin_main');
+            const activeUsers = users.filter(u => u.status !== 'pending');
 
             document.getElementById('pending-badge').textContent = pendingUsers.length;
 
             const pendingView = document.getElementById('admin-pending-view');
             pendingView.innerHTML = '';
             if(pendingUsers.length === 0) {
-                pendingView.innerHTML = '<div class="text-center text-gray-400 py-10 text-sm bg-white rounded-xl border border-gray-200">가입 대기 중인 인원이 없습니다.</div>';
+                pendingView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">가입 대기 중인 인원이 없습니다.</div>';
             } else {
                 pendingUsers.forEach(u => {
                     pendingView.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <div><p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p><p class="text-[10px] text-gray-400 mt-0.5">신청일: ${new Date(u.createdAt).toLocaleDateString()}</p></div>
+                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)}</p>
+                                <p class="text-[10px] text-gray-400">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p>
+                            </div>
                             <div class="flex gap-2">
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-2 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부</button>
-                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">거부/삭제</button>
+                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-lg transition font-medium shadow-sm">승인하기</button>
                             </div>
                         </div>
                     `;
@@ -840,16 +796,18 @@
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
             if(activeUsers.length === 0) {
-                activeView.innerHTML = '<div class="text-center text-gray-400 py-10 text-sm bg-white rounded-xl border border-gray-200">등록된 팀원이 없습니다.</div>';
+                activeView.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm">등록된 팀원이 없습니다.</div>';
             } else {
                 activeUsers.forEach(u => {
                     const isSuspended = u.status === 'suspended';
                     activeView.innerHTML += `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'opacity-75' : ''}">
-                            <div><p class="font-bold text-sm text-gray-800">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-1.5 py-0.5 rounded">정지됨</span>' : '<span class="bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.5 rounded">활동중</span>'}</p></div>
+                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm ${isSuspended ? 'opacity-60' : ''}">
+                            <div>
+                                <p class="font-bold text-sm text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p>
+                            </div>
                             <div class="flex gap-2">
                                 <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-xs rounded-lg transition font-medium">${isSuspended ? '정지해제' : '일시정지'}</button>
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">삭제</button>
+                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-xs rounded-lg transition font-medium">계정삭제</button>
                             </div>
                         </div>
                     `;
@@ -862,20 +820,19 @@
                 await dbUpdate('users', id, { status: 'approved' });
                 showToast(`${username}님의 권한이 승인되었습니다.`, 'success');
                 renderAdminViews();
-                updateAdminBadge();
-            } else if(action === 'suspend') {
+            } 
+            else if(action === 'suspend') {
                 showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => {
                     await dbUpdate('users', id, { status: 'suspended' });
                     showToast(`${username}님의 계정이 정지되었습니다.`, 'info');
                     renderAdminViews();
-                    updateAdminBadge();
                 });
-            } else if(action === 'delete') {
-                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => {
+            }
+            else if(action === 'delete') {
+                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, async () => {
                     await dbDelete('users', id);
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info');
                     renderAdminViews();
-                    updateAdminBadge();
                 });
             }
         }
@@ -883,12 +840,21 @@
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const colors = { 'success': 'bg-emerald-100 text-emerald-800 border-emerald-200', 'error': 'bg-red-100 text-red-800 border-red-200', 'info': 'bg-indigo-100 text-indigo-800 border-indigo-200' };
+            const colors = {
+                'success': 'bg-green-100 text-green-800 border-green-200',
+                'error': 'bg-red-100 text-red-800 border-red-200',
+                'info': 'bg-blue-100 text-blue-800 border-blue-200'
+            };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
-            toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border ${colors[type]} fade-in pointer-events-auto backdrop-blur-md bg-opacity-90`;
-            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span class="text-sm font-semibold">${message}</span>`;
+            toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="text-xs sm:text-sm font-medium">${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
         const navItems = document.querySelectorAll('.nav-item');
@@ -922,6 +888,177 @@
             document.getElementById('sidebar-nav').classList.toggle('hidden');
         });
 
+        // --- 캘린더 로직 및 세부 내용 뷰어 ---
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const titleEl = document.getElementById('calendar-title');
+            if(!grid || !titleEl) return;
+            grid.innerHTML = '';
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            titleEl.textContent = `${year}년 ${month + 1}월`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const calendarEvents = getCollectionData('calendar');
+
+            if (!selectedCalendarDateStr) {
+                const mStr = String(month + 1).padStart(2, '0');
+                const dStr = String(today.getDate()).padStart(2, '0');
+                selectedCalendarDateStr = `${year}-${mStr}-${dStr}`;
+            }
+
+            for(let i = 0; i < firstDayIndex; i++) {
+                grid.innerHTML += `<div class="p-1 sm:p-2 border border-gray-100 rounded-lg bg-gray-50/30 min-h-[80px] sm:min-h-[110px]"></div>`;
+            }
+
+            for(let i = 1; i <= totalDays; i++) {
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dayStr = String(i).padStart(2, '0');
+                const dateKey = `${year}-${monthStr}-${dayStr}`;
+                const isSelected = selectedCalendarDateStr === dateKey;
+
+                let bgClass = isToday ? 'bg-indigo-50 border-indigo-300' : 'bg-white border-gray-100';
+                if (isSelected) bgClass = 'bg-indigo-100 border-indigo-500 ring-2 ring-indigo-300';
+
+                const dayEvents = calendarEvents.filter(ev => {
+                    if (!ev.startDate) return false;
+                    return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate);
+                });
+
+                let eventsHtml = '';
+                dayEvents.slice(0, 2).forEach(dt => {
+                    let timeText = dt.time ? `[${dt.time}] ` : '';
+                    eventsHtml += `<div class="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium shadow-2xs" title="${escapeHtml(dt.text)}">${timeText}${escapeHtml(dt.text)}</div>`;
+                });
+                if (dayEvents.length > 2) {
+                    eventsHtml += `<div class="text-[9px] text-gray-500 font-semibold mt-0.5 px-0.5">+${dayEvents.length - 2}개 더보기</div>`;
+                }
+
+                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start cursor-pointer hover:border-indigo-400 transition group">
+                    <div class="w-full flex justify-between items-center mb-1">
+                        <span class="text-xs sm:text-sm font-semibold text-gray-800">${i}</span>
+                        ${dayEvents.length > 0 ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>' : ''}
+                    </div>
+                    <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
+                </div>`;
+            }
+            renderCalendarDetailPanel();
+        }
+
+        window.selectCalendarDate = (dateStr) => {
+            selectedCalendarDateStr = dateStr;
+            renderCalendar();
+        };
+
+        function renderCalendarDetailPanel() {
+            const titleEl = document.getElementById('calendar-detail-date-title');
+            const contentEl = document.getElementById('calendar-detail-content');
+            if(!titleEl || !contentEl) return;
+
+            if(!selectedCalendarDateStr) {
+                titleEl.textContent = '날짜를 선택하세요';
+                contentEl.innerHTML = `<p class="text-gray-400 italic">달력의 날짜를 클릭하면 해당 날짜의 세부 일정과 내용이 여기에 표시됩니다.</p>`;
+                return;
+            }
+
+            titleEl.textContent = `${selectedCalendarDateStr} 세부 일정`;
+            const calendarEvents = getCollectionData('calendar');
+            const dayEvents = calendarEvents.filter(ev => {
+                if (!ev.startDate) return false;
+                return selectedCalendarDateStr >= ev.startDate && selectedCalendarDateStr <= (ev.endDate || ev.startDate);
+            });
+
+            if (dayEvents.length === 0) {
+                contentEl.innerHTML = `<p class="text-gray-400 text-xs sm:text-sm py-2">등록된 일정이 없습니다. 우측 상단의 [이 날 일정 추가] 버튼을 눌러보세요.</p>`;
+                return;
+            }
+
+            let html = '';
+            dayEvents.forEach(ev => {
+                let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-1"></i>${ev.time}</span>` : '';
+                let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-xs text-gray-400">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
+                let detailText = ev.detail ? `<div class="mt-2 text-xs sm:text-sm text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : `<div class="mt-1 text-xs text-gray-400 italic">작성된 세부 내용이 없습니다.</div>`;
+
+                html += `
+                    <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-2xs relative group mb-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(ev.text)}</h4>
+                                ${timeDisplay}
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                        ${periodDisplay ? `<div class="mb-1">${periodDisplay}</div>` : ''}
+                        ${detailText}
+                    </div>
+                `;
+            });
+            contentEl.innerHTML = html;
+        }
+
+        window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
+        window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); selectedCalendarDateStr = null; renderCalendar(); };
+
+        window.openCalendarEventModal = () => {
+            document.getElementById('cal-edit-id').value = '';
+            document.getElementById('cal-event-text').value = '';
+            document.getElementById('cal-event-start').value = selectedCalendarDateStr || new Date().toISOString().split('T')[0];
+            document.getElementById('cal-event-end').value = '';
+            document.getElementById('cal-event-time').value = '';
+            document.getElementById('cal-event-detail').value = '';
+            document.getElementById('cal-modal-title').textContent = '일정 추가';
+            document.getElementById('calendar-event-modal').classList.remove('hidden');
+        };
+
+        window.openEditCalendarEvent = (id) => {
+            const ev = getCollectionData('calendar').find(item => item.id == id);
+            if(!ev) return;
+            document.getElementById('cal-edit-id').value = ev.id;
+            document.getElementById('cal-event-text').value = ev.text || '';
+            document.getElementById('cal-event-start').value = ev.startDate || '';
+            document.getElementById('cal-event-end').value = ev.endDate || '';
+            document.getElementById('cal-event-time').value = ev.time || '';
+            document.getElementById('cal-event-detail').value = ev.detail || '';
+            document.getElementById('cal-modal-title').textContent = '일정 수정';
+            document.getElementById('calendar-event-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('save-cal-event-btn').addEventListener('click', async () => {
+            const editId = document.getElementById('cal-edit-id').value;
+            const text = document.getElementById('cal-event-text').value.trim();
+            const startDate = document.getElementById('cal-event-start').value;
+            const endDate = document.getElementById('cal-event-end').value || startDate;
+            const time = document.getElementById('cal-event-time').value;
+            const detail = document.getElementById('cal-event-detail').value.trim();
+
+            if (!text || !startDate) { showToast('일정 내용과 시작 날짜를 입력해주세요.', 'error'); return; }
+            closeModal('calendar-event-modal');
+
+            if (editId) {
+                await dbUpdate('calendar', editId, { text, startDate, endDate, time, detail });
+                showToast('일정이 수정되었습니다.', 'success');
+            } else {
+                await dbAdd('calendar', { text, startDate, endDate, time, detail, createdAt: Date.now() });
+                showToast('일정이 추가되었습니다.', 'success');
+            }
+            selectedCalendarDateStr = startDate;
+            renderCalendar();
+        });
+
+        window.deleteCalendarEvent = async (id) => {
+            showCustomConfirm('일정 삭제', '이 일정을 삭제하시겠습니까?', async () => {
+                await dbDelete('calendar', id);
+                showToast('일정이 삭제되었습니다.', 'info');
+                renderCalendar();
+            });
+        };
+
         function updateStats() {
             document.getElementById('stat-todos').textContent = getCollectionData('todos').filter(t => !t.completed).length;
             document.getElementById('stat-sheet').textContent = getCollectionData('sheets').length;
@@ -934,18 +1071,23 @@
             const todos = getCollectionData('todos');
             list.innerHTML = '';
             if(todos.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-10 text-sm flex flex-col items-center"><i class="fa-solid fa-clipboard-check text-4xl mb-3 opacity-30"></i>할 일이 없습니다.</div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs sm:text-sm"><p></p></div>`;
                 return;
             }
             todos.forEach((todo) => {
                 const item = document.createElement('div');
-                item.className = `flex items-center gap-3 p-3.5 border-b border-gray-100 hover:bg-white rounded-lg transition group ${todo.completed ? 'opacity-60 bg-gray-50' : 'bg-transparent'}`;
-                let dateStr = todo.dueDate ? `<span class="text-[10px] text-indigo-600 bg-indigo-50 border-indigo-100 border px-2 py-0.5 rounded-md font-medium">${escapeHtml(todo.dueDate)}</span>` : '';
+                item.className = `flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border-b border-gray-100 hover:bg-gray-50 transition group ${todo.completed ? 'opacity-50' : ''}`;
+                let dateBadge = todo.dueDate ? `<span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
                 item.innerHTML = `
-                    <button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
-                    <span class="flex-1 text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800 font-medium'}">${escapeHtml(todo.text)}</span>
-                    ${dateStr}
-                    <button class="text-gray-400 hover:text-red-500 transition p-2 rounded hover:bg-red-50 text-sm ml-1" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="w-5 h-5 sm:w-6 sm:h-6 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px]"></i></button>
+                    <span class="flex-1 text-xs sm:text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
+                    ${dateBadge}
+                    <div class="flex items-center gap-1">
+                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
+                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                    <button class="text-gray-300 hover:text-red-500 transition px-1 text-xs" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
                 `;
                 list.appendChild(item);
             });
@@ -962,118 +1104,34 @@
             showToast('할 일이 추가되었습니다.', 'success');
         });
 
+        window.openEditTodo = (id, currentText, currentDate) => {
+            const newText = prompt("할 일 수정", currentText);
+            if (newText === null || !newText.trim()) return;
+            const newDate = prompt("기한 수정 (YYYY-MM-DD)", currentDate);
+            if (newDate === null) return;
+            dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() });
+            showToast('수정되었습니다.', 'success');
+        };
+
         window.toggleTodo = async (id) => {
             const todo = getCollectionData('todos').find(t => t.id == id);
             if(todo) await dbUpdate('todos', id, { completed: !todo.completed });
         };
+
+        window.moveTodoOrder = async (id, direction) => {
+            let todos = getCollectionData('todos');
+            const index = todos.findIndex(t => t.id == id);
+            if (index === -1) return;
+            if (direction === 'up' && index > 0) {
+                const temp = todos[index]; todos[index] = todos[index - 1]; todos[index - 1] = temp;
+            } else if (direction === 'down' && index < todos.length - 1) {
+                const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp;
+            } else return;
+            if (db && auth && auth.currentUser) { store.todos = todos; loadTodos(); }
+            else { localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); }
+        };
+
         window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            const titleEl = document.getElementById('calendar-title');
-            if(!grid || !titleEl) return;
-            grid.innerHTML = '';
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-            titleEl.textContent = `${year}년 ${month + 1}월`;
-
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-            const calendarEvents = getCollectionData('calendar');
-
-            for(let i = 0; i < firstDayIndex; i++) {
-                grid.innerHTML += `<div class="p-1 sm:p-2 border border-transparent rounded-xl bg-gray-50/50 min-h-[80px] sm:min-h-[110px]"></div>`;
-            }
-
-            for(let i = 1; i <= totalDays; i++) {
-                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
-                const bgClass = isToday ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100 hover:border-indigo-300';
-                const monthStr = String(month + 1).padStart(2, '0');
-                const dayStr = String(i).padStart(2, '0');
-                const dateKey = `${year}-${monthStr}-${dayStr}`;
-
-                const dayEvents = calendarEvents.filter(ev => {
-                    if (!ev.startDate) return false;
-                    return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate);
-                });
-
-                let eventsHtml = '';
-                dayEvents.slice(0, 3).forEach(dt => {
-                    let timeDisplay = dt.time ? `<span class="opacity-75 mr-1">[${dt.time}]</span>` : '';
-                    eventsHtml += `<div onclick="event.stopPropagation(); openEditCalendarEvent('${dt.id}')" class="text-[9px] sm:text-[10px] bg-indigo-500 hover:bg-indigo-600 text-white px-1.5 py-0.5 rounded truncate w-full text-left mt-1 font-medium shadow-sm cursor-pointer">${timeDisplay}${escapeHtml(dt.text)}</div>`;
-                });
-
-                grid.innerHTML += `<div onclick="openCalendarDateModal('${dateKey}')" class="p-1.5 sm:p-2 border rounded-xl ${bgClass} min-h-[80px] sm:min-h-[110px] flex flex-col justify-start items-start cursor-pointer transition">
-                    <div class="w-full flex justify-between items-center mb-1"><span class="text-xs sm:text-sm font-semibold">${i}</span></div>
-                    <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
-                </div>`;
-            }
-        }
-
-        window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
-        window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); renderCalendar(); };
-        
-        window.openCalendarEventModal = () => { 
-            document.getElementById('cal-edit-id').value = '';
-            document.getElementById('cal-event-text').value = ''; 
-            document.getElementById('cal-event-start').value = ''; 
-            document.getElementById('cal-event-end').value = ''; 
-            document.getElementById('cal-event-time').value = ''; 
-            document.getElementById('cal-modal-title').textContent = '일정 추가';
-            document.getElementById('delete-cal-event-btn').classList.add('hidden');
-            document.getElementById('calendar-event-modal').classList.remove('hidden'); 
-        };
-
-        window.openCalendarDateModal = (dateStr) => { 
-            document.getElementById('cal-edit-id').value = '';
-            document.getElementById('cal-event-text').value = ''; 
-            document.getElementById('cal-event-start').value = dateStr; 
-            document.getElementById('cal-event-end').value = dateStr; 
-            document.getElementById('cal-event-time').value = ''; 
-            document.getElementById('cal-modal-title').textContent = '일정 추가';
-            document.getElementById('delete-cal-event-btn').classList.add('hidden');
-            document.getElementById('calendar-event-modal').classList.remove('hidden'); 
-        };
-
-        window.openEditCalendarEvent = (id) => {
-            const ev = getCollectionData('calendar').find(item => item.id == id);
-            if (!ev) return;
-            document.getElementById('cal-edit-id').value = ev.id;
-            document.getElementById('cal-event-text').value = ev.text || '';
-            document.getElementById('cal-event-start').value = ev.startDate || '';
-            document.getElementById('cal-event-end').value = ev.endDate || ev.startDate || '';
-            document.getElementById('cal-event-time').value = ev.time || '';
-            document.getElementById('cal-modal-title').textContent = '일정 수정';
-            document.getElementById('delete-cal-event-btn').classList.remove('hidden');
-            document.getElementById('calendar-event-modal').classList.remove('hidden');
-        };
-
-        document.getElementById('save-cal-event-btn').addEventListener('click', async () => {
-            const editId = document.getElementById('cal-edit-id').value;
-            const text = document.getElementById('cal-event-text').value.trim();
-            const startDate = document.getElementById('cal-event-start').value;
-            const endDate = document.getElementById('cal-event-end').value || startDate;
-            const time = document.getElementById('cal-event-time').value;
-            if (!text || !startDate) { showToast('내용과 시작 날짜를 입력해주세요.', 'error'); return; }
-            closeModal('calendar-event-modal');
-            
-            if (editId) {
-                await dbUpdate('calendar', editId, { text, startDate, endDate, time });
-                showToast('일정이 수정되었습니다.', 'success');
-            } else {
-                await dbAdd('calendar', { text, startDate, endDate, time, createdAt: Date.now() });
-                showToast('일정이 추가되었습니다.', 'success');
-            }
-        });
-
-        window.deleteCalendarEventFromModal = async () => {
-            const editId = document.getElementById('cal-edit-id').value;
-            if (!editId) return;
-            closeModal('calendar-event-modal');
-            await dbDelete('calendar', editId);
-            showToast('일정이 삭제되었습니다.', 'info');
-        };
 
         function loadSheets() {
             const list = document.getElementById('sheet-list');
@@ -1082,23 +1140,23 @@
             if (search) sheets = sheets.filter(s => s.title.toLowerCase().includes(search));
             list.innerHTML = '';
             if(sheets.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-file-pdf text-4xl mb-3 opacity-30"></i>등록된 악보가 없습니다.</div>`;
+                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
                 return;
             }
             sheets.forEach(sheet => {
                 const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 hover:shadow-md transition relative group';
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex items-start gap-4 hover:shadow-md transition relative group';
                 item.innerHTML = `
-                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 flex-shrink-0 text-xl shadow-inner"><i class="fa-solid fa-file-pdf"></i></div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
                     <div class="flex-1 overflow-hidden pr-12">
-                        <h4 class="font-bold text-gray-800 text-sm truncate">${escapeHtml(sheet.title)}</h4>
+                        <h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(sheet.title)}</h4>
                         <div class="flex items-center gap-3 mt-3">
-                            <button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-emerald-100 text-gray-700 hover:text-emerald-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer"><i class="fa-solid fa-download"></i> 다운로드</button>
+                            <button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold hover:underline cursor-pointer"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     </div>
-                    <div class="absolute top-4 right-4 flex gap-1">
-                        <button onclick="openEditSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-emerald-600 transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
-                        <button onclick="deleteSheet('${sheet.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    <div class="absolute top-3 right-3 flex items-center gap-1">
+                        <button onclick="openEditSheet('${sheet.id}')" class="text-gray-300 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteSheet('${sheet.id}')" class="text-gray-300 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -1115,9 +1173,7 @@
                 const bstr = atob(arr[1]);
                 let n = bstr.length;
                 const u8arr = new Uint8Array(n);
-                while(n--){
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
+                while(n--){ u8arr[n] = bstr.charCodeAt(n); }
                 const blob = new Blob([u8arr], {type: mime});
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -1133,195 +1189,94 @@
             }
         };
 
-        document.getElementById('sheet-file').addEventListener('change', function(e) {
-            document.getElementById('sheet-file-name').textContent = e.target.files[0] ? e.target.files[0].name : "선택된 파일 없음";
-        });
-
-        document.getElementById('add-sheet-btn').addEventListener('click', async () => {
+        document.getElementById('add-sheet-btn').addEventListener('click', () => {
             const editId = document.getElementById('sheet-edit-id').value;
             let title = document.getElementById('sheet-title').value.trim();
             const fileInput = document.getElementById('sheet-file');
 
-            if(!editId && fileInput.files.length === 0) { showToast('파일을 선택해주세요.', 'error'); return; }
-            const btn = document.getElementById('add-sheet-btn');
-            btn.disabled = true;
-
             if (editId) {
-                let sheet = getCollectionData('sheets').find(s => s.id == editId);
-                let updateData = { title: title || sheet.title };
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    if (!title) updateData.title = file.name.replace(/\.[^/.]+$/, "");
-                    updateData.filename = file.name;
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        updateData.data = e.target.result;
-                        await dbUpdate('sheets', editId, updateData);
-                        finishSheetUpload('악보가 수정되었습니다.', btn);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    await dbUpdate('sheets', editId, updateData);
-                    finishSheetUpload('악보 정보가 수정되었습니다.', btn);
+                let sheets = getCollectionData('sheets');
+                let sheet = sheets.find(s => s.id == editId);
+                if (sheet) {
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        if (!title) title = file.name;
+                        const reader = new FileReader();
+                        reader.onload = async function(e) {
+                            closeModal('sheet-modal');
+                            showToast('악보가 수정되었습니다.', 'success');
+                            await dbUpdate('sheets', editId, { title, data: e.target.result, filename: file.name });
+                        };
+                        reader.readAsDataURL(file);
+                        return;
+                    } else {
+                        if (!title) title = sheet.title;
+                        closeModal('sheet-modal');
+                        showToast('악보 정보가 수정되었습니다.', 'success');
+                        dbUpdate('sheets', editId, { title });
+                    }
                 }
             } else {
+                if(fileInput.files.length === 0) { showToast('파일을 선택해주세요.', 'error'); return; }
                 const file = fileInput.files[0];
-                if (!title) title = file.name.replace(/\.[^/.]+$/, "");
+                if (!title) title = file.name;
+                closeModal('sheet-modal');
+                showToast('악보가 업로드되었습니다.', 'success');
+
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     await dbAdd('sheets', { title, data: e.target.result, filename: file.name, createdAt: Date.now() });
-                    finishSheetUpload('악보가 업로드되었습니다.', btn);
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        function finishSheetUpload(msg, btn) {
-            closeModal('sheet-modal'); showToast(msg, 'success');
-            btn.disabled = false; document.getElementById('sheet-edit-id').value = '';
-            document.getElementById('sheet-title').value = ''; document.getElementById('sheet-file').value = '';
-            document.getElementById('sheet-file-name').textContent = "선택된 파일 없음";
-        }
-
         window.openEditSheet = (id) => {
             let sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet) return;
             document.getElementById('sheet-edit-id').value = sheet.id;
-            document.getElementById('sheet-title').value = sheet.title || '';
-            document.getElementById('sheet-file').value = '';
-            document.getElementById('sheet-file-name').textContent = sheet.filename ? `현재 파일: ${sheet.filename}` : '기존 파일 유지';
+            document.getElementById('sheet-title').value = sheet.title;
             document.getElementById('sheet-modal-title').textContent = '악보 수정';
-            document.getElementById('sheet-modal').classList.remove('hidden');
+            openModal('sheet-modal');
         };
 
-        window.deleteSheet = async (id) => {
-            showCustomConfirm('악보 삭제', '이 악보를 삭제하시겠습니까?', async () => {
-                await dbDelete('sheets', id); showToast('악보가 삭제되었습니다.', 'info');
-            });
-        };
-
-        function loadAudio() {
-            const list = document.getElementById('audio-list');
-            const search = (document.getElementById('audio-search')?.value || '').toLowerCase();
-            let audios = getCollectionData('audio');
-            if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
-            list.innerHTML = '';
-            if(audios.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-headphones text-4xl mb-3 opacity-30"></i>등록된 음원이 없습니다.</div>`;
-                return;
-            }
-            audios.forEach(audio => {
-                const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
-                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:max-w-md h-10 mt-3 rounded-lg"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-gray-100 hover:bg-purple-100 text-gray-700 rounded-lg text-sm font-semibold transition truncate"><i class="fa-solid fa-link"></i> 외부 링크 열기</a>`;
-                item.innerHTML = `
-                    <div class="flex items-start gap-4 w-full flex-1 overflow-hidden">
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 flex-shrink-0 text-xl shadow-inner mt-1"><i class="fa-solid fa-music"></i></div>
-                        <div class="flex-1 overflow-hidden pr-12"><h4 class="font-bold text-gray-800 text-sm truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
-                    </div>
-                    <div class="absolute top-4 right-4 flex gap-1">
-                        <button onclick="openEditAudio('${audio.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-purple-600 transition" title="수정"><i class="fa-solid fa-pen text-xs"></i></button>
-                        <button onclick="deleteAudio('${audio.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-400 hover:text-red-500 transition" title="삭제"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            updateStats();
-        }
-
-        document.getElementById('add-audio-btn').addEventListener('click', async () => {
-            const editId = document.getElementById('audio-edit-id').value;
-            let title = document.getElementById('audio-title').value.trim();
-            const fileInput = document.getElementById('audio-file');
-            const urlInput = document.getElementById('audio-url').value.trim();
-            
-            if(!editId && fileInput.files.length === 0 && !urlInput) { showToast('음원 파일이나 링크를 입력해주세요.', 'error'); return; }
-            const btn = document.getElementById('add-audio-btn');
-            btn.disabled = true;
-
-            if (editId) {
-                let audio = getCollectionData('audio').find(a => a.id == editId);
-                let updateData = { title: title || audio.title };
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    updateData.type = 'file';
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        updateData.data = e.target.result;
-                        await dbUpdate('audio', editId, updateData);
-                        finishAudioUpload('음원이 수정되었습니다.', btn);
-                    };
-                    reader.readAsDataURL(file);
-                } else if (urlInput) {
-                    updateData.type = 'url';
-                    updateData.data = urlInput;
-                    await dbUpdate('audio', editId, updateData);
-                    finishAudioUpload('음원이 수정되었습니다.', btn);
-                } else {
-                    await dbUpdate('audio', editId, updateData);
-                    finishAudioUpload('음원 정보가 수정되었습니다.', btn);
-                }
-            } else {
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    if (!title) title = file.name.replace(/\.[^/.]+$/, "");
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
-                        finishAudioUpload('음원이 등록되었습니다.', btn);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    if (!title) title = "링크 음원";
-                    await dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() });
-                    finishAudioUpload('음원 링크가 등록되었습니다.', btn);
-                }
-            }
-        });
-
-        function finishAudioUpload(msg, btn) {
-            closeModal('audio-modal'); showToast(msg, 'success');
-            btn.disabled = false; document.getElementById('audio-edit-id').value = '';
-            document.getElementById('audio-title').value = ''; document.getElementById('audio-file').value = '';
-            document.getElementById('audio-url').value = '';
-        }
-
-        window.openEditAudio = (id) => {
-            let audio = getCollectionData('audio').find(a => a.id == id);
-            if (!audio) return;
-            document.getElementById('audio-edit-id').value = audio.id;
-            document.getElementById('audio-title').value = audio.title || '';
-            document.getElementById('audio-file').value = '';
-            document.getElementById('audio-url').value = audio.type === 'url' ? audio.data : '';
-            document.getElementById('audio-modal-title').textContent = '음원 수정';
-            document.getElementById('audio-modal').classList.remove('hidden');
-        };
-
-        window.deleteAudio = async (id) => {
-            showCustomConfirm('음원 삭제', '이 음원을 삭제하시겠습니까?', async () => {
-                await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info');
-            });
-        };
+        window.deleteSheet = async (id) => { await dbDelete('sheets', id); showToast('악보가 삭제되었습니다.', 'info'); };
 
         function renderKontiSheetCheckboxes(selectedIds = []) {
             const container = document.getElementById('konti-sheets-checkboxes');
             const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
             const sheets = getCollectionData('sheets');
             container.innerHTML = '';
-            if (sheets.length === 0) { container.innerHTML = `<div class="text-xs text-gray-400 text-center py-4">등록된 악보가 없습니다.</div>`; return; }
+            if (sheets.length === 0) { container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4"></p>`; return; }
             sheets.filter(s => s.title.toLowerCase().includes(search)).forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-white hover:bg-indigo-50 border border-gray-100 transition shadow-sm mb-1">
-                        <label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden">
+                    <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100 transition">
+                        <label class="flex items-center gap-2.5 cursor-pointer flex-1">
                             <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-4 h-4 text-indigo-600 rounded border-gray-300">
-                            <span class="text-xs sm:text-sm text-gray-700 truncate">${escapeHtml(sheet.title)}</span>
+                            <span class="text-xs sm:text-sm text-gray-700">${escapeHtml(sheet.title)}</span>
                         </label>
+                        <div class="flex items-center gap-1">
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
+                            <button type="button" onclick="moveSheetOrder('${sheet.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
+                        </div>
                     </div>
                 `;
             });
         }
-        window.filterKontiSheetCheckboxes = () => { renderKontiSheetCheckboxes(Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value)); };
+
+        window.filterKontiSheetCheckboxes = () => {
+            renderKontiSheetCheckboxes(Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value));
+        };
+
+        window.moveSheetOrder = (sheetId, dir) => {
+            const container = document.getElementById('konti-sheets-checkboxes');
+            const items = Array.from(container.children);
+            const index = items.findIndex(item => item.querySelector('.konti-sheet-checkbox')?.value == sheetId);
+            if (index === -1) return;
+            if (dir === 'up' && index > 0) container.insertBefore(items[index], items[index - 1]);
+            else if (dir === 'down' && index < items.length - 1) container.insertBefore(items[index + 1], items[index]);
+        };
 
         function loadKonti() {
             const list = document.getElementById('konti-list');
@@ -1331,31 +1286,30 @@
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search));
             list.innerHTML = '';
             if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-16 text-sm bg-white rounded-2xl border border-gray-100 flex flex-col items-center"><i class="fa-solid fa-list-ol text-4xl mb-3 opacity-30"></i>등록된 콘티가 없습니다.</div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
                 return;
             }
             kontiList.forEach(konti => {
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
-                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic">포함된 악보가 없습니다.</p>` : '';
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic"></p>` : '';
                 kontiSheets.forEach((sheet, idx) => {
                     sheetsHtml += `
                         <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <span class="w-5 h-5 rounded bg-white text-gray-600 font-bold text-xs flex items-center justify-center">${idx + 1}</span>
+                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span>
                                 <span class="text-xs sm:text-sm font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
                             </div>
-                            <button onclick="downloadSheet('${sheet.id}')" class="text-xs text-indigo-600 font-semibold hover:underline cursor-pointer"><i class="fa-solid fa-download"></i> 다운로드</button>
+                            <button onclick="downloadSheet('${sheet.id}')" class="text-xs text-indigo-600 font-semibold hover:underline px-2 py-1"><i class="fa-solid fa-download"></i> 다운로드</button>
                         </div>
                     `;
                 });
                 const item = document.createElement('div');
                 item.className = 'bg-white border border-gray-200 rounded-2xl p-5 shadow-sm';
-                const btnId = `btn-pdf-${konti.id}`;
                 item.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-gray-100">
                         <div><h3 class="font-bold text-gray-800 text-sm sm:text-base">${escapeHtml(konti.name)}</h3><p class="text-[11px] text-gray-400 mt-0.5">총 ${kontiSheets.length}곡 포함</p></div>
-                        <div class="flex items-center gap-2">
-                            <button id="${btnId}" onclick="downloadKontiMergedPdf('${konti.id}', '${btnId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드 받기</button>
                             <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
@@ -1373,9 +1327,16 @@
             const sheetIds = Array.from(document.querySelectorAll('.konti-sheet-checkbox:checked')).map(cb => cb.value);
             if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; }
             closeModal('konti-modal');
-            if (editId) { await dbUpdate('konti', editId, { name, sheetIds }); showToast('콘티가 수정되었습니다.', 'success'); }
-            else { await dbAdd('konti', { name, sheetIds, createdAt: Date.now() }); showToast('콘티가 생성되었습니다.', 'success'); }
-            document.getElementById('konti-name').value = ''; document.getElementById('konti-edit-id').value = '';
+            
+            if (editId) {
+                await dbUpdate('konti', editId, { name, sheetIds });
+                showToast('콘티가 수정되었습니다.', 'success');
+            } else {
+                await dbAdd('konti', { name, sheetIds, createdAt: Date.now() });
+                showToast('콘티가 생성되었습니다.', 'success');
+            }
+            document.getElementById('konti-name').value = '';
+            document.getElementById('konti-edit-id').value = '';
         });
 
         window.openEditKonti = (id) => {
@@ -1383,61 +1344,192 @@
             if (!konti) return;
             document.getElementById('konti-edit-id').value = konti.id;
             document.getElementById('konti-name').value = konti.name;
+            document.getElementById('konti-modal-title').textContent = '콘티 수정';
             renderKontiSheetCheckboxes(konti.sheetIds || []);
-            document.getElementById('konti-modal').classList.remove('hidden');
+            openModal('konti-modal');
         };
 
         window.deleteKonti = async (id) => { await dbDelete('konti', id); showToast('콘티가 삭제되었습니다.', 'info'); };
 
-        window.downloadKontiMergedPdf = async (kontiId, btnId) => {
+        window.downloadKontiMergedPdf = async (kontiId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId);
             let sheets = getCollectionData('sheets');
             if (!konti) return;
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
             if (kontiSheets.length === 0) { showToast('포함된 악보가 없습니다.', 'error'); return; }
 
-            const btn = document.getElementById(btnId);
-            const originalHtml = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = '생성중...';
+            showToast(`[${konti.name}] 전체 악보 PDF 생성 중...`, 'info');
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
 
-            setTimeout(async () => {
-                try {
-                    const { PDFDocument } = PDFLib;
-                    const mergedPdf = await PDFDocument.create();
-                    for (let i = 0; i < kontiSheets.length; i++) {
-                        let sheet = kontiSheets[i];
-                        let dataUrl = sheet.data;
-                        if (!dataUrl) continue;
+                for (let i = 0; i < kontiSheets.length; i++) {
+                    let sheet = kontiSheets[i];
+                    let dataUrl = sheet.data;
+                    if (!dataUrl) continue;
+
+                    try {
                         let base64Data = dataUrl.split(',')[1];
-                        let bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                        let binaryString = atob(base64Data);
+                        let len = binaryString.length;
+                        let bytes = new Uint8Array(len);
+                        for (let j = 0; j < len; j++) { bytes[j] = binaryString.charCodeAt(j); }
+
                         if (dataUrl.includes('application/pdf')) {
                             const donorPdf = await PDFDocument.load(bytes);
                             const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
-                            copiedPages.forEach(p => mergedPdf.addPage(p));
+                            copiedPages.forEach((page) => mergedPdf.addPage(page));
                         } else if (dataUrl.includes('image/')) {
-                            let img = dataUrl.includes('image/png') ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
-                            let page = mergedPdf.addPage([img.width, img.height]);
-                            page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+                            let embeddedImage;
+                            if (dataUrl.includes('image/png')) {
+                                embeddedImage = await mergedPdf.embedPng(bytes);
+                            } else {
+                                embeddedImage = await mergedPdf.embedJpg(bytes);
+                            }
+                            const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
+                            page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
                         }
+                    } catch (e) {
+                        console.error("Error processing sheet file:", e);
                     }
-                    const pdfBytes = await mergedPdf.save();
-                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                    const blobUrl = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = `${konti.name.replace(/ /g, '_')}_전체악보.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-                    showToast('전체 악보 다운로드가 시작됩니다.', 'success');
-                } catch(e) {
-                    showToast('PDF 생성 중 오류가 발생했습니다.', 'error');
-                } finally {
-                    btn.disabled = false; btn.innerHTML = originalHtml;
                 }
-            }, 50);
+
+                const mergedPdfBytes = await mergedPdf.save();
+                const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `${konti.name.replace(/ /g, '_')}_전체악보.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                showToast('전체 악보 다운로드가 시작됩니다.', 'success');
+            } catch (err) {
+                console.error("PDF merge error:", err);
+                showToast('PDF 통합 중 오류가 발생했습니다.', 'error');
+            }
         };
+
+        function loadAudio() {
+            const list = document.getElementById('audio-list');
+            const search = (document.getElementById('audio-search')?.value || '').toLowerCase();
+            let audios = getCollectionData('audio');
+            if (search) audios = audios.filter(a => a.title.toLowerCase().includes(search));
+            list.innerHTML = '';
+            if(audios.length === 0) {
+                list.innerHTML = `<div class="text-center text-gray-400 py-12 text-xs sm:text-sm bg-white rounded-2xl border border-gray-100"><p></p></div>`;
+                return;
+            }
+            audios.forEach(audio => {
+                const item = document.createElement('div');
+                item.className = 'bg-white border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition relative group';
+                let mediaContent = audio.type === 'file' ? `<audio controls class="w-full sm:w-72 h-9 mt-2"><source src="${audio.data}" type="audio/mpeg"></audio>` : `<a href="${audio.data}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-purple-600 font-semibold hover:underline truncate"><i class="fa-solid fa-arrow-up-right-from-square"></i> 이동하기</a>`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3.5 w-full sm:w-auto flex-1 overflow-hidden">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0 text-base"><i class="fa-solid fa-headphones"></i></div>
+                        <div class="flex-1 overflow-hidden pr-20 sm:pr-0"><h4 class="font-bold text-gray-800 text-xs sm:text-sm truncate">${escapeHtml(audio.title)}</h4>${mediaContent}</div>
+                    </div>
+                    <div class="absolute top-3 right-3 flex items-center gap-1">
+                        <button onclick="openEditAudio('${audio.id}')" class="text-gray-300 hover:text-indigo-600 p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteAudio('${audio.id}')" class="text-gray-300 hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            updateStats();
+        }
+
+        document.getElementById('add-audio-btn').addEventListener('click', () => {
+            const editId = document.getElementById('audio-edit-id').value;
+            let title = document.getElementById('audio-title').value.trim();
+            const fileInput = document.getElementById('audio-file');
+            const urlInput = document.getElementById('audio-url').value.trim();
+
+            if (editId) {
+                let audios = getCollectionData('audio');
+                let audio = audios.find(a => a.id == editId);
+                if (audio) {
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        if (!title) title = file.name;
+                        const reader = new FileReader();
+                        reader.onload = async function(e) {
+                            closeModal('audio-modal');
+                            showToast('음원이 수정되었습니다.', 'success');
+                            await dbUpdate('audio', editId, { title, type: 'file', data: e.target.result });
+                        };
+                        reader.readAsDataURL(file);
+                        return;
+                    } else if (urlInput) {
+                        if (!title) title = urlInput;
+                        closeModal('audio-modal');
+                        showToast('음원이 수정되었습니다.', 'success');
+                        dbUpdate('audio', editId, { title, type: 'url', data: urlInput });
+                    } else {
+                        if (!title) title = audio.title;
+                        closeModal('audio-modal');
+                        showToast('음원 정보가 수정되었습니다.', 'success');
+                        dbUpdate('audio', editId, { title });
+                    }
+                }
+            } else {
+                if(fileInput.files.length === 0 && !urlInput) { showToast('파일이나 링크를 입력해주세요.', 'error'); return; }
+                closeModal('audio-modal');
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    if (!title) title = file.name;
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        await dbAdd('audio', { title, type: 'file', data: e.target.result, createdAt: Date.now() });
+                        showToast('음원이 업로드되었습니다.', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (!title) title = urlInput;
+                    dbAdd('audio', { title, type: 'url', data: urlInput, createdAt: Date.now() }).then(() => {
+                        showToast('음원 링크가 등록되었습니다.', 'success');
+                    });
+                }
+            }
+        });
+
+        window.openEditAudio = (id) => {
+            let audio = getCollectionData('audio').find(a => a.id == id);
+            if (!audio) return;
+            document.getElementById('audio-edit-id').value = audio.id;
+            document.getElementById('audio-title').value = audio.title;
+            document.getElementById('audio-url').value = audio.type === 'url' ? audio.data : '';
+            document.getElementById('audio-modal-title').textContent = '음원 수정';
+            openModal('audio-modal');
+        };
+
+        window.deleteAudio = async (id) => { await dbDelete('audio', id); showToast('음원이 삭제되었습니다.', 'info'); };
+
+        function openModal(id) {
+            if (id === 'sheet-modal') {
+                document.getElementById('sheet-edit-id').value = '';
+                document.getElementById('sheet-title').value = '';
+                document.getElementById('sheet-file').value = '';
+                document.getElementById('sheet-modal-title').textContent = '새 악보 파일 등록';
+            } else if (id === 'konti-modal') {
+                document.getElementById('konti-edit-id').value = '';
+                document.getElementById('konti-name').value = '';
+                document.getElementById('konti-modal-title').textContent = '새 콘티 만들기';
+                if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
+                renderKontiSheetCheckboxes();
+            } else if (id === 'audio-modal') {
+                document.getElementById('audio-edit-id').value = '';
+                document.getElementById('audio-title').value = '';
+                document.getElementById('audio-file').value = '';
+                document.getElementById('audio-url').value = '';
+                document.getElementById('audio-modal-title').textContent = '새 음원 등록';
+            }
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function loadBoard() {
             const list = document.getElementById('board-list');
@@ -1445,12 +1537,12 @@
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
             list.innerHTML = '';
             if(posts.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-20 flex-1 flex flex-col items-center justify-center text-sm"><i class="fa-regular fa-comments text-4xl mb-3 opacity-30"></i>게시글이 없습니다.</div>`;
+                list.innerHTML = `<div class="text-center text-gray-400 py-10 flex-1 flex items-center justify-center text-xs sm:text-sm"><p>첫 게시글을 남겨보세요.</p></div>`;
                 return;
             }
             posts.forEach(post => {
                 const item = document.createElement('div');
-                item.className = 'flex flex-col w-full sm:w-[90%] self-start items-start mb-3 group';
+                item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-3 group';
                 const authorName = post.author ? `<div class="text-[11px] font-bold text-gray-600 ml-2 mb-1">${escapeHtml(post.author)}</div>` : '';
                 
                 const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
@@ -1494,7 +1586,7 @@
             const text = input.value.trim();
             if(!text) return;
             const now = new Date();
-            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             const authorName = currentUser ? currentUser.username : '익명';
             
             await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
@@ -1509,34 +1601,11 @@
             showToast('게시글이 수정되었습니다.', 'success');
         };
 
-        window.deletePost = async (id) => {
-            showCustomConfirm('게시글 삭제', '이 게시글을 삭제하시겠습니까?', async () => {
-                await dbDelete('board', id); showToast('게시글이 삭제되었습니다.', 'info');
-            });
-        };
+        window.deletePost = async (id) => { await dbDelete('board', id); showToast('게시글이 삭제되었습니다.', 'info'); };
 
-        function openModal(id) {
-            if (id === 'sheet-modal') {
-                document.getElementById('sheet-edit-id').value = '';
-                document.getElementById('sheet-title').value = '';
-                document.getElementById('sheet-file').value = '';
-                document.getElementById('sheet-file-name').textContent = '선택된 파일 없음';
-                document.getElementById('sheet-modal-title').textContent = '새 악보 파일 등록';
-            } else if (id === 'konti-modal') {
-                document.getElementById('konti-edit-id').value = '';
-                document.getElementById('konti-name').value = '';
-                renderKontiSheetCheckboxes();
-            } else if (id === 'audio-modal') {
-                document.getElementById('audio-edit-id').value = '';
-                document.getElementById('audio-title').value = '';
-                document.getElementById('audio-file').value = '';
-                document.getElementById('audio-url').value = '';
-            }
-            document.getElementById(id).classList.remove('hidden');
+        function escapeHtml(unsafe) {
+            return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
-
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     </script>
 </body>
 </html>
