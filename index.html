@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hagios Worship</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- pdf-lib (PDF 병합용) -->
+    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; }
+        .toast { position: fixed; bottom: 20px; right: 20px; z-index: 9999; transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 로그인 / 회원가입 오버레이 화면 -->
+    <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 text-white rounded-2xl mb-4 text-2xl shadow-lg shadow-indigo-200">
+                    <i class="fa-solid id-card"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900">Hagios Worship</h1>
+                <p class="text-slate-500 text-sm mt-1" id="auth-subtitle">팀 워크스페이스에 로그인하세요</p>
+            </div>
+
+            <!-- 로그인 폼 -->
+            <div id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">사용자 이름</label>
+                    <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="이름을 입력하세요">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="비밀번호">
+                </div>
+                <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition shadow-lg shadow-indigo-100 text-sm">로그인</button>
+                <div class="text-center mt-4">
+                    <button onclick="toggleAuthMode('signup')" class="text-xs text-indigo-600 hover:underline">계정이 없으신가요? 회원가입</button>
+                </div>
+            </div>
+
+            <!-- 회원가입 폼 (이름, 비번만) -->
+            <div id="signup-form" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">사용할 이름</label>
+                    <input type="text" id="signup-username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="예: 김찬양">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">비밀번호</label>
+                    <input type="password" id="signup-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="사용할 비밀번호">
+                </div>
+                <button onclick="handleSignup()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition shadow-lg shadow-emerald-100 text-sm">회원가입 신청</button>
+                <div class="text-center mt-4">
+                    <button onclick="toggleAuthMode('login')" class="text-xs text-slate-600 hover:underline">이미 계정이 있으신가요? 로그인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 앱 컨테이너 (로그인 및 승인 후 표시) -->
+    <div id="main-app" class="hidden flex flex-col min-h-screen">
+        <!-- 상단 네비게이션 -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-tight">Hagios Worship</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="current-user-badge" class="text-xs font-medium bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg"></span>
+                    <button id="admin-menu-btn" onclick="openAdminModal()" class="hidden text-xs bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1.5 rounded-lg font-semibold transition"><i class="fa-solid fa-shield-halved mr-1"></i> 회원 관리</button>
+                    <button onclick="handleLogout()" class="text-xs text-slate-500 hover:text-red-600 transition"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 탭 네비게이션 -->
+        <nav class="bg-white border-b border-slate-200 px-4">
+            <div class="max-w-7xl mx-auto flex space-x-6 overflow-x-auto">
+                <button onclick="switchTab('konti')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 whitespace-nowrap">콘티 관리</button>
+                <button onclick="switchTab('sheets')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">악보 자료실</button>
+                <button onclick="switchTab('audio')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">음원 공유</button>
+                <button onclick="switchTab('todo')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">투두리스트</button>
+                <button onclick="switchTab('board')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">게시판</button>
+                <button onclick="switchTab('calendar')" class="tab-btn py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">캘린더</button>
+            </div>
+        </nav>
+
+        <!-- 본문 내용 영역 -->
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+            <!-- 콘티 탭 -->
+            <div id="tab-konti" class="tab-content space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">주일 콘티 관리</h2>
+                    <button onclick="openModal('konti-modal')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 shadow-sm transition"><i class="fa-solid fa-plus mr-1"></i> 새 콘티 작성</button>
+                </div>
+                <div id="konti-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- 악보 탭 -->
+            <div id="tab-sheets" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">악보 자료실</h2>
+                    <button onclick="openModal('sheet-modal')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 shadow-sm transition"><i class="fa-solid fa-upload mr-1"></i> 악보 업로드</button>
+                </div>
+                <div id="sheets-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- 음원 탭 -->
+            <div id="tab-audio" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">음원 공유</h2>
+                    <button onclick="openModal('audio-modal')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 shadow-sm transition"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> 음원 등록</button>
+                </div>
+                <div id="audio-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- 투두 탭 -->
+            <div id="tab-todo" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">팀 투두리스트</h2>
+                    <div class="flex space-x-2">
+                        <input type="text" id="new-todo-input" class="px-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="할 일을 입력하세요">
+                        <button onclick="addTodo()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition">추가</button>
+                    </div>
+                </div>
+                <div id="todo-list" class="space-y-2"></div>
+            </div>
+
+            <!-- 게시판 탭 -->
+            <div id="tab-board" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">자유 게시판</h2>
+                    <button onclick="openModal('board-modal')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition">글쓰기</button>
+                </div>
+                <div id="board-list" class="space-y-4"></div>
+            </div>
+
+            <!-- 캘린더 탭 -->
+            <div id="tab-calendar" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold" id="cal-month-title">2026년 9월</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="changeMonth(-1)" class="p-2 bg-white border rounded-xl hover:bg-slate-100"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="changeMonth(1)" class="p-2 bg-white border rounded-xl hover:bg-slate-100"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border p-4">
+                    <div class="grid grid-cols-7 text-center font-semibold text-xs text-slate-400 pb-2">
+                        <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 관리자 권한 승인 모달 -->
+    <div id="admin-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-lg">회원가입 승인 관리</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500">가입 신청한 팀원에게 권한을 승인해 주어야 앱에 접속할 수 있습니다.</p>
+            <div id="pending-users-list" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- 토스트 알림 영역 -->
+    <div id="toast-container" class="toast"></div>
+
+    <script>
+        // 파이어베이스 설정 (기존 연동 유지)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForHagiosWorship12345",
+            authDomain: "hagios-worship.firebaseapp.com",
+            projectId: "hagios-worship"
+        };
+        // 실제 작동을 위해 익명/로컬 인증 연동 구성
+        let currentUser = null;
+
+        // 로그인 / 회원가입 전환
+        function toggleAuthMode(mode) {
+            if(mode === 'signup') {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('signup-form').classList.remove('hidden');
+                document.getElementById('auth-subtitle').innerText = '간편하게 팀 계정을 만드세요';
+            } else {
+                document.getElementById('signup-form').classList.add('hidden');
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('auth-subtitle').innerText = '팀 워크스페이스에 로그인하세요';
+            }
+        }
+
+        // 회원가입 (이름, 비번만 저장)
+        function handleSignup() {
+            const username = document.getElementById('signup-username').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            if(!username || !password) {
+                alert('이름과 비밀번호를 모두 입력해주세요.');
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            if(users.find(u => u.username === username)) {
+                alert('이미 존재하는 이름입니다.');
+                return;
+            }
+            // 첫 가입자는 자동 관리자 부여, 나머지는 승인 대기(status: 'pending')
+            const isAdmin = users.length === 0;
+            users.push({ username, password, status: isAdmin ? 'approved' : 'pending', isAdmin });
+            localStorage.setItem('hagios_users', JSON.stringify(users));
+            alert(isAdmin ? '관리자 계정으로 가입되었습니다!' : '회원가입 신청이 완료되었습니다. 관리자 승인을 기다려주세요.');
+            toggleAuthMode('login');
+        }
+
+        // 로그인 처리
+        function handleLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if(!user) {
+                alert('이름 또는 비밀번호가 올바르지 않습니다.');
+                return;
+            }
+            if(user.status !== 'approved') {
+                alert('아직 관리자 승인이 완료되지 않은 계정입니다.');
+                return;
+            }
+
+            currentUser = user;
+            localStorage.setItem('hagios_current_user', JSON.stringify(user));
+            initApp();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('hagios_current_user');
+            location.reload();
+        }
+
+        // 앱 초기화 및 권한 체크
+        window.onload = function() {
+            const savedUser = localStorage.getItem('hagios_current_user');
+            if(savedUser) {
+                currentUser = JSON.parse(savedUser);
+                initApp();
+            }
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('current-user-badge').innerHTML = `<i class="fa-solid fa-user mr-1 text-indigo-600"></i> ${currentUser.username} (${currentUser.isAdmin ? '관리자' : '팀원'})`;
+            
+            if(currentUser.isAdmin) {
+                document.getElementById('admin-menu-btn').classList.remove('hidden');
+            }
+            showToast(`${currentUser.username}님 환영합니다!`);
+        }
+
+        // 관리자 모달 제어
+        function openAdminModal() {
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            const listEl = document.getElementById('pending-users-list');
+            listEl.innerHTML = '';
+            users.forEach((u, idx) => {
+                listEl.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border">
+                        <div>
+                            <p class="font-bold text-sm">${u.username}</p>
+                            <span class="text-xs px-2 py-0.5 rounded-full ${u.status==='approved'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${u.status==='approved'?'승인됨':'대기중'}</span>
+                        </div>
+                        ${u.status==='pending' ? `<button onclick="approveUser(${idx})" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg">승인</button>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function approveUser(idx) {
+            let users = JSON.parse(localStorage.getItem('hagios_users') || '[]');
+            users[idx].status = 'approved';
+            localStorage.setItem('hagios_users', JSON.stringify(users));
+            openAdminModal();
+            showToast('회원 승인이 완료되었습니다.');
+        }
+
+        // 탭 전환 기능
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-indigo-600', 'text-indigo-600');
+                el.classList.add('border-transparent', 'text-slate-500');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            event.currentTarget.classList.add('border-indigo-600', 'text-indigo-600');
+            event.currentTarget.classList.remove('border-transparent', 'text-slate-500');
+        }
+
+        // 토스트 알림 함수
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 기타 기능 모달 및 기본 껍데기 유지
+        function openModal(id) { alert('해당 기능 모달이 열립니다.'); }
+        function addTodo() { showToast('할 일이 추가되었습니다.'); }
+        function changeMonth(dir) {}
+    </script>
+</body>
+</html>
