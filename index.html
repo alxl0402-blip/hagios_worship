@@ -921,7 +921,7 @@
                 });
             }
             else if(action === 'delete') {
-                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, async () => {
+                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?\n이 작업은 되돌릴 수 정 없습니다.`, async () => {
                     await dbDelete('users', id);
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info');
                     renderAdminViews();
@@ -1592,6 +1592,8 @@
 
         // Shift+Enter 로 줄바꿈, Enter 로 등록
         document.getElementById('board-input').addEventListener('keydown', function(e) {
+            if (e.isComposing || e.keyCode === 229) return; // 한글(IME) 입력 중 엔터키로 인한 전송 방지
+            
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault(); // 기본 줄바꿈 방지
                 document.getElementById('add-post-btn').click();
