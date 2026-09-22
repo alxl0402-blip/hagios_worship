@@ -197,7 +197,7 @@
                         </div>
                     </div>
 
-                    <!-- 홈 화면 위젯 영역 (높이 조절 및 텍스트 수정) -->
+                    <!-- 홈 화면 위젯 영역 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-6">
                         <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 flex flex-col h-[280px] sm:h-auto">
                             <h3 class="text-sm sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-regular fa-calendar-check text-indigo-500"></i> 다가오는 일정</h3>
@@ -791,7 +791,7 @@
                                     <span class="text-sm sm:text-base text-gray-800 truncate font-medium">${escapeHtml(noti.message)}</span>
                                 </div>
                                 <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white flex items-center justify-center shadow-2xs flex-shrink-0 text-amber-500 hover:bg-amber-100 transition" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                                    <i class="fa-solid fa-xmark text-sm"></i>
+                                    <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
                                 </div>
                             </div>
                         `;
@@ -1028,7 +1028,7 @@
             panelEl.classList.remove('hidden'); titleEl.textContent = `${selectedCalendarDateStr}`;
             let html = '';
             dayEvents.forEach(ev => {
-                const isOwner = currentUser && (currentUser.isAdmin || (ev.author && ev.author === currentUser.username));
+                const isOwner = !!currentUser; // 누구나 수정/삭제 가능
                 const actionBtns = isOwner ? `<div class="flex items-center gap-2 sm:gap-2"><button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1 sm:p-1.5 text-base sm:text-base"><i class="fa-solid fa-pen"></i></button><button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1 sm:p-1.5 text-base sm:text-base"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
 
                 let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-1"></i>${ev.time}</span>` : '';
@@ -1079,8 +1079,8 @@
                 return;
             }
             sheets.forEach(sheet => {
-                const isOwner = currentUser && (currentUser.isAdmin || (sheet.author && sheet.author === currentUser.username));
-                const actionBtns = isOwner ? `<div class="absolute top-3 right-3 sm:top-3 sm:right-3 flex items-center gap-2 sm:gap-2 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition p-1 z-10"><button onclick="openEditSheet('${sheet.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 sm:p-1.5 text-base sm:text-base rounded hover:bg-indigo-50"><i class="fa-solid fa-pen"></i></button><button onclick="deleteSheet('${sheet.id}')" class="text-gray-400 hover:text-red-500 p-1.5 sm:p-1.5 text-base sm:text-base rounded hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                const isOwner = !!currentUser; // 누구나 수정/삭제 가능
+                const actionBtns = isOwner ? `<div class="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-2 sm:gap-2 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition p-1 z-10"><button onclick="openEditSheet('${sheet.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 sm:p-1.5 text-base sm:text-base rounded hover:bg-indigo-50"><i class="fa-solid fa-pen"></i></button><button onclick="deleteSheet('${sheet.id}')" class="text-gray-400 hover:text-red-500 p-1.5 sm:p-1.5 text-base sm:text-base rounded hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
 
                 const item = document.createElement('div');
                 item.className = 'bg-white border border-gray-200 rounded-2xl sm:rounded-2xl p-4 flex flex-col hover:shadow-sm transition relative group';
@@ -1244,7 +1244,7 @@
             list.innerHTML = '';
             if(kontiList.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 text-sm bg-white rounded-xl border border-gray-100">등록된 콘티가 없습니다.</div>`; return; }
             kontiList.forEach(konti => {
-                const isOwner = currentUser && (currentUser.isAdmin || (konti.author && konti.author === currentUser.username));
+                const isOwner = !!currentUser; // 누구나 수정/삭제 가능
                 const actionBtns = isOwner ? `<button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-2.5 text-base sm:text-base bg-gray-50 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-2.5 text-base sm:text-base bg-gray-50 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-trash-can"></i></button>` : '';
 
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
@@ -1253,7 +1253,7 @@
                 let linkHtml = konti.link ? `<a href="${konti.link}" target="_blank" class="inline-flex items-center gap-1.5 text-sm sm:text-sm text-red-600 hover:underline"><i class="fa-brands fa-youtube"></i> 유튜브 링크</a>` : '';
                 let memoHtml = konti.memo ? `<div class="mt-3 text-sm sm:text-sm text-gray-600 bg-amber-50 border border-amber-100 p-4 rounded-lg whitespace-pre-wrap">${escapeHtml(konti.memo)}</div>` : '';
                 const item = document.createElement('div'); item.className = 'bg-white border border-gray-200 rounded-2xl sm:rounded-2xl p-5 shadow-sm';
-                item.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 pb-4 border-b border-gray-100"><div><h3 class="font-bold text-gray-800 text-lg sm:text-lg">${escapeHtml(konti.name)}</h3><div class="flex gap-3 items-center mt-2"><span class="text-sm sm:text-sm text-gray-400 bg-gray-100 px-2.5 py-1 rounded">총 ${kontiSheets.length}곡</span>${linkHtml}</div></div><div class="flex items-center gap-2 w-full sm:w-auto justify-end"><button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-4 py-2 sm:py-2 rounded-lg text-sm sm:text-sm font-medium transition shadow-2xs flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 병합</button>${actionBtns}</div></div>${memoHtml}<div class="flex flex-col gap-2 mt-4">${sheetsHtml}</div>`;
+                item.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 pb-4 border-b border-gray-100"><div><h3 class="font-bold text-gray-800 text-lg sm:text-lg">${escapeHtml(konti.name)}</h3><div class="flex gap-3 items-center mt-2"><span class="text-sm sm:text-sm text-gray-400 bg-gray-100 px-2.5 py-1 rounded">총 ${kontiSheets.length}곡</span>${linkHtml}</div></div><div class="flex items-center gap-2 w-full sm:w-auto justify-end"><button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-4 py-2 sm:py-2 rounded-lg text-sm sm:text-sm font-medium transition shadow-2xs flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드</button>${actionBtns}</div></div>${memoHtml}<div class="flex flex-col gap-2 mt-4">${sheetsHtml}</div>`;
                 list.appendChild(item);
             });
         }
@@ -1287,7 +1287,7 @@
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined && s.data);
             if (kontiSheets.length === 0) { showToast('병합할 악보 파일이 없습니다.', 'error'); return; }
 
-            showToast(`[${konti.name}] 전체 악보 병합 중...`, 'info');
+            showToast(`[${konti.name}] 전체 악보 다운로드 준비 중...`, 'info');
             try {
                 const { PDFDocument } = PDFLib; const mergedPdf = await PDFDocument.create();
 
@@ -1322,7 +1322,7 @@
                 const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = `${konti.name.replace(/ /g, '_')}_통합악보.pdf`;
                 document.body.appendChild(link); link.click(); document.body.removeChild(link); setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
                 showToast('다운로드가 완료되었습니다.', 'success');
-            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 병합 중 오류가 발생했습니다.', 'error'); }
+            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 다운로드 중 오류가 발생했습니다.', 'error'); }
         };
 
         function loadArchives() { 
