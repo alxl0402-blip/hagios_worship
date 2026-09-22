@@ -114,7 +114,7 @@
                     <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow flex-shrink-0 group-hover:bg-indigo-700 transition">
                         <i class="fa-solid fa-music text-white text-sm"></i>
                     </div>
-                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios</span>
+                    <span class="font-bold text-base md:text-lg text-gray-800 whitespace-nowrap group-hover:text-indigo-600 transition">Hagios Worship</span>
                 </div>
                 <!-- 모바일 헤더 버튼 -->
                 <div class="flex items-center gap-2 md:hidden">
@@ -1247,19 +1247,22 @@
                 const memoHtml = sheet.memo ? `<div class="mt-2 text-[11px] text-gray-600 bg-gray-50 border border-gray-100 p-2 rounded-md whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
 
                 item.innerHTML = `
-                    <div class="flex items-start gap-2.5">
+                    <div class="flex items-start gap-2.5 cursor-pointer" onclick="toggleSheetDetail('${sheet.id}')" title="클릭하여 상세 보기">
                         <div class="w-10 h-10 rounded-lg ${sheet.data ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'} flex items-center justify-center flex-shrink-0 text-sm"><i class="fa-solid fa-music"></i></div>
-                        <div class="flex-1 overflow-hidden pr-10">
+                        <div class="flex-1 overflow-hidden pr-10 flex flex-col justify-center h-10">
                             <h4 class="font-bold text-gray-800 text-xs truncate leading-tight">${escapeHtml(sheet.title)}</h4>
-                            <div class="flex flex-wrap gap-1.5 items-center">
-                                ${downloadBtn}
-                                ${linkHtml}
-                            </div>
+                            <span class="text-[9px] text-gray-400 mt-0.5">자세히 보기 <i class="fa-solid fa-chevron-down text-[8px]"></i></span>
                         </div>
                     </div>
-                    ${audioPlayer}
-                    ${memoHtml}
-                    <div class="absolute top-2 right-2 flex items-center gap-1 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition p-0.5">
+                    <div id="sheet-detail-${sheet.id}" class="hidden flex-col mt-2 pt-2 border-t border-gray-100 fade-in">
+                        <div class="flex flex-wrap gap-1.5 items-center">
+                            ${downloadBtn}
+                            ${linkHtml}
+                        </div>
+                        ${audioPlayer}
+                        ${memoHtml}
+                    </div>
+                    <div class="absolute top-2 right-2 flex items-center gap-1 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition p-0.5 z-10">
                         <button onclick="openEditSheet('${sheet.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-[11px] rounded hover:bg-indigo-50"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteSheet('${sheet.id}')" class="text-gray-400 hover:text-red-500 p-1 text-[11px] rounded hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
@@ -1267,6 +1270,14 @@
                 list.appendChild(item);
             });
         }
+
+        window.toggleSheetDetail = (id) => {
+            const detailDiv = document.getElementById(`sheet-detail-${id}`);
+            if (detailDiv) {
+                detailDiv.classList.toggle('hidden');
+                detailDiv.classList.toggle('flex');
+            }
+        };
 
         window.downloadSheet = (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
@@ -1359,7 +1370,7 @@
             document.getElementById('sheet-audio-file').value = '';
             
             document.getElementById('sheet-modal-title').textContent = '악보/음원 수정';
-            openModal('sheet-modal');
+            document.getElementById('sheet-modal').classList.remove('hidden');
         };
 
         window.deleteSheet = async (id) => {
@@ -1505,7 +1516,7 @@
             });
             container.innerHTML = ''; items.forEach(item => container.appendChild(item));
             
-            openModal('konti-modal');
+            document.getElementById('konti-modal').classList.remove('hidden');
         };
 
         window.deleteKonti = async (id) => {
@@ -1645,7 +1656,7 @@
             document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음';
             document.getElementById('archive-file').value = '';
             document.getElementById('archive-modal-title').textContent = '자료 수정';
-            openModal('archive-modal');
+            document.getElementById('archive-modal').classList.remove('hidden');
         };
 
         window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
