@@ -32,10 +32,13 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Firebase Storage 추가 (음원/파일 대용량 업로드 용)
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         window.firebaseAppModules = {
             initializeApp, getAuth, signInAnonymously, signInWithCustomToken,
-            getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query
+            getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query,
+            getStorage, ref, uploadBytes, getDownloadURL
         };
         window.firebaseReadyEvent = new Event('firebaseReady');
         window.dispatchEvent(window.firebaseReadyEvent);
@@ -61,6 +64,7 @@
 
     <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
+        <!-- 기존 로그인 모달과 동일 -->
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 fade-in">
             <div class="text-center mb-6 sm:mb-8">
                 <div class="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-indigo-600 text-white rounded-2xl mb-3 sm:mb-4 text-xl sm:text-2xl shadow-lg shadow-indigo-200">
@@ -155,8 +159,9 @@
 
             <div class="flex-1 p-2.5 sm:p-4 md:p-6 scroll-smooth w-full min-w-0 max-w-5xl mx-auto">
                 
-                <!-- View: Home Dashboard -->
+                <!-- View: Home Dashboard (기존 유지) -->
                 <section id="view-dashboard" class="view-section fade-in">
+                    <!-- 메뉴 카드 영역 유지 -->
                     <h3 class="text-xs sm:text-sm md:text-base font-bold text-gray-800 mb-2.5 sm:mb-3">메뉴</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                         <div onclick="navigateToView('view-calendar')" class="bg-white p-3 sm:p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:shadow-sm transition cursor-pointer flex items-center gap-3 group">
@@ -193,15 +198,12 @@
                         </div>
                     </div>
 
-                    <!-- 홈 화면 위젯 영역: 다가오는 일정 & 알림 -->
+                    <!-- 홈 화면 위젯 영역 유지 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                        <!-- 다가오는 일정 (D-Day) -->
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4">
                             <h3 class="text-xs sm:text-sm font-bold text-gray-800 mb-2.5 flex items-center gap-1.5"><i class="fa-regular fa-calendar-check text-indigo-500"></i> 다가오는 일정 (30일 이내)</h3>
                             <div id="home-dday-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
                         </div>
-                        
-                        <!-- 새로운 소식 (NEW) -->
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4">
                             <h3 class="text-xs sm:text-sm font-bold text-gray-800 mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> 새로운 소식 (NEW)</h3>
                             <div id="home-new-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
@@ -209,7 +211,7 @@
                     </div>
                 </section>
 
-                <!-- View: Calendar with Detail Viewer Panel -->
+                <!-- 캘린더, 투두리스트 영역 기존 코드 유지 (생략하지 않음) -->
                 <section id="view-calendar" class="view-section hidden fade-in pb-6">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">캘린더</h2>
@@ -231,8 +233,6 @@
                         </div>
                         <div class="grid grid-cols-7 gap-0.5 text-center text-xs" id="calendar-grid"></div>
                     </div>
-
-                    <!-- Calendar Day Details Panel -->
                     <div id="calendar-detail-panel" class="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 hidden mb-4">
                         <div class="flex justify-between items-center mb-2 pb-1.5 border-b border-gray-100">
                             <h3 id="calendar-detail-date-title" class="font-bold text-gray-800 text-xs">날짜</h3>
@@ -242,7 +242,6 @@
                     </div>
                 </section>
 
-                <!-- View: Todo List -->
                 <section id="view-todos" class="view-section hidden fade-in">
                     <h2 class="text-sm sm:text-lg font-bold text-gray-800 mb-3">투두리스트</h2>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[380px]">
@@ -257,7 +256,7 @@
                     </div>
                 </section>
                 
-                <!-- View: Sheet Music (Integrated) -->
+                <!-- View: Sheet Music (악보) 수정됨 -->
                 <section id="view-sheetmusic" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">악보</h2>
@@ -271,11 +270,11 @@
                             <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none shadow-sm" placeholder="악보 및 곡 검색...">
                         </div>
                     </div>
-                    <!-- 악보 목록이 표시되는 그리드 -->
+                    <!-- 악보 목록 그리드 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3" id="sheet-list"></div>
                 </section>
 
-                <!-- View: Konti -->
+                <!-- 이하 콘티, 자료실 등 기존 코드 유지 -->
                 <section id="view-konti" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">콘티</h2>
@@ -292,7 +291,6 @@
                     <div class="grid grid-cols-1 gap-3" id="konti-list"></div>
                 </section>
 
-                <!-- View: Archives (자료실) -->
                 <section id="view-archives" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">자료실</h2>
@@ -309,7 +307,6 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="archive-list"></div>
                 </section>
 
-                <!-- View: Notice Board (공지) -->
                 <section id="view-board" class="view-section hidden fade-in">
                     <h2 class="text-sm sm:text-lg font-bold text-gray-800 mb-3">공지</h2>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[450px]">
@@ -325,7 +322,6 @@
                     </div>
                 </section>
 
-                <!-- View: Free Board (자유 게시판) -->
                 <section id="view-freeboard" class="view-section hidden fade-in">
                     <h2 class="text-sm sm:text-lg font-bold text-gray-800 mb-3">게시판</h2>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[450px]">
@@ -341,12 +337,11 @@
                     </div>
                 </section>
 
-                <!-- View: Notifications (알림) -->
                 <section id="view-notifications" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">알림내역</h2>
                         <button onclick="markAllNotificationsRead()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">
-                            모두 읽음 처리
+                            모든 알림 읽음 처리
                         </button>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[450px]">
@@ -358,7 +353,7 @@
         </main>
     </div>
 
-    <!-- 커스텀 팝업(Alert) 모달 -->
+    <!-- 각종 커스텀 Alert/Confirm 모달창 유지 -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-black/50 z-[70] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl fade-in text-center">
             <div id="alert-icon-container" class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2.5 text-base">
@@ -370,7 +365,6 @@
         </div>
     </div>
 
-    <!-- 커스텀 확인(Confirm) 모달 -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 shadow-xl fade-in text-center">
             <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2.5 text-base">
@@ -385,7 +379,6 @@
         </div>
     </div>
 
-    <!-- 관리자 모달 -->
     <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-slate-900/60 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full shadow-xl overflow-hidden flex flex-col max-h-[80vh]">
             <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
@@ -413,8 +406,6 @@
             <input type="hidden" id="konti-edit-id" value="">
             <div class="flex flex-col gap-3 flex-1 overflow-y-auto pr-1">
                 <div><label class="block text-[11px] font-medium text-gray-700 mb-1">콘티 이름</label><input type="text" id="konti-name" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder="예: 2026-09-27 주일예배"></div>
-                
-                <!-- 추가된 필드: 링크 및 메모 -->
                 <div><label class="block text-[11px] font-medium text-gray-700 mb-1">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500" placeholder="https://..."></div>
                 <div><label class="block text-[11px] font-medium text-gray-700 mb-1">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-indigo-500 resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
 
@@ -429,7 +420,7 @@
         </div>
     </div>
 
-    <!-- 악보 모달 (통합) -->
+    <!-- 악보 모달 (드래그 앤 드롭 적용 및 UI 수정) -->
     <div id="sheet-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-4 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-2.5">
@@ -438,30 +429,45 @@
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
             <div class="flex flex-col gap-3">
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">곡 제목 <span class="text-red-500">*</span></label><input type="text" id="sheet-title" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder="곡 제목 입력"></div>
+                <div>
+                    <label class="block text-[11px] font-medium text-gray-700 mb-1">곡 제목 <span class="text-red-500">*</span></label>
+                    <input type="text" id="sheet-title" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder="곡 제목 입력">
+                </div>
                 
-                <div class="p-2 border border-emerald-100 bg-emerald-50/30 rounded-lg">
-                    <label class="block text-[11px] font-medium text-emerald-800 mb-1">악보 파일 (PDF 또는 이미지)</label>
-                    <input type="file" id="sheet-file" accept=".pdf,image/*" class="w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-emerald-100 file:text-emerald-700 hover:file:bg-emerald-200">
-                    <div id="sheet-current-file-info" class="text-[10px] text-gray-500 mt-1"></div>
+                <!-- 악보 파일 드롭존 -->
+                <div id="sheet-file-dropzone" class="p-4 border-2 border-dashed border-emerald-300 bg-emerald-50/30 rounded-xl text-center cursor-pointer hover:bg-emerald-50 transition relative group">
+                    <input type="file" id="sheet-file" accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
+                    <i class="fa-solid fa-file-pdf text-emerald-400 text-2xl mb-1 group-hover:scale-110 transition"></i>
+                    <p class="text-[11px] font-medium text-emerald-800 mb-0.5">악보 파일 (PDF 또는 이미지)</p>
+                    <p class="text-[10px] text-emerald-600/70">클릭하거나 파일을 이곳으로 드래그하세요</p>
+                    <div id="sheet-current-file-info" class="text-[10px] text-gray-500 mt-2 font-semibold"></div>
                 </div>
 
-                <div class="p-2 border border-purple-100 bg-purple-50/30 rounded-lg">
-                    <label class="block text-[11px] font-medium text-purple-800 mb-1">음원 파일 (선택)</label>
-                    <input type="file" id="sheet-audio-file" accept="audio/*" class="w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200">
-                    <div id="sheet-current-audio-info" class="text-[10px] text-gray-500 mt-1"></div>
+                <!-- 음원 파일 드롭존 -->
+                <div id="audio-file-dropzone" class="p-4 border-2 border-dashed border-purple-300 bg-purple-50/30 rounded-xl text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1">
+                    <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
+                    <i class="fa-solid fa-file-audio text-purple-400 text-2xl mb-1 group-hover:scale-110 transition"></i>
+                    <p class="text-[11px] font-medium text-purple-800 mb-0.5">음원 파일 (선택)</p>
+                    <p class="text-[10px] text-purple-600/70">클릭하거나 대용량 MP3를 드래그하세요</p>
+                    <div id="sheet-current-audio-info" class="text-[10px] text-gray-500 mt-2 font-semibold"></div>
                 </div>
 
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">레퍼런스/유튜브 링크 (선택)</label><input type="url" id="sheet-link" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder="https://youtube.com/..."></div>
+                <div>
+                    <label class="block text-[11px] font-medium text-gray-700 mb-1">레퍼런스/유튜브 링크 (선택)</label>
+                    <input type="url" id="sheet-link" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500" placeholder="https://youtube.com/...">
+                </div>
                 
-                <div><label class="block text-[11px] font-medium text-gray-700 mb-1">메모 (선택)</label><textarea id="sheet-memo" rows="2" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500 resize-none" placeholder="특이사항이나 코멘트"></textarea></div>
+                <div>
+                    <label class="block text-[11px] font-medium text-gray-700 mb-1">메모 (선택)</label>
+                    <textarea id="sheet-memo" rows="2" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:border-emerald-500 resize-none" placeholder="특이사항이나 코멘트"></textarea>
+                </div>
                 
                 <button id="add-sheet-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-xs rounded-xl font-medium transition mt-1 shadow-sm">저장 완료</button>
             </div>
         </div>
     </div>
 
-    <!-- 자료실 모달 -->
+    <!-- 자료실, 일정 모달창들 유지 -->
     <div id="archive-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-4 shadow-xl fade-in">
             <div class="flex justify-between items-center mb-2.5">
@@ -480,7 +486,6 @@
         </div>
     </div>
 
-    <!-- 캘린더 일정 추가/수정 모달 -->
     <div id="calendar-event-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-4 shadow-xl fade-in max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-2.5">
@@ -504,11 +509,11 @@
     <script>
         let db = null;
         let auth = null;
+        let storage = null; // 스토리지 변수 추가
         let currentUser = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hagios-worship-app';
         let currentCalendarDate = new Date();
         let selectedCalendarDateStr = null;
-        // store 구조: freeboard, notifications 추가
         let store = { users: [], todos: [], calendar: [], sheets: [], board: [], konti: [], archives: [], freeboard: [], notifications: [] };
 
         let alertCallback = null;
@@ -533,7 +538,6 @@
                 icon.className = 'fa-solid fa-circle-info';
                 document.getElementById('alert-action-btn').className = 'w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition text-xs shadow-sm';
             }
-
             alertCallback = callback;
             document.getElementById('custom-alert-modal').classList.remove('hidden');
         }
@@ -551,22 +555,18 @@
             confirmCallback = callback;
             document.getElementById('custom-confirm-modal').classList.remove('hidden');
         }
-
         function closeCustomConfirm() {
             document.getElementById('custom-confirm-modal').classList.add('hidden');
             confirmCallback = null;
         }
-
         document.getElementById('confirm-action-btn').addEventListener('click', async () => {
             if (confirmCallback) await confirmCallback();
             closeCustomConfirm();
         });
 
-        // Global Enter key handler
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return; // 텍스트에리어 예외처리
-                
+                if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return; 
                 const alertModal = document.getElementById('custom-alert-modal');
                 if (alertModal && !alertModal.classList.contains('hidden')) { e.preventDefault(); closeAlert(); return; }
                 const confirmModal = document.getElementById('custom-confirm-modal');
@@ -583,12 +583,13 @@
         });
 
         window.addEventListener('firebaseReady', async () => {
-            const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore } = window.firebaseAppModules;
+            const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore, getStorage } = window.firebaseAppModules;
             try {
                 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
+                if (getStorage) storage = getStorage(app); // 스토리지 초기화
                 
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -633,9 +634,7 @@
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
                     
-                    if(collectionName === 'users' && currentUser && currentUser.isAdmin) {
-                        renderAdminViews();
-                    }
+                    if(collectionName === 'users' && currentUser && currentUser.isAdmin) renderAdminViews();
                     if(currentUser) refreshUI();
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
             };
@@ -668,14 +667,11 @@
                 store[collectionName] = list;
                 refreshUI();
             }
-
-            // 새로운 항목 등록 시 알림(Notification) 생성
             if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board');
             else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard');
             else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic');
             else if (collectionName === 'konti') createNotification('새 콘티', data.name, 'view-konti');
             else if (collectionName === 'archives') createNotification('새 자료', data.title, 'view-archives');
-            
             return newId;
         }
 
@@ -712,11 +708,8 @@
 
         async function createNotification(title, message, targetView) {
             const notiData = {
-                title,
-                message,
-                targetView,
-                createdAt: Date.now(),
-                readBy: [currentUser ? currentUser.username : '익명'] // 작성자는 기본적으로 읽음 처리
+                title, message, targetView, createdAt: Date.now(),
+                readBy: [currentUser ? currentUser.username : '익명']
             };
             if (db && auth && auth.currentUser) {
                 const { collection, addDoc } = window.firebaseAppModules;
@@ -744,10 +737,7 @@
         window.markAllNotificationsRead = async () => {
             if (!currentUser) return;
             const unread = store.notifications.filter(n => !(n.readBy || []).includes(currentUser.username));
-            if (unread.length === 0) {
-                showToast('모든 알림을 이미 확인했습니다.', 'info');
-                return;
-            }
+            if (unread.length === 0) { showToast('모든 알림을 이미 확인했습니다.', 'info'); return; }
             for (const noti of unread) {
                 let readArr = noti.readBy || [];
                 readArr.push(currentUser.username);
@@ -756,29 +746,22 @@
             showToast('모든 알림을 읽음 처리했습니다.', 'success');
         };
 
-        function renderHomeWidgets() {
-            // 1. D-Day 일정 렌더링 (30일 이내)
+        function renderHomeWidgets() { /* 기존 D-day, 소식 코드 동일 */
             const ddayList = document.getElementById('home-dday-list');
             if (ddayList) {
-                const today = new Date();
-                today.setHours(0,0,0,0);
-                const thirtyDaysLater = new Date(today);
-                thirtyDaysLater.setDate(today.getDate() + 30);
-                
+                const today = new Date(); today.setHours(0,0,0,0);
+                const thirtyDaysLater = new Date(today); thirtyDaysLater.setDate(today.getDate() + 30);
                 let upcoming = store.calendar.filter(ev => {
                     if (!ev.startDate) return false;
                     const evDate = new Date(ev.startDate);
                     return evDate >= today && evDate <= thirtyDaysLater;
                 }).sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
-                
                 ddayList.innerHTML = '';
                 if(upcoming.length === 0) {
                     ddayList.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center py-4">최근 30일 내에 예정된 일정이 없습니다.</div>';
                 } else {
                     upcoming.slice(0, 5).forEach(ev => {
-                        const evDate = new Date(ev.startDate);
-                        const diffTime = evDate - today;
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        const evDate = new Date(ev.startDate); const diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
                         let ddayText = diffDays === 0 ? 'D-Day' : `D-${diffDays}`;
                         ddayList.innerHTML += `
                             <div class="flex items-center justify-between p-2.5 bg-indigo-50/50 rounded-xl border border-indigo-100 mb-2 cursor-pointer hover:bg-indigo-50 hover:shadow-sm transition" onclick="navigateToView('view-calendar'); selectCalendarDate('${ev.startDate}')">
@@ -792,29 +775,22 @@
                     });
                 }
             }
-
-            // 2. NEW 업데이트 알림 렌더링
             const newList = document.getElementById('home-new-list');
             if (newList) {
                 const username = currentUser ? currentUser.username : '';
-                let unreadNotis = store.notifications.filter(n => !(n.readBy || []).includes(username))
-                                                     .sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-                
+                let unreadNotis = store.notifications.filter(n => !(n.readBy || []).includes(username)).sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
                 newList.innerHTML = '';
                 if(unreadNotis.length === 0) {
                     newList.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center py-4">모든 소식을 확인하셨습니다!</div>';
                 } else {
                     unreadNotis.slice(0, 5).forEach(noti => {
                         newList.innerHTML += `
-                            <div class="flex items-center justify-between p-2.5 bg-amber-50/50 rounded-xl border border-amber-100 mb-2 cursor-pointer hover:bg-amber-50 hover:shadow-sm transition" 
-                                 onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
+                            <div class="flex items-center justify-between p-2.5 bg-amber-50/50 rounded-xl border border-amber-100 mb-2 cursor-pointer hover:bg-amber-50 hover:shadow-sm transition" onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
                                 <div class="flex flex-col overflow-hidden w-full pr-2">
                                     <span class="text-[10px] font-bold text-amber-600 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> ${escapeHtml(noti.title)}</span>
                                     <span class="text-xs text-gray-800 truncate font-medium">${escapeHtml(noti.message)}</span>
                                 </div>
-                                <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-2xs flex-shrink-0 text-amber-500">
-                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                                </div>
+                                <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-2xs flex-shrink-0 text-amber-500"><i class="fa-solid fa-chevron-right text-[10px]"></i></div>
                             </div>
                         `;
                     });
@@ -822,23 +798,19 @@
             }
         }
 
-        function loadNotifications() {
+        function loadNotifications() { /* 기존 동일 */
             const list = document.getElementById('notifications-list');
             const username = currentUser ? currentUser.username : '';
             let notis = [...store.notifications].sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-            
             if (!list) return;
             list.innerHTML = '';
             if(notis.length === 0) {
-                list.innerHTML = '<div class="text-xs text-gray-400 p-8 text-center flex-1 flex items-center justify-center">수신된 알림이 없습니다.</div>';
-                return;
+                list.innerHTML = '<div class="text-xs text-gray-400 p-8 text-center flex-1 flex items-center justify-center">수신된 알림이 없습니다.</div>'; return;
             }
-            
             notis.forEach(noti => {
                 const isRead = (noti.readBy || []).includes(username);
                 list.innerHTML += `
-                    <div class="p-3 rounded-xl border ${isRead ? 'bg-white border-gray-100' : 'bg-blue-50/50 border-blue-200 shadow-sm'} cursor-pointer hover:shadow transition relative"
-                         onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
+                    <div class="p-3 rounded-xl border ${isRead ? 'bg-white border-gray-100' : 'bg-blue-50/50 border-blue-200 shadow-sm'} cursor-pointer hover:shadow transition relative" onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
                         ${!isRead ? '<span class="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500"></span>' : ''}
                         <div class="flex items-center justify-between mb-1.5 pr-4">
                             <h4 class="text-xs font-bold ${isRead ? 'text-gray-600' : 'text-blue-700'}">${escapeHtml(noti.title)}</h4>
@@ -850,7 +822,6 @@
             });
         }
 
-        // Helper file reader
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 if (!file) { resolve(null); return; }
@@ -861,6 +832,47 @@
             });
         }
 
+        // Firebase Storage 대용량 파일 업로드
+        async function uploadFileToStorage(file, folderName) {
+            if (!storage) throw new Error("Firebase Storage가 설정되지 않았습니다.");
+            const { ref, uploadBytes, getDownloadURL } = window.firebaseAppModules;
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const storageRef = ref(storage, `artifacts/${appId}/public/${folderName}/${fileName}`);
+            await uploadBytes(storageRef, file);
+            return await getDownloadURL(storageRef);
+        }
+
+        // 모달 내 드래그 앤 드롭 파일 첨부 설정
+        function setupDropzone(zoneId, inputId, infoId, defaultText) {
+            const zone = document.getElementById(zoneId);
+            const input = document.getElementById(inputId);
+            const info = document.getElementById(infoId);
+            if (!zone || !input || !info) return;
+
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('border-indigo-400', 'bg-indigo-50');
+            });
+            zone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                zone.classList.remove('border-indigo-400', 'bg-indigo-50');
+            });
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('border-indigo-400', 'bg-indigo-50');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    input.files = e.dataTransfer.files;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                info.textContent = file ? `선택됨: ${file.name}` : defaultText;
+            });
+        }
+
+        // === 인증 함수들 ===
         window.toggleAuthMode = function(mode) {
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -876,57 +888,39 @@
         window.handleSignup = async function() {
             const username = document.getElementById('signup-username').value.trim();
             const password = document.getElementById('signup-password').value.trim();
-            if(!username || !password) {
-                showToast('이름과 비밀번호를 모두 입력해주세요.', 'error'); return;
-            }
-            
+            if(!username || !password) { showToast('이름과 비밀번호를 모두 입력해주세요.', 'error'); return; }
             const users = getCollectionData('users');
-            if(users.find(u => u.username === username)) {
-                showToast('이미 존재하는 이름입니다.', 'error'); return;
-            }
-            
+            if(users.find(u => u.username === username)) { showToast('이미 존재하는 이름입니다.', 'error'); return; }
             await dbAdd('users', { username, password, status: 'pending', isAdmin: false, createdAt: Date.now() });
-            
             document.getElementById('signup-username').value = ''; document.getElementById('signup-password').value = '';
-
             showAlert('가입 신청 완료', '회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.', 'success', '로그인 화면으로 돌아가기', () => { toggleAuthMode('login'); });
         };
 
         window.handleLogin = function() {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
-
             if(username === '관리자' && password === 'hagios') {
                 currentUser = { id: 'admin_main', username: '관리자', isAdmin: true, status: 'approved' };
                 localStorage.setItem('hagios_current_user', JSON.stringify(currentUser));
                 startWorkspace(); return;
             }
-
             const users = getCollectionData('users');
             const user = users.find(u => u.username === username);
-
             if(!user) { showAlert('로그인 실패', '가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error'); return; }
             if(user.password !== password) { showAlert('로그인 실패', '비밀번호 오류입니다.', 'error', '다시 입력하기'); return; }
             if(user.status === 'pending') { showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.\n승인 후 로그인해주세요.', 'info', '확인'); return; }
             if(user.status === 'suspended') { showAlert('이용 정지', '일시 정지된 계정입니다.\n관리자에게 문의하세요.', 'error', '확인'); return; }
-
             currentUser = user;
             localStorage.setItem('hagios_current_user', JSON.stringify(user));
             startWorkspace();
         };
 
-        window.handleLogout = function() {
-            localStorage.removeItem('hagios_current_user');
-            currentUser = null;
-            location.reload();
-        };
+        window.handleLogout = function() { localStorage.removeItem('hagios_current_user'); currentUser = null; location.reload(); };
 
         function startWorkspace() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            
             document.getElementById('current-user-name').textContent = `${currentUser.username} ${currentUser.isAdmin ? '(관리자)' : ''}`;
-            
             if(currentUser.isAdmin) {
                 document.getElementById('admin-menu-btn-desktop').classList.remove('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.remove('hidden');
@@ -935,18 +929,15 @@
                 document.getElementById('admin-menu-btn-desktop').classList.add('hidden');
                 document.getElementById('admin-menu-btn-mobile').classList.add('hidden');
             }
-            
             refreshUI();
             showToast(`${currentUser.username}님 환영합니다!`, 'success');
         }
 
         window.openAdminModal = function() { renderAdminViews(); document.getElementById('admin-modal').classList.remove('hidden'); };
         window.closeAdminModal = function() { document.getElementById('admin-modal').classList.add('hidden'); };
-
         window.switchAdminTab = function(tab) {
             const pendingClass = 'flex-1 py-2 text-xs font-semibold border-b-2 border-indigo-600 text-indigo-600 transition';
             const inactiveClass = 'flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-800 transition';
-            
             document.getElementById('tab-admin-pending').className = tab === 'pending' ? pendingClass : inactiveClass;
             document.getElementById('tab-admin-active').className = tab === 'active' ? pendingClass : inactiveClass;
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
@@ -958,275 +949,117 @@
             const pendingUsers = users.filter(u => u.status === 'pending');
             const activeUsers = users.filter(u => u.status !== 'pending');
             document.getElementById('pending-badge').textContent = pendingUsers.length;
-
             const pendingView = document.getElementById('admin-pending-view');
             pendingView.innerHTML = '';
-            if(pendingUsers.length === 0) {
-                pendingView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">가입 대기 중인 인원이 없습니다.</div>';
-            } else {
-                pendingUsers.forEach(u => {
-                    pendingView.innerHTML += `
-                        <div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs">
-                            <div><p class="font-bold text-xs text-gray-800">${escapeHtml(u.username)}</p><p class="text-[10px] text-gray-400">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p></div>
-                            <div class="flex gap-1.5">
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">거부</button>
-                                <button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] rounded-lg transition font-medium shadow-2xs">승인</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
+            if(pendingUsers.length === 0) pendingView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">가입 대기 중인 인원이 없습니다.</div>';
+            else pendingUsers.forEach(u => { pendingView.innerHTML += `<div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs"><div><p class="font-bold text-xs text-gray-800">${escapeHtml(u.username)}</p><p class="text-[10px] text-gray-400">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p></div><div class="flex gap-1.5"><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">거부</button><button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] rounded-lg transition font-medium shadow-2xs">승인</button></div></div>`; });
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
-            if(activeUsers.length === 0) {
-                activeView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">등록된 팀원이 없습니다.</div>';
-            } else {
-                activeUsers.forEach(u => {
-                    const isSuspended = u.status === 'suspended';
-                    activeView.innerHTML += `
-                        <div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs ${isSuspended ? 'opacity-60' : ''}">
-                            <div><p class="font-bold text-xs text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p></div>
-                            <div class="flex gap-1.5">
-                                <button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-2 py-1 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-[11px] rounded-lg transition font-medium">${isSuspended ? '해제' : '정지'}</button>
-                                <button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">삭제</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+            if(activeUsers.length === 0) activeView.innerHTML = '<div class="text-center text-gray-400 py-4 text-xs">등록된 팀원이 없습니다.</div>';
+            else activeUsers.forEach(u => { const isSuspended = u.status === 'suspended'; activeView.innerHTML += `<div class="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-2xs ${isSuspended ? 'opacity-60' : ''}"><div><p class="font-bold text-xs text-gray-800 flex items-center gap-1">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] px-1.5 py-0.5 rounded">정지됨</span>' : ''}</p></div><div class="flex gap-1.5"><button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-2 py-1 ${isSuspended ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} text-[11px] rounded-lg transition font-medium">${isSuspended ? '해제' : '정지'}</button><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2 py-1 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 text-[11px] rounded-lg transition font-medium">삭제</button></div></div>`; });
         }
 
         window.adminActionUser = async function(id, action, username) {
-            if(action === 'approve') {
-                await dbUpdate('users', id, { status: 'approved' }); showToast(`${username}님의 권한이 승인되었습니다.`, 'success'); renderAdminViews();
-            } else if(action === 'suspend') {
-                showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => {
-                    await dbUpdate('users', id, { status: 'suspended' }); showToast(`${username}님의 계정이 정지되었습니다.`, 'info'); renderAdminViews();
-                });
-            } else if(action === 'delete') {
-                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => {
-                    await dbDelete('users', id); showToast(`${username}님의 계정이 삭제되었습니다.`, 'info'); renderAdminViews();
-                });
-            }
+            if(action === 'approve') { await dbUpdate('users', id, { status: 'approved' }); showToast(`${username}님의 권한이 승인되었습니다.`, 'success'); renderAdminViews(); }
+            else if(action === 'suspend') { showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => { await dbUpdate('users', id, { status: 'suspended' }); showToast(`${username}님의 계정이 정지되었습니다.`, 'info'); renderAdminViews(); }); }
+            else if(action === 'delete') { showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => { await dbDelete('users', id); showToast(`${username}님의 계정이 삭제되었습니다.`, 'info'); renderAdminViews(); }); }
         };
 
         function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div');
             const colors = { 'success': 'bg-emerald-100 text-emerald-800 border-emerald-200', 'error': 'bg-red-100 text-red-800 border-red-200', 'info': 'bg-indigo-100 text-indigo-800 border-indigo-200' };
             const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle');
             toast.className = `flex items-center gap-2 px-3 py-2 rounded-lg shadow-md border ${colors[type]} fade-in pointer-events-auto text-xs z-[9999]`;
             toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span class="font-medium">${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         const navItems = document.querySelectorAll('.nav-item');
         const viewSections = document.querySelectorAll('.view-section');
-
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                const btn = e.currentTarget;
-                btn.classList.add('active');
+                navItems.forEach(nav => nav.classList.remove('active')); e.currentTarget.classList.add('active');
                 viewSections.forEach(sec => sec.classList.add('hidden'));
-                const targetId = btn.getAttribute('data-target');
-                document.getElementById(targetId).classList.remove('hidden');
+                const targetId = e.currentTarget.getAttribute('data-target'); document.getElementById(targetId).classList.remove('hidden');
                 if (targetId === 'view-konti') renderKontiSheetCheckboxes();
                 if (window.innerWidth < 768) document.getElementById('sidebar-nav').classList.add('hidden');
             });
         });
-
         window.navigateToView = (targetId) => {
-            navItems.forEach(nav => {
-                if (nav.getAttribute('data-target') === targetId) nav.classList.add('active'); else nav.classList.remove('active');
-            });
-            viewSections.forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(targetId).classList.remove('hidden');
+            navItems.forEach(nav => { if (nav.getAttribute('data-target') === targetId) nav.classList.add('active'); else nav.classList.remove('active'); });
+            viewSections.forEach(sec => sec.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden');
             if (targetId === 'view-konti') renderKontiSheetCheckboxes();
             if (window.innerWidth < 768) document.getElementById('sidebar-nav').classList.add('hidden');
         };
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => document.getElementById('sidebar-nav').classList.toggle('hidden'));
 
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('sidebar-nav').classList.toggle('hidden');
-        });
-
-        function renderCalendar() {
+        function renderCalendar() { /* 기존 동일 */
             const grid = document.getElementById('calendar-grid'); const titleEl = document.getElementById('calendar-title');
             if(!grid || !titleEl) return;
             grid.innerHTML = '';
             const year = currentCalendarDate.getFullYear(); const month = currentCalendarDate.getMonth();
             titleEl.textContent = `${year}년 ${month + 1}월`;
-
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const today = new Date();
-            const calendarEvents = getCollectionData('calendar');
-
-            if (!selectedCalendarDateStr) {
-                const mStr = String(month + 1).padStart(2, '0'); const dStr = String(today.getDate()).padStart(2, '0');
-                selectedCalendarDateStr = `${year}-${mStr}-${dStr}`;
-            }
-
+            const firstDayIndex = new Date(year, month, 1).getDay(); const totalDays = new Date(year, month + 1, 0).getDate();
+            const today = new Date(); const calendarEvents = getCollectionData('calendar');
+            if (!selectedCalendarDateStr) selectedCalendarDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             for(let i = 0; i < firstDayIndex; i++) grid.innerHTML += `<div class="p-0.5 border border-gray-100 rounded-md bg-gray-50/30 min-h-[44px] sm:min-h-[55px]"></div>`;
-
             for(let i = 1; i <= totalDays; i++) {
                 const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
-                const monthStr = String(month + 1).padStart(2, '0'); const dayStr = String(i).padStart(2, '0');
-                const dateKey = `${year}-${monthStr}-${dayStr}`;
-                const isSelected = selectedCalendarDateStr === dateKey;
-
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 let bgClass = isToday ? 'bg-indigo-50 border-indigo-300' : 'bg-white border-gray-100';
-                if (isSelected) bgClass = 'bg-indigo-100 border-indigo-500 ring-2 ring-indigo-300';
-
-                const dayEvents = calendarEvents.filter(ev => {
-                    if (!ev.startDate) return false;
-                    return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate);
-                });
-
+                if (selectedCalendarDateStr === dateKey) bgClass = 'bg-indigo-100 border-indigo-500 ring-2 ring-indigo-300';
+                const dayEvents = calendarEvents.filter(ev => { if (!ev.startDate) return false; return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate); });
                 let eventsHtml = '';
-                dayEvents.slice(0, 2).forEach(dt => {
-                    let timeText = dt.time ? `[${dt.time}] ` : '';
-                    eventsHtml += `<div class="text-[8px] bg-indigo-500 text-white px-1 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium shadow-2xs" title="${escapeHtml(dt.text)}">${timeText}${escapeHtml(dt.text)}</div>`;
-                });
+                dayEvents.slice(0, 2).forEach(dt => { eventsHtml += `<div class="text-[8px] bg-indigo-500 text-white px-1 py-0.5 rounded truncate w-full text-left mt-0.5 font-medium shadow-2xs" title="${escapeHtml(dt.text)}">${dt.time ? `[${dt.time}] ` : ''}${escapeHtml(dt.text)}</div>`; });
                 if (dayEvents.length > 2) eventsHtml += `<div class="text-[8px] text-gray-500 font-semibold mt-0.5 px-0.5">+${dayEvents.length - 2}</div>`;
-
-                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1 border rounded-md sm:rounded-lg ${bgClass} min-h-[44px] sm:min-h-[55px] flex flex-col justify-start items-start cursor-pointer hover:border-indigo-400 transition group">
-                    <div class="w-full flex justify-between items-center mb-0.5">
-                        <span class="text-[11px] sm:text-xs font-semibold text-gray-800">${i}</span>
-                        ${dayEvents.length > 0 ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>' : ''}
-                    </div>
-                    <div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div>
-                </div>`;
+                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1 border rounded-md sm:rounded-lg ${bgClass} min-h-[44px] sm:min-h-[55px] flex flex-col justify-start items-start cursor-pointer hover:border-indigo-400 transition group"><div class="w-full flex justify-between items-center mb-0.5"><span class="text-[11px] sm:text-xs font-semibold text-gray-800">${i}</span>${dayEvents.length > 0 ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>' : ''}</div><div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div></div>`;
             }
             renderCalendarDetailPanel();
         }
-
         window.selectCalendarDate = (dateStr) => { selectedCalendarDateStr = dateStr; renderCalendar(); };
-
-        function renderCalendarDetailPanel() {
+        function renderCalendarDetailPanel() { /* 기존 동일 */
             const panelEl = document.getElementById('calendar-detail-panel'); const titleEl = document.getElementById('calendar-detail-date-title'); const contentEl = document.getElementById('calendar-detail-content');
             if(!panelEl || !titleEl || !contentEl) return;
-
             if(!selectedCalendarDateStr) { panelEl.classList.add('hidden'); return; }
-
-            const calendarEvents = getCollectionData('calendar');
-            const dayEvents = calendarEvents.filter(ev => {
-                if (!ev.startDate) return false;
-                return selectedCalendarDateStr >= ev.startDate && selectedCalendarDateStr <= (ev.endDate || ev.startDate);
-            });
-
+            const dayEvents = getCollectionData('calendar').filter(ev => { if (!ev.startDate) return false; return selectedCalendarDateStr >= ev.startDate && selectedCalendarDateStr <= (ev.endDate || ev.startDate); });
             if (dayEvents.length === 0) { panelEl.classList.add('hidden'); return; }
             panelEl.classList.remove('hidden'); titleEl.textContent = `${selectedCalendarDateStr}`;
-
             let html = '';
             dayEvents.forEach(ev => {
                 let timeDisplay = ev.time ? `<span class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-semibold"><i class="fa-regular fa-clock mr-0.5"></i>${ev.time}</span>` : '';
                 let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-[10px] text-gray-400">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
                 let detailText = ev.detail ? `<div class="mt-1 text-[11px] text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-100 whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : '';
-
-                html += `
-                    <div class="bg-white border border-gray-200 rounded-lg p-2.5 shadow-2xs relative group mb-2">
-                        <div class="flex items-center justify-between mb-1">
-                            <div class="flex items-center gap-1.5 flex-wrap"><h4 class="font-bold text-gray-800 text-xs">${escapeHtml(ev.text)}</h4>${timeDisplay}</div>
-                            <div class="flex items-center gap-1">
-                                <button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                        ${periodDisplay ? `<div class="mb-1">${periodDisplay}</div>` : ''}
-                        ${detailText}
-                    </div>
-                `;
+                html += `<div class="bg-white border border-gray-200 rounded-lg p-2.5 shadow-2xs relative group mb-2"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1.5 flex-wrap"><h4 class="font-bold text-gray-800 text-xs">${escapeHtml(ev.text)}</h4>${timeDisplay}</div><div class="flex items-center gap-1"><button onclick="openEditCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="deleteCalendarEvent('${ev.id}')" class="text-gray-400 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash-can"></i></button></div></div>${periodDisplay ? `<div class="mb-1">${periodDisplay}</div>` : ''}${detailText}</div>`;
             });
             contentEl.innerHTML = html;
         }
-
         window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
         window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); selectedCalendarDateStr = null; renderCalendar(); };
-        
-        window.openCalendarEventModal = () => {
-            document.getElementById('cal-edit-id').value = ''; document.getElementById('cal-event-text').value = '';
-            document.getElementById('cal-event-start').value = selectedCalendarDateStr || new Date().toISOString().split('T')[0];
-            document.getElementById('cal-event-end').value = ''; document.getElementById('cal-event-time').value = ''; document.getElementById('cal-event-detail').value = '';
-            document.getElementById('cal-modal-title').textContent = '일정 추가'; document.getElementById('calendar-event-modal').classList.remove('hidden');
-        };
-        
-        window.openEditCalendarEvent = (id) => {
-            const ev = getCollectionData('calendar').find(item => item.id == id); if(!ev) return;
-            document.getElementById('cal-edit-id').value = ev.id; document.getElementById('cal-event-text').value = ev.text || '';
-            document.getElementById('cal-event-start').value = ev.startDate || ''; document.getElementById('cal-event-end').value = ev.endDate || '';
-            document.getElementById('cal-event-time').value = ev.time || ''; document.getElementById('cal-event-detail').value = ev.detail || '';
-            document.getElementById('cal-modal-title').textContent = '일정 수정'; document.getElementById('calendar-event-modal').classList.remove('hidden');
-        };
+        window.openCalendarEventModal = () => { document.getElementById('cal-edit-id').value = ''; document.getElementById('cal-event-text').value = ''; document.getElementById('cal-event-start').value = selectedCalendarDateStr || new Date().toISOString().split('T')[0]; document.getElementById('cal-event-end').value = ''; document.getElementById('cal-event-time').value = ''; document.getElementById('cal-event-detail').value = ''; document.getElementById('cal-modal-title').textContent = '일정 추가'; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
+        window.openEditCalendarEvent = (id) => { const ev = getCollectionData('calendar').find(item => item.id == id); if(!ev) return; document.getElementById('cal-edit-id').value = ev.id; document.getElementById('cal-event-text').value = ev.text || ''; document.getElementById('cal-event-start').value = ev.startDate || ''; document.getElementById('cal-event-end').value = ev.endDate || ''; document.getElementById('cal-event-time').value = ev.time || ''; document.getElementById('cal-event-detail').value = ev.detail || ''; document.getElementById('cal-modal-title').textContent = '일정 수정'; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
+        document.getElementById('save-cal-event-btn').addEventListener('click', async () => { const editId = document.getElementById('cal-edit-id').value; const text = document.getElementById('cal-event-text').value.trim(); const startDate = document.getElementById('cal-event-start').value; const endDate = document.getElementById('cal-event-end').value || startDate; const time = document.getElementById('cal-event-time').value; const detail = document.getElementById('cal-event-detail').value.trim(); if (!text || !startDate) { showToast('일정 내용과 시작 날짜를 입력해주세요.', 'error'); return; } closeModal('calendar-event-modal'); if (editId) { await dbUpdate('calendar', editId, { text, startDate, endDate, time, detail }); showToast('일정이 수정되었습니다.', 'success'); } else { await dbAdd('calendar', { text, startDate, endDate, time, detail, createdAt: Date.now() }); showToast('일정이 추가되었습니다.', 'success'); } selectedCalendarDateStr = startDate; renderCalendar(); });
+        window.deleteCalendarEvent = async (id) => { showCustomConfirm('일정 삭제', '이 일정을 삭제하시겠습니까?', async () => { await dbDelete('calendar', id); showToast('일정이 삭제되었습니다.', 'info'); renderCalendar(); }); };
 
-        document.getElementById('save-cal-event-btn').addEventListener('click', async () => {
-            const editId = document.getElementById('cal-edit-id').value; const text = document.getElementById('cal-event-text').value.trim();
-            const startDate = document.getElementById('cal-event-start').value; const endDate = document.getElementById('cal-event-end').value || startDate;
-            const time = document.getElementById('cal-event-time').value; const detail = document.getElementById('cal-event-detail').value.trim();
-
-            if (!text || !startDate) { showToast('일정 내용과 시작 날짜를 입력해주세요.', 'error'); return; }
-            closeModal('calendar-event-modal');
-            
-            if (editId) { await dbUpdate('calendar', editId, { text, startDate, endDate, time, detail }); showToast('일정이 수정되었습니다.', 'success'); } 
-            else { await dbAdd('calendar', { text, startDate, endDate, time, detail, createdAt: Date.now() }); showToast('일정이 추가되었습니다.', 'success'); }
-            
-            selectedCalendarDateStr = startDate; renderCalendar();
-        });
-
-        window.deleteCalendarEvent = async (id) => {
-            showCustomConfirm('일정 삭제', '이 일정을 삭제하시겠습니까?', async () => { await dbDelete('calendar', id); showToast('일정이 삭제되었습니다.', 'info'); renderCalendar(); });
-        };
-
-        function loadTodos() {
+        function loadTodos() { /* 기존 동일 */
             const list = document.getElementById('todo-list'); const todos = getCollectionData('todos'); list.innerHTML = '';
             if(todos.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs">등록된 할 일이 없습니다.</div>`; return; }
             todos.forEach((todo) => {
                 const item = document.createElement('div');
                 item.className = `flex items-center gap-2 p-2 border-b border-gray-100 hover:bg-gray-50 transition group ${todo.completed ? 'opacity-50' : ''}`;
                 let dateBadge = todo.dueDate ? `<span class="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full font-medium flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
-                item.innerHTML = `
-                    <button class="w-4 h-4 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[9px]"></i></button>
-                    <span class="flex-1 text-xs ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
-                    ${dateBadge}
-                    <div class="flex items-center gap-1">
-                        <button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-up"></i></button>
-                        <button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-down"></i></button>
-                        <button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button>
-                    </div>
-                    <button class="text-gray-300 hover:text-red-500 transition px-1 text-[11px]" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                `;
+                item.innerHTML = `<button class="w-4 h-4 rounded border ${todo.completed ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-300 text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[9px]"></i></button><span class="flex-1 text-xs ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>${dateBadge}<div class="flex items-center gap-1"><button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-up"></i></button><button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-chevron-down"></i></button><button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-gray-300 hover:text-indigo-600 p-1 text-[11px]"><i class="fa-solid fa-pen"></i></button></div><button class="text-gray-300 hover:text-red-500 transition px-1 text-[11px]" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>`;
                 list.appendChild(item);
             });
         }
-        
-        document.getElementById('add-todo-btn').addEventListener('click', async () => {
-            const input = document.getElementById('todo-input'); const dateInput = document.getElementById('todo-date');
-            const text = input.value.trim(); if(!text) return;
-            await dbAdd('todos', { text, dueDate: dateInput.value, completed: false, createdAt: Date.now() });
-            input.value = ''; dateInput.value = ''; showToast('할 일이 추가되었습니다.', 'success');
-        });
-        
-        window.openEditTodo = (id, currentText, currentDate) => {
-            const newText = prompt("할 일 수정", currentText); if (newText === null || !newText.trim()) return;
-            const newDate = prompt("기한 수정 (YYYY-MM-DD)", currentDate); if (newDate === null) return;
-            dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() }); showToast('수정되었습니다.', 'success');
-        };
-        
+        document.getElementById('add-todo-btn').addEventListener('click', async () => { const input = document.getElementById('todo-input'); const dateInput = document.getElementById('todo-date'); const text = input.value.trim(); if(!text) return; await dbAdd('todos', { text, dueDate: dateInput.value, completed: false, createdAt: Date.now() }); input.value = ''; dateInput.value = ''; showToast('할 일이 추가되었습니다.', 'success'); });
+        window.openEditTodo = (id, currentText, currentDate) => { const newText = prompt("할 일 수정", currentText); if (newText === null || !newText.trim()) return; const newDate = prompt("기한 수정 (YYYY-MM-DD)", currentDate); if (newDate === null) return; dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() }); showToast('수정되었습니다.', 'success'); };
         window.toggleTodo = async (id) => { const todo = getCollectionData('todos').find(t => t.id == id); if(todo) await dbUpdate('todos', id, { completed: !todo.completed }); };
-        window.moveTodoOrder = async (id, direction) => {
-            let todos = getCollectionData('todos'); const index = todos.findIndex(t => t.id == id); if (index === -1) return;
-            if (direction === 'up' && index > 0) { const temp = todos[index]; todos[index] = todos[index - 1]; todos[index - 1] = temp; } 
-            else if (direction === 'down' && index < todos.length - 1) { const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp; } else return;
-            if (db && auth && auth.currentUser) { store.todos = todos; loadTodos(); } else { localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); }
-        };
-        
+        window.moveTodoOrder = async (id, direction) => { let todos = getCollectionData('todos'); const index = todos.findIndex(t => t.id == id); if (index === -1) return; if (direction === 'up' && index > 0) { const temp = todos[index]; todos[index] = todos[index - 1]; todos[index - 1] = temp; } else if (direction === 'down' && index < todos.length - 1) { const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp; } else return; if (db && auth && auth.currentUser) { store.todos = todos; loadTodos(); } else { localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); } };
         window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
 
+
+        /* ======= 악보 관련 스크립트 수정 ======= */
         function loadSheets() {
             const list = document.getElementById('sheet-list');
             const search = (document.getElementById('sheet-search')?.value || '').toLowerCase();
@@ -1241,20 +1074,22 @@
                 const item = document.createElement('div');
                 item.className = 'bg-white border border-gray-200 rounded-xl p-3 flex flex-col hover:shadow-sm transition relative group';
                 
-                const audioPlayer = sheet.audioData ? `<audio controls class="w-full h-8 mt-2 rounded outline-none border border-gray-100"><source src="${sheet.audioData}"></audio>` : '';
+                // 오디오 컨트롤 수정 (src 속성 직접 할당으로 안정성 강화)
+                const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-8 mt-2 rounded outline-none border border-gray-100"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1 mt-2 text-[11px] text-red-600 font-semibold hover:underline bg-red-50 px-2 py-1 rounded"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 const downloadBtn = sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1 mt-2 text-[11px] text-emerald-600 font-semibold hover:underline bg-emerald-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>` : '';
                 const memoHtml = sheet.memo ? `<div class="mt-2 text-[11px] text-gray-600 bg-gray-50 border border-gray-100 p-2 rounded-md whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
 
+                // 자세히 보기 토글 없이, 바로 하단에 보이도록 변경
                 item.innerHTML = `
-                    <div class="flex items-start gap-2.5 cursor-pointer" onclick="toggleSheetDetail('${sheet.id}')" title="클릭하여 상세 보기">
+                    <div class="flex items-start gap-2.5">
                         <div class="w-10 h-10 rounded-lg ${sheet.data ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'} flex items-center justify-center flex-shrink-0 text-sm"><i class="fa-solid fa-music"></i></div>
-                        <div class="flex-1 overflow-hidden pr-10 flex flex-col justify-center h-10">
+                        <div class="flex-1 overflow-hidden pr-10 flex flex-col justify-center min-h-[40px]">
                             <h4 class="font-bold text-gray-800 text-xs truncate leading-tight">${escapeHtml(sheet.title)}</h4>
-                            <span class="text-[9px] text-gray-400 mt-0.5">자세히 보기 <i class="fa-solid fa-chevron-down text-[8px]"></i></span>
                         </div>
                     </div>
-                    <div id="sheet-detail-${sheet.id}" class="hidden flex-col mt-2 pt-2 border-t border-gray-100 fade-in">
+                    <!-- 클릭 없이 기본 표시되는 내역 부분 -->
+                    <div id="sheet-detail-${sheet.id}" class="flex flex-col mt-2 pt-2 border-t border-gray-100">
                         <div class="flex flex-wrap gap-1.5 items-center">
                             ${downloadBtn}
                             ${linkHtml}
@@ -1271,18 +1106,21 @@
             });
         }
 
-        window.toggleSheetDetail = (id) => {
-            const detailDiv = document.getElementById(`sheet-detail-${id}`);
-            if (detailDiv) {
-                detailDiv.classList.toggle('hidden');
-                detailDiv.classList.toggle('flex');
-            }
-        };
-
         window.downloadSheet = (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
             try {
+                // Firebase Storage URL인 경우 처리
+                if (sheet.data.startsWith('http')) {
+                    const link = document.createElement('a');
+                    link.href = sheet.data; link.target = '_blank';
+                    link.download = sheet.filename || `${sheet.title}.pdf`;
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                    showToast('다운로드가 시작되었습니다.', 'success');
+                    return;
+                }
+                
+                // Base64 폴백
                 const arr = sheet.data.split(',');
                 let mime = 'application/pdf';
                 if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
@@ -1290,7 +1128,6 @@
                 while(n--){ u8arr[n] = bstr.charCodeAt(n); }
                 const blob = new Blob([u8arr], {type: mime});
                 const filename = sheet.filename || `${sheet.title || 'sheet'}.pdf`;
-
                 const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement('a'); link.href = blobUrl; link.download = filename;
                 document.body.appendChild(link); link.click();
@@ -1311,7 +1148,6 @@
             const memo = document.getElementById('sheet-memo').value.trim();
 
             if (!title) { showToast('곡 제목을 입력해주세요.', 'error'); return; }
-
             const btn = document.getElementById('add-sheet-btn');
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...';
 
@@ -1319,13 +1155,28 @@
                 let sheetData = null, sheetFilename = null;
                 let audioData = null, audioFilename = null;
 
+                // 악보 파일
                 if (fileInput.files.length > 0) {
-                    sheetFilename = fileInput.files[0].name;
-                    sheetData = await readFileAsDataURL(fileInput.files[0]);
+                    const file = fileInput.files[0];
+                    sheetFilename = file.name;
+                    if (storage) sheetData = await uploadFileToStorage(file, 'sheets');
+                    else sheetData = await readFileAsDataURL(file); // 로컬 저장소 폴백
                 }
+                
+                // 음원 파일 (스토리지 활용)
                 if (audioInput.files.length > 0) {
-                    audioFilename = audioInput.files[0].name;
-                    audioData = await readFileAsDataURL(audioInput.files[0]);
+                    const file = audioInput.files[0];
+                    audioFilename = file.name;
+                    if (storage) {
+                        audioData = await uploadFileToStorage(file, 'audio');
+                    } else {
+                        // 스토리지 없이 Base64 변환 시 용량 제한 안내 (Firestore 1MB 한계 방어)
+                        if (file.size > 700000) {
+                            showToast('음원 파일이 너무 큽니다. Firebase Storage 구성이 필요합니다.', 'error');
+                            btn.disabled = false; btn.innerText = '저장 완료'; return;
+                        }
+                        audioData = await readFileAsDataURL(file);
+                    }
                 }
 
                 if (editId) {
@@ -1350,7 +1201,7 @@
                 }
                 closeModal('sheet-modal');
             } catch (err) {
-                console.error(err); showToast('저장 중 오류가 발생했습니다.', 'error');
+                console.error(err); showToast('저장 중 오류가 발생했습니다. (권한 또는 용량 문제)', 'error');
             } finally {
                 btn.disabled = false; btn.innerText = '저장 완료';
             }
@@ -1373,160 +1224,65 @@
             document.getElementById('sheet-modal').classList.remove('hidden');
         };
 
-        window.deleteSheet = async (id) => {
-            showCustomConfirm('악보 삭제', '이 곡의 모든 정보(악보, 음원, 메모)를 삭제하시겠습니까?', async () => {
-                await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info');
-            });
-        };
+        window.deleteSheet = async (id) => { showCustomConfirm('악보 삭제', '이 곡의 모든 정보(악보, 음원, 메모)를 삭제하시겠습니까?', async () => { await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info'); }); };
 
-        function renderKontiSheetCheckboxes(selectedIds = []) {
-            const container = document.getElementById('konti-sheets-checkboxes');
-            const sheets = getCollectionData('sheets');
-            container.innerHTML = '';
+
+        function renderKontiSheetCheckboxes(selectedIds = []) { /* 기존 동일 */
+            const container = document.getElementById('konti-sheets-checkboxes'); const sheets = getCollectionData('sheets'); container.innerHTML = '';
             if (sheets.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2">등록된 악보가 없습니다.</p>`; return; }
             sheets.forEach(sheet => {
                 const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
-                container.innerHTML += `
-                    <div class="konti-sheet-item flex items-center justify-between p-1 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition" data-title="${escapeHtml(sheet.title)}">
-                        <label class="flex items-center gap-2 cursor-pointer flex-1 overflow-hidden">
-                            <input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-3.5 h-3.5 text-indigo-600 rounded border-gray-300 flex-shrink-0">
-                            <span class="text-[11px] text-gray-700 truncate">${escapeHtml(sheet.title)}</span>
-                        </label>
-                        <div class="flex items-center gap-1">
-                            <button type="button" onclick="moveSheetOrder(this, 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-up"></i></button>
-                            <button type="button" onclick="moveSheetOrder(this, 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-down"></i></button>
-                        </div>
-                    </div>
-                `;
+                container.innerHTML += `<div class="konti-sheet-item flex items-center justify-between p-1 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition" data-title="${escapeHtml(sheet.title)}"><label class="flex items-center gap-2 cursor-pointer flex-1 overflow-hidden"><input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-3.5 h-3.5 text-indigo-600 rounded border-gray-300 flex-shrink-0"><span class="text-[11px] text-gray-700 truncate">${escapeHtml(sheet.title)}</span></label><div class="flex items-center gap-1"><button type="button" onclick="moveSheetOrder(this, 'up')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-up"></i></button><button type="button" onclick="moveSheetOrder(this, 'down')" class="text-gray-300 hover:text-indigo-600 p-1 text-[10px]"><i class="fa-solid fa-chevron-down"></i></button></div></div>`;
             });
         }
+        window.filterKontiSheetCheckboxes = () => { const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase(); document.querySelectorAll('.konti-sheet-item').forEach(item => { if(item.getAttribute('data-title').toLowerCase().includes(search)) item.classList.remove('hidden'); else item.classList.add('hidden'); }); };
+        window.moveSheetOrder = (btnElement, dir) => { const container = document.getElementById('konti-sheets-checkboxes'); const item = btnElement.closest('.konti-sheet-item'); if(dir === 'up' && item.previousElementSibling) container.insertBefore(item, item.previousElementSibling); else if(dir === 'down' && item.nextElementSibling) container.insertBefore(item.nextElementSibling, item); };
 
-        window.filterKontiSheetCheckboxes = () => {
-            const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase();
-            const items = document.querySelectorAll('.konti-sheet-item');
-            items.forEach(item => {
-                const text = item.getAttribute('data-title').toLowerCase();
-                if(text.includes(search)) item.classList.remove('hidden');
-                else item.classList.add('hidden');
-            });
-        };
-
-        window.moveSheetOrder = (btnElement, dir) => {
-            const container = document.getElementById('konti-sheets-checkboxes');
-            const item = btnElement.closest('.konti-sheet-item');
-            if(dir === 'up' && item.previousElementSibling) container.insertBefore(item, item.previousElementSibling);
-            else if(dir === 'down' && item.nextElementSibling) container.insertBefore(item.nextElementSibling, item);
-        };
-
-        function loadKonti() {
-            const list = document.getElementById('konti-list');
-            const search = (document.getElementById('konti-search')?.value || '').toLowerCase();
-            let kontiList = getCollectionData('konti');
-            const sheets = getCollectionData('sheets');
+        function loadKonti() { /* 기존 동일 */
+            const list = document.getElementById('konti-list'); const search = (document.getElementById('konti-search')?.value || '').toLowerCase(); let kontiList = getCollectionData('konti'); const sheets = getCollectionData('sheets');
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search) || (k.memo && k.memo.toLowerCase().includes(search)));
             list.innerHTML = '';
-            if(kontiList.length === 0) {
-                list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 콘티가 없습니다.</div>`; return;
-            }
+            if(kontiList.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 콘티가 없습니다.</div>`; return; }
             kontiList.forEach(konti => {
                 const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
                 let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-gray-400 italic">포함된 악보가 없습니다.</p>` : '';
-                kontiSheets.forEach((sheet, idx) => {
-                    sheetsHtml += `
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-                            <div class="flex items-center gap-2 overflow-hidden">
-                                <span class="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[9px] flex items-center justify-center flex-shrink-0">${idx + 1}</span>
-                                <span class="text-xs font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span>
-                            </div>
-                            ${sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="text-[10px] text-indigo-600 font-semibold hover:underline px-1.5 py-0.5 whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>` : ''}
-                        </div>
-                    `;
-                });
-
+                kontiSheets.forEach((sheet, idx) => { sheetsHtml += `<div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100"><div class="flex items-center gap-2 overflow-hidden"><span class="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[9px] flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-medium text-gray-800 truncate">${escapeHtml(sheet.title)}</span></div>${sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="text-[10px] text-indigo-600 font-semibold hover:underline px-1.5 py-0.5 whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>` : ''}</div>`; });
                 let linkHtml = konti.link ? `<a href="${konti.link}" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-red-600 hover:underline"><i class="fa-brands fa-youtube"></i> 유튜브 링크</a>` : '';
                 let memoHtml = konti.memo ? `<div class="mt-2 text-[11px] text-gray-600 bg-amber-50 border border-amber-100 p-2 rounded whitespace-pre-wrap">${escapeHtml(konti.memo)}</div>` : '';
-
-                const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-xl p-3 shadow-sm';
-                item.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2 pb-2 border-b border-gray-100">
-                        <div>
-                            <h3 class="font-bold text-gray-800 text-xs sm:text-sm">${escapeHtml(konti.name)}</h3>
-                            <div class="flex gap-2 items-center mt-0.5">
-                                <span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">총 ${kontiSheets.length}곡</span>
-                                ${linkHtml}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1 w-full sm:w-auto justify-end">
-                            <button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-medium transition shadow-2xs flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 병합(PDF)</button>
-                            <button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs bg-gray-50 rounded hover:bg-gray-100"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs bg-gray-50 rounded hover:bg-gray-100"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-                    ${memoHtml}
-                    <div class="flex flex-col gap-1.5 mt-2">${sheetsHtml}</div>
-                `;
+                const item = document.createElement('div'); item.className = 'bg-white border border-gray-200 rounded-xl p-3 shadow-sm';
+                item.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2 pb-2 border-b border-gray-100"><div><h3 class="font-bold text-gray-800 text-xs sm:text-sm">${escapeHtml(konti.name)}</h3><div class="flex gap-2 items-center mt-0.5"><span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">총 ${kontiSheets.length}곡</span>${linkHtml}</div></div><div class="flex items-center gap-1 w-full sm:w-auto justify-end"><button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-medium transition shadow-2xs flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 병합(PDF)</button><button onclick="openEditKonti('${konti.id}')" class="text-gray-400 hover:text-indigo-600 p-1.5 text-xs bg-gray-50 rounded hover:bg-gray-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteKonti('${konti.id}')" class="text-gray-400 hover:text-red-500 p-1.5 text-xs bg-gray-50 rounded hover:bg-gray-100"><i class="fa-solid fa-trash-can"></i></button></div></div>${memoHtml}<div class="flex flex-col gap-1.5 mt-2">${sheetsHtml}</div>`;
                 list.appendChild(item);
             });
         }
 
         document.getElementById('save-konti-btn').addEventListener('click', async () => {
-            const editId = document.getElementById('konti-edit-id').value;
-            const name = document.getElementById('konti-name').value.trim();
-            const link = document.getElementById('konti-link').value.trim();
-            const memo = document.getElementById('konti-memo').value.trim();
-            
-            const sheetItems = document.querySelectorAll('.konti-sheet-item');
-            let sheetIds = [];
-            sheetItems.forEach(item => {
-                const cb = item.querySelector('.konti-sheet-checkbox');
-                if (cb && cb.checked) sheetIds.push(cb.value);
-            });
-
-            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; }
-            closeModal('konti-modal');
-            
-            if (editId) {
-                await dbUpdate('konti', editId, { name, link, memo, sheetIds });
-                showToast('콘티가 수정되었습니다.', 'success');
-            } else {
-                await dbAdd('konti', { name, link, memo, sheetIds, createdAt: Date.now() });
-                showToast('콘티가 생성되었습니다.', 'success');
-            }
+            const editId = document.getElementById('konti-edit-id').value; const name = document.getElementById('konti-name').value.trim();
+            const link = document.getElementById('konti-link').value.trim(); const memo = document.getElementById('konti-memo').value.trim();
+            let sheetIds = []; document.querySelectorAll('.konti-sheet-item').forEach(item => { const cb = item.querySelector('.konti-sheet-checkbox'); if (cb && cb.checked) sheetIds.push(cb.value); });
+            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; } closeModal('konti-modal');
+            if (editId) { await dbUpdate('konti', editId, { name, link, memo, sheetIds }); showToast('콘티가 수정되었습니다.', 'success'); } 
+            else { await dbAdd('konti', { name, link, memo, sheetIds, createdAt: Date.now() }); showToast('콘티가 생성되었습니다.', 'success'); }
         });
 
         window.openEditKonti = (id) => {
             let konti = getCollectionData('konti').find(k => k.id == id); if (!konti) return;
-            document.getElementById('konti-edit-id').value = konti.id;
-            document.getElementById('konti-name').value = konti.name;
-            document.getElementById('konti-link').value = konti.link || '';
-            document.getElementById('konti-memo').value = konti.memo || '';
-            document.getElementById('konti-modal-title').textContent = '콘티 수정';
-            
-            renderKontiSheetCheckboxes(konti.sheetIds || []);
-            const container = document.getElementById('konti-sheets-checkboxes');
-            const items = Array.from(container.children);
+            document.getElementById('konti-edit-id').value = konti.id; document.getElementById('konti-name').value = konti.name;
+            document.getElementById('konti-link').value = konti.link || ''; document.getElementById('konti-memo').value = konti.memo || '';
+            document.getElementById('konti-modal-title').textContent = '콘티 수정'; renderKontiSheetCheckboxes(konti.sheetIds || []);
+            const container = document.getElementById('konti-sheets-checkboxes'); const items = Array.from(container.children);
             items.sort((a,b) => {
                 const aCb = a.querySelector('input'); const bCb = b.querySelector('input');
                 const aIdx = (konti.sheetIds||[]).indexOf(aCb.value); const bIdx = (konti.sheetIds||[]).indexOf(bCb.value);
-                if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-                if (aIdx !== -1) return -1;
-                if (bIdx !== -1) return 1;
-                return 0;
+                if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx; if (aIdx !== -1) return -1; if (bIdx !== -1) return 1; return 0;
             });
-            container.innerHTML = ''; items.forEach(item => container.appendChild(item));
-            
-            document.getElementById('konti-modal').classList.remove('hidden');
+            container.innerHTML = ''; items.forEach(item => container.appendChild(item)); document.getElementById('konti-modal').classList.remove('hidden');
         };
-
-        window.deleteKonti = async (id) => {
-            showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?', async () => { await dbDelete('konti', id); showToast('삭제되었습니다.', 'info'); });
-        };
+        window.deleteKonti = async (id) => { showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?', async () => { await dbDelete('konti', id); showToast('삭제되었습니다.', 'info'); }); };
 
         window.downloadKontiMergedPdf = async (kontiId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId); let sheets = getCollectionData('sheets'); if (!konti) return;
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined && s.data);
-            if (kontiSheets.length === 0) { showToast('병합할 악보 파일(PDF/이미지)이 없습니다.', 'error'); return; }
+            if (kontiSheets.length === 0) { showToast('병합할 악보 파일이 없습니다.', 'error'); return; }
 
             showToast(`[${konti.name}] 전체 악보 병합 중...`, 'info');
             try {
@@ -1535,22 +1291,29 @@
                 for (let i = 0; i < kontiSheets.length; i++) {
                     let sheet = kontiSheets[i]; let dataUrl = sheet.data; if (!dataUrl) continue;
                     try {
-                        let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
-                        let len = binaryString.length; let bytes = new Uint8Array(len);
-                        for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
+                        let bytes;
+                        let isPdf = dataUrl.includes('application/pdf') || dataUrl.split('?')[0].toLowerCase().endsWith('.pdf');
+                        let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
 
-                        if (dataUrl.includes('application/pdf')) {
+                        if (dataUrl.startsWith('http')) {
+                            const res = await fetch(dataUrl);
+                            bytes = new Uint8Array(await res.arrayBuffer());
+                        } else {
+                            let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
+                            let len = binaryString.length; bytes = new Uint8Array(len);
+                            for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
+                        }
+
+                        if (isPdf) {
                             const donorPdf = await PDFDocument.load(bytes);
                             const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
                             copiedPages.forEach((page) => mergedPdf.addPage(page));
-                        } else if (dataUrl.includes('image/')) {
-                            let embeddedImage;
-                            if (dataUrl.includes('image/png')) embeddedImage = await mergedPdf.embedPng(bytes);
-                            else embeddedImage = await mergedPdf.embedJpg(bytes);
+                        } else {
+                            let embeddedImage = isPng ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
                             const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
                             page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
                         }
-                    } catch (e) { console.error("Error processing sheet file:", e); }
+                    } catch (e) { console.error("Error processing sheet file:", e); showToast(`[${sheet.title}] 다운로드 중 오류 (CORS 제한 등)`, 'error'); }
                 }
                 const mergedPdfBytes = await mergedPdf.save(); const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
                 const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = `${konti.name.replace(/ /g, '_')}_통합악보.pdf`;
@@ -1559,106 +1322,35 @@
             } catch (err) { console.error("PDF merge error:", err); showToast('PDF 병합 중 오류가 발생했습니다.', 'error'); }
         };
 
-        function loadArchives() {
-            const list = document.getElementById('archive-list');
-            const search = (document.getElementById('archive-search')?.value || '').toLowerCase();
-            let archives = getCollectionData('archives');
-            if (search) archives = archives.filter(a => a.title.toLowerCase().includes(search) || (a.memo && a.memo.toLowerCase().includes(search)));
+        function loadArchives() { /* 기존 동일 */
+            const list = document.getElementById('archive-list'); const search = (document.getElementById('archive-search')?.value || '').toLowerCase();
+            let archives = getCollectionData('archives'); if (search) archives = archives.filter(a => a.title.toLowerCase().includes(search) || (a.memo && a.memo.toLowerCase().includes(search)));
             list.innerHTML = '';
-            if(archives.length === 0) {
-                list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 자료가 없습니다.</div>`;
-                return;
-            }
+            if(archives.length === 0) { list.innerHTML = `<div class="col-span-full text-center text-gray-400 py-8 text-xs bg-white rounded-xl border border-gray-100">등록된 자료가 없습니다.</div>`; return; }
             archives.forEach(arc => {
-                const item = document.createElement('div');
-                item.className = 'bg-white border border-gray-200 rounded-xl p-3 shadow-sm relative group flex flex-col justify-between';
-                
+                const item = document.createElement('div'); item.className = 'bg-white border border-gray-200 rounded-xl p-3 shadow-sm relative group flex flex-col justify-between';
                 const linkHtml = arc.link ? `<a href="${arc.link}" target="_blank" class="text-[11px] text-teal-600 hover:underline bg-teal-50 px-2 py-1 rounded inline-block mt-1 truncate max-w-full"><i class="fa-solid fa-link"></i> ${escapeHtml(arc.link)}</a>` : '';
                 const downloadBtn = arc.data ? `<button onclick="downloadArchive('${arc.id}')" class="text-[11px] text-gray-700 hover:text-teal-700 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded font-medium mt-1 inline-flex items-center gap-1"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>` : '';
                 const memoHtml = arc.memo ? `<div class="mt-2 text-[11px] text-gray-500 bg-gray-50 border border-gray-100 p-2 rounded whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
                 const fileBadge = arc.filename ? `<span class="text-[9px] text-gray-400 border border-gray-200 px-1 rounded truncate max-w-[150px] inline-block align-middle ml-1">${escapeHtml(arc.filename)}</span>` : '';
-
-                item.innerHTML = `
-                    <div class="flex items-start gap-2.5 mb-1 pr-10">
-                        <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 text-sm"><i class="fa-solid fa-file-lines"></i></div>
-                        <div class="flex-1 overflow-hidden">
-                            <h4 class="font-bold text-gray-800 text-xs">${escapeHtml(arc.title)}${fileBadge}</h4>
-                            <p class="text-[9px] text-gray-400 mt-0.5">${new Date(arc.createdAt).toLocaleDateString()}</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-1 items-start">
-                        ${linkHtml}
-                        ${downloadBtn}
-                    </div>
-                    ${memoHtml}
-                    <div class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition bg-white rounded p-0.5 shadow-sm">
-                        <button onclick="openEditArchive('${arc.id}')" class="text-gray-400 hover:text-teal-600 p-1 text-[11px] hover:bg-teal-50 rounded"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteArchive('${arc.id}')" class="text-gray-400 hover:text-red-500 p-1 text-[11px] hover:bg-red-50 rounded"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                `;
+                item.innerHTML = `<div class="flex items-start gap-2.5 mb-1 pr-10"><div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 text-sm"><i class="fa-solid fa-file-lines"></i></div><div class="flex-1 overflow-hidden"><h4 class="font-bold text-gray-800 text-xs">${escapeHtml(arc.title)}${fileBadge}</h4><p class="text-[9px] text-gray-400 mt-0.5">${new Date(arc.createdAt).toLocaleDateString()}</p></div></div><div class="flex flex-col gap-1 items-start">${linkHtml}${downloadBtn}</div>${memoHtml}<div class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition bg-white rounded p-0.5 shadow-sm"><button onclick="openEditArchive('${arc.id}')" class="text-gray-400 hover:text-teal-600 p-1 text-[11px] hover:bg-teal-50 rounded"><i class="fa-solid fa-pen"></i></button><button onclick="deleteArchive('${arc.id}')" class="text-gray-400 hover:text-red-500 p-1 text-[11px] hover:bg-red-50 rounded"><i class="fa-solid fa-trash-can"></i></button></div>`;
                 list.appendChild(item);
             });
         }
 
         window.downloadArchive = (id) => {
-            const arc = getCollectionData('archives').find(a => a.id == id);
-            if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
+            const arc = getCollectionData('archives').find(a => a.id == id); if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
             try {
                 const arr = arc.data.split(','); let mime = 'application/octet-stream';
                 if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n);
-                while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+                const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--){ u8arr[n] = bstr.charCodeAt(n); }
                 const blob = new Blob([u8arr], {type: mime}); const filename = arc.filename || 'downloaded_file';
                 const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = filename;
                 document.body.appendChild(link); link.click(); setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 1000);
             } catch (e) { console.error(e); showToast('다운로드 오류', 'error'); }
         };
-
-        document.getElementById('add-archive-btn').addEventListener('click', async () => {
-            const editId = document.getElementById('archive-edit-id').value;
-            const title = document.getElementById('archive-title').value.trim();
-            const link = document.getElementById('archive-link').value.trim();
-            const memo = document.getElementById('archive-memo').value.trim();
-            const fileInput = document.getElementById('archive-file');
-
-            if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; }
-
-            const btn = document.getElementById('add-archive-btn');
-            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...';
-
-            try {
-                let fileData = null, filename = null;
-                if (fileInput.files.length > 0) {
-                    filename = fileInput.files[0].name;
-                    fileData = await readFileAsDataURL(fileInput.files[0]);
-                }
-
-                if (editId) {
-                    let payload = { title, link, memo };
-                    if (fileData) { payload.data = fileData; payload.filename = filename; }
-                    await dbUpdate('archives', editId, payload);
-                    showToast('자료가 수정되었습니다.', 'success');
-                } else {
-                    await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now() });
-                    showToast('자료가 등록되었습니다.', 'success');
-                }
-                closeModal('archive-modal');
-            } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); }
-            finally { btn.disabled = false; btn.innerText = '등록 완료'; }
-        });
-
-        window.openEditArchive = (id) => {
-            let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return;
-            document.getElementById('archive-edit-id').value = arc.id;
-            document.getElementById('archive-title').value = arc.title || '';
-            document.getElementById('archive-link').value = arc.link || '';
-            document.getElementById('archive-memo').value = arc.memo || '';
-            document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음';
-            document.getElementById('archive-file').value = '';
-            document.getElementById('archive-modal-title').textContent = '자료 수정';
-            document.getElementById('archive-modal').classList.remove('hidden');
-        };
-
+        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now() }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
+        window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
         window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
 
 
@@ -1686,7 +1378,7 @@
 
         window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
 
-        function loadBoard() {
+        function loadBoard() { /* 기존 동일 */
             const list = document.getElementById('board-list'); const posts = getCollectionData('board');
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
             if(posts.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs">첫 공지를 남겨보세요.</div>`; return; }
@@ -1694,110 +1386,45 @@
                 const item = document.createElement('div'); item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-2 group';
                 const authorName = post.author ? `<div class="text-[10px] font-bold text-gray-600 ml-1.5 mb-0.5">${escapeHtml(post.author)}</div>` : '';
                 const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
-                const actionButtons = isOwner ? `
-                    <div class="flex items-center gap-1">
-                        <button class="text-gray-300 hover:text-indigo-600 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-gray-300 hover:text-red-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                ` : '';
-
-                item.innerHTML = `
-                    ${authorName}
-                    <div class="flex items-end gap-1.5 w-full">
-                        <div class="px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 shadow-2xs text-xs whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
-                        <div class="flex flex-col items-start gap-0.5 flex-shrink-0"><span class="text-[9px] text-gray-400">${post.time}</span>${actionButtons}</div>
-                    </div>
-                `;
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-gray-300 hover:text-indigo-600 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-gray-300 hover:text-red-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-1.5 w-full"><div class="px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 shadow-2xs text-xs whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-0.5 flex-shrink-0"><span class="text-[9px] text-gray-400">${post.time}</span>${actionButtons}</div></div>`;
                 list.appendChild(item);
             });
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
 
         const boardInput = document.getElementById('board-input');
-        if (boardInput) {
-            boardInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    if (e.shiftKey) { return; } 
-                    else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-post-btn').click(); }
-                }
-            });
-        }
-
-        document.getElementById('add-post-btn').addEventListener('click', async () => {
-            const input = document.getElementById('board-input'); const text = input.value.trim(); if(!text) return;
-            const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            const authorName = currentUser ? currentUser.username : '익명';
-            await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() });
-            input.value = '';
-        });
-
-        window.openEditPost = async (id, encodedText) => {
-            const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText);
-            if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success');
-        };
-
+        if (boardInput) { boardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-post-btn').click(); } } }); }
+        document.getElementById('add-post-btn').addEventListener('click', async () => { const input = document.getElementById('board-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; });
+        window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
         window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
 
-        function loadFreeboard() {
-            const list = document.getElementById('freeboard-list'); 
-            if (!list) return;
-            const posts = getCollectionData('freeboard');
+        function loadFreeboard() { /* 기존 동일 */
+            const list = document.getElementById('freeboard-list'); if (!list) return; const posts = getCollectionData('freeboard');
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
             if(posts.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs">자유롭게 이야기를 나눠보세요.</div>`; return; }
             posts.forEach(post => {
                 const item = document.createElement('div'); item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-2 group';
                 const authorName = post.author ? `<div class="text-[10px] font-bold text-gray-600 ml-1.5 mb-0.5">${escapeHtml(post.author)}</div>` : '';
                 const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
-                const actionButtons = isOwner ? `
-                    <div class="flex items-center gap-1">
-                        <button class="text-gray-300 hover:text-orange-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditFreeboard('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-gray-300 hover:text-red-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deleteFreeboard('${post.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                ` : '';
-
-                item.innerHTML = `
-                    ${authorName}
-                    <div class="flex items-end gap-1.5 w-full">
-                        <div class="px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 shadow-2xs text-xs whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div>
-                        <div class="flex flex-col items-start gap-0.5 flex-shrink-0"><span class="text-[9px] text-gray-400">${post.time}</span>${actionButtons}</div>
-                    </div>
-                `;
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-gray-300 hover:text-orange-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="openEditFreeboard('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-gray-300 hover:text-red-500 transition text-[10px] opacity-0 group-hover:opacity-100 cursor-pointer" onclick="deleteFreeboard('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-1.5 w-full"><div class="px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 shadow-2xs text-xs whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-0.5 flex-shrink-0"><span class="text-[9px] text-gray-400">${post.time}</span>${actionButtons}</div></div>`;
                 list.appendChild(item);
             });
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
-
-        const freeboardInput = document.getElementById('freeboard-input');
-        if (freeboardInput) {
-            freeboardInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    if (e.shiftKey) { return; } 
-                    else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-freeboard-btn').click(); }
-                }
-            });
-        }
-
-        const addFreeboardBtn = document.getElementById('add-freeboard-btn');
-        if (addFreeboardBtn) {
-            addFreeboardBtn.addEventListener('click', async () => {
-                const input = document.getElementById('freeboard-input'); const text = input.value.trim(); if(!text) return;
-                const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-                const authorName = currentUser ? currentUser.username : '익명';
-                await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() });
-                input.value = '';
-            });
-        }
-
-        window.openEditFreeboard = async (id, encodedText) => {
-            const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText);
-            if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success');
-        };
-
+        const freeboardInput = document.getElementById('freeboard-input'); if (freeboardInput) { freeboardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-freeboard-btn').click(); } } }); }
+        const addFreeboardBtn = document.getElementById('add-freeboard-btn'); if (addFreeboardBtn) { addFreeboardBtn.addEventListener('click', async () => { const input = document.getElementById('freeboard-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; }); }
+        window.openEditFreeboard = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success'); };
         window.deleteFreeboard = async (id) => { await dbDelete('freeboard', id); showToast('게시글이 삭제되었습니다.', 'info'); };
 
-        function escapeHtml(unsafe) { 
-            return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); 
-        }
+        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+
+        // 앱 초기화 후 호출될 Dropzone 초기화 함수
+        window.addEventListener('load', () => {
+            setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '');
+            setupDropzone('audio-file-dropzone', 'sheet-audio-file', 'sheet-current-audio-info', '');
+        });
     </script>
 </body>
 </html>
