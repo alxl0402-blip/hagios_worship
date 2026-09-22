@@ -58,6 +58,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item.active { background-color: #e0e7ff; color: #4f46e5; font-weight: 600; }
         .nav-item.active i { color: #4f46e5; }
+        .notification-item.hide { display: none; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-50">
@@ -256,7 +257,7 @@
                     </div>
                 </section>
                 
-                <!-- View: Sheet Music (악보) 수정됨 -->
+                <!-- View: Sheet Music (악보) -->
                 <section id="view-sheetmusic" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">악보</h2>
@@ -337,11 +338,12 @@
                     </div>
                 </section>
 
+                <!-- 알림 화면 (X 버튼 추가 및 읽음 처리 기능 포함) -->
                 <section id="view-notifications" class="view-section hidden fade-in">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-sm sm:text-lg font-bold text-gray-800">알림내역</h2>
                         <button onclick="markAllNotificationsRead()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">
-                            모든 알림 읽음 처리
+                            모든 알림 지우기
                         </button>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[320px] sm:h-[450px]">
@@ -509,7 +511,7 @@
     <script>
         let db = null;
         let auth = null;
-        let storage = null; // 스토리지 변수 추가
+        let storage = null; 
         let currentUser = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'hagios-worship-app';
         let currentCalendarDate = new Date();
@@ -589,7 +591,7 @@
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                if (getStorage) storage = getStorage(app); // 스토리지 초기화
+                if (getStorage) storage = getStorage(app); 
                 
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -653,6 +655,7 @@
             renderHomeWidgets();
         }
 
+        // DB Add 시에만(새로 작성될 때만) 알림 생성하도록 기존 로직 유지
         async function dbAdd(collectionName, data) {
             let newId;
             if (db && auth && auth.currentUser) {
@@ -675,6 +678,7 @@
             return newId;
         }
 
+        // DB Update(수정) 시에는 알림을 생성하지 않음.
         async function dbUpdate(collectionName, id, data) {
             if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, updateDoc } = window.firebaseAppModules;
@@ -688,6 +692,7 @@
             }
         }
 
+        // DB Delete(삭제) 시에도 알림을 생성하지 않음.
         async function dbDelete(collectionName, id) {
             if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
                 const { doc, deleteDoc } = window.firebaseAppModules;
@@ -723,14 +728,25 @@
             }
         }
 
-        window.markNotificationRead = async (id) => {
+        // 특정 알림을 읽음 처리하고, 현재 화면(DOM)에서도 즉시 숨기는 함수
+        window.dismissNotification = async (event, id) => {
+            // 이벤트 전파를 막아 부모의 onclick 이벤트(해당 View로 이동)가 실행되지 않게 함
+            event.stopPropagation();
             if (!currentUser) return;
+
             const noti = store.notifications.find(n => n.id === id);
             if (!noti) return;
+            
             let readArr = noti.readBy || [];
             if (!readArr.includes(currentUser.username)) {
                 readArr.push(currentUser.username);
                 await dbUpdate('notifications', id, { readBy: readArr });
+            }
+
+            // 현재 DOM에서 해당 알림 요소 즉시 숨김 처리
+            const notiElement = document.getElementById(`noti-item-${id}`);
+            if (notiElement) {
+                notiElement.classList.add('hide');
             }
         };
 
@@ -746,7 +762,7 @@
             showToast('모든 알림을 읽음 처리했습니다.', 'success');
         };
 
-        function renderHomeWidgets() { /* 기존 D-day, 소식 코드 동일 */
+        function renderHomeWidgets() { 
             const ddayList = document.getElementById('home-dday-list');
             if (ddayList) {
                 const today = new Date(); today.setHours(0,0,0,0);
@@ -785,12 +801,14 @@
                 } else {
                     unreadNotis.slice(0, 5).forEach(noti => {
                         newList.innerHTML += `
-                            <div class="flex items-center justify-between p-2.5 bg-amber-50/50 rounded-xl border border-amber-100 mb-2 cursor-pointer hover:bg-amber-50 hover:shadow-sm transition" onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
+                            <div id="noti-item-home-${noti.id}" class="notification-item flex items-center justify-between p-2.5 bg-amber-50/50 rounded-xl border border-amber-100 mb-2 cursor-pointer hover:bg-amber-50 hover:shadow-sm transition" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
                                 <div class="flex flex-col overflow-hidden w-full pr-2">
                                     <span class="text-[10px] font-bold text-amber-600 mb-0.5 flex items-center gap-1"><i class="fa-solid fa-sparkles"></i> ${escapeHtml(noti.title)}</span>
                                     <span class="text-xs text-gray-800 truncate font-medium">${escapeHtml(noti.message)}</span>
                                 </div>
-                                <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-2xs flex-shrink-0 text-amber-500"><i class="fa-solid fa-chevron-right text-[10px]"></i></div>
+                                <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-2xs flex-shrink-0 text-amber-500 hover:bg-amber-100 transition" onclick="dismissNotification(event, '${noti.id}')">
+                                    <i class="fa-solid fa-xmark text-[11px]"></i>
+                                </div>
                             </div>
                         `;
                     });
@@ -798,25 +816,29 @@
             }
         }
 
-        function loadNotifications() { /* 기존 동일 */
+        // 전체 알림 내역 리스트 렌더링 (읽지 않은 알림 위주)
+        function loadNotifications() { 
             const list = document.getElementById('notifications-list');
             const username = currentUser ? currentUser.username : '';
-            let notis = [...store.notifications].sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+            // 본인이 아직 안 읽은 알림만 필터링해서 보여주도록 수정
+            let notis = [...store.notifications].filter(n => !(n.readBy || []).includes(username)).sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
             if (!list) return;
             list.innerHTML = '';
             if(notis.length === 0) {
-                list.innerHTML = '<div class="text-xs text-gray-400 p-8 text-center flex-1 flex items-center justify-center">수신된 알림이 없습니다.</div>'; return;
+                list.innerHTML = '<div class="text-xs text-gray-400 p-8 text-center flex-1 flex items-center justify-center">수신된 새 알림이 없습니다.</div>'; return;
             }
             notis.forEach(noti => {
-                const isRead = (noti.readBy || []).includes(username);
                 list.innerHTML += `
-                    <div class="p-3 rounded-xl border ${isRead ? 'bg-white border-gray-100' : 'bg-blue-50/50 border-blue-200 shadow-sm'} cursor-pointer hover:shadow transition relative" onclick="markNotificationRead('${noti.id}'); navigateToView('${noti.targetView}');">
-                        ${!isRead ? '<span class="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500"></span>' : ''}
-                        <div class="flex items-center justify-between mb-1.5 pr-4">
-                            <h4 class="text-xs font-bold ${isRead ? 'text-gray-600' : 'text-blue-700'}">${escapeHtml(noti.title)}</h4>
+                    <div id="noti-item-${noti.id}" class="notification-item p-3 rounded-xl border bg-blue-50/50 border-blue-200 shadow-sm cursor-pointer hover:shadow transition relative group" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
+                        <div class="flex items-center justify-between mb-1.5 pr-6">
+                            <h4 class="text-xs font-bold text-blue-700">${escapeHtml(noti.title)}</h4>
                             <span class="text-[9px] text-gray-400">${new Date(noti.createdAt).toLocaleString()}</span>
                         </div>
-                        <p class="text-xs ${isRead ? 'text-gray-500' : 'text-gray-800 font-medium'} truncate">${escapeHtml(noti.message)}</p>
+                        <p class="text-xs text-gray-800 font-medium truncate pr-4">${escapeHtml(noti.message)}</p>
+                        <!-- X 버튼 (알림 지우기/읽음 처리) -->
+                        <button class="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition px-1 py-0.5 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 `;
             });
@@ -832,7 +854,6 @@
             });
         }
 
-        // Firebase Storage 대용량 파일 업로드
         async function uploadFileToStorage(file, folderName) {
             if (!storage) throw new Error("Firebase Storage가 설정되지 않았습니다.");
             const { ref, uploadBytes, getDownloadURL } = window.firebaseAppModules;
@@ -843,7 +864,6 @@
             return await getDownloadURL(storageRef);
         }
 
-        // 모달 내 드래그 앤 드롭 파일 첨부 설정
         function setupDropzone(zoneId, inputId, infoId, defaultText) {
             const zone = document.getElementById(zoneId);
             const input = document.getElementById(inputId);
@@ -994,7 +1014,7 @@
         };
         document.getElementById('mobile-menu-btn').addEventListener('click', () => document.getElementById('sidebar-nav').classList.toggle('hidden'));
 
-        function renderCalendar() { /* 기존 동일 */
+        function renderCalendar() { 
             const grid = document.getElementById('calendar-grid'); const titleEl = document.getElementById('calendar-title');
             if(!grid || !titleEl) return;
             grid.innerHTML = '';
@@ -1018,7 +1038,7 @@
             renderCalendarDetailPanel();
         }
         window.selectCalendarDate = (dateStr) => { selectedCalendarDateStr = dateStr; renderCalendar(); };
-        function renderCalendarDetailPanel() { /* 기존 동일 */
+        function renderCalendarDetailPanel() { 
             const panelEl = document.getElementById('calendar-detail-panel'); const titleEl = document.getElementById('calendar-detail-date-title'); const contentEl = document.getElementById('calendar-detail-content');
             if(!panelEl || !titleEl || !contentEl) return;
             if(!selectedCalendarDateStr) { panelEl.classList.add('hidden'); return; }
@@ -1041,7 +1061,7 @@
         document.getElementById('save-cal-event-btn').addEventListener('click', async () => { const editId = document.getElementById('cal-edit-id').value; const text = document.getElementById('cal-event-text').value.trim(); const startDate = document.getElementById('cal-event-start').value; const endDate = document.getElementById('cal-event-end').value || startDate; const time = document.getElementById('cal-event-time').value; const detail = document.getElementById('cal-event-detail').value.trim(); if (!text || !startDate) { showToast('일정 내용과 시작 날짜를 입력해주세요.', 'error'); return; } closeModal('calendar-event-modal'); if (editId) { await dbUpdate('calendar', editId, { text, startDate, endDate, time, detail }); showToast('일정이 수정되었습니다.', 'success'); } else { await dbAdd('calendar', { text, startDate, endDate, time, detail, createdAt: Date.now() }); showToast('일정이 추가되었습니다.', 'success'); } selectedCalendarDateStr = startDate; renderCalendar(); });
         window.deleteCalendarEvent = async (id) => { showCustomConfirm('일정 삭제', '이 일정을 삭제하시겠습니까?', async () => { await dbDelete('calendar', id); showToast('일정이 삭제되었습니다.', 'info'); renderCalendar(); }); };
 
-        function loadTodos() { /* 기존 동일 */
+        function loadTodos() { 
             const list = document.getElementById('todo-list'); const todos = getCollectionData('todos'); list.innerHTML = '';
             if(todos.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 text-xs">등록된 할 일이 없습니다.</div>`; return; }
             todos.forEach((todo) => {
@@ -1059,7 +1079,6 @@
         window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
 
 
-        /* ======= 악보 관련 스크립트 수정 ======= */
         function loadSheets() {
             const list = document.getElementById('sheet-list');
             const search = (document.getElementById('sheet-search')?.value || '').toLowerCase();
@@ -1074,13 +1093,11 @@
                 const item = document.createElement('div');
                 item.className = 'bg-white border border-gray-200 rounded-xl p-3 flex flex-col hover:shadow-sm transition relative group';
                 
-                // 오디오 컨트롤 수정 (src 속성 직접 할당으로 안정성 강화)
                 const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-8 mt-2 rounded outline-none border border-gray-100"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1 mt-2 text-[11px] text-red-600 font-semibold hover:underline bg-red-50 px-2 py-1 rounded"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 const downloadBtn = sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1 mt-2 text-[11px] text-emerald-600 font-semibold hover:underline bg-emerald-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>` : '';
                 const memoHtml = sheet.memo ? `<div class="mt-2 text-[11px] text-gray-600 bg-gray-50 border border-gray-100 p-2 rounded-md whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
 
-                // 자세히 보기 토글 없이, 바로 하단에 보이도록 변경
                 item.innerHTML = `
                     <div class="flex items-start gap-2.5">
                         <div class="w-10 h-10 rounded-lg ${sheet.data ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'} flex items-center justify-center flex-shrink-0 text-sm"><i class="fa-solid fa-music"></i></div>
@@ -1088,7 +1105,6 @@
                             <h4 class="font-bold text-gray-800 text-xs truncate leading-tight">${escapeHtml(sheet.title)}</h4>
                         </div>
                     </div>
-                    <!-- 클릭 없이 기본 표시되는 내역 부분 -->
                     <div id="sheet-detail-${sheet.id}" class="flex flex-col mt-2 pt-2 border-t border-gray-100">
                         <div class="flex flex-wrap gap-1.5 items-center">
                             ${downloadBtn}
@@ -1110,7 +1126,6 @@
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
             try {
-                // Firebase Storage URL인 경우 처리
                 if (sheet.data.startsWith('http')) {
                     const link = document.createElement('a');
                     link.href = sheet.data; link.target = '_blank';
@@ -1120,7 +1135,6 @@
                     return;
                 }
                 
-                // Base64 폴백
                 const arr = sheet.data.split(',');
                 let mime = 'application/pdf';
                 if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
@@ -1155,22 +1169,19 @@
                 let sheetData = null, sheetFilename = null;
                 let audioData = null, audioFilename = null;
 
-                // 악보 파일
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     sheetFilename = file.name;
                     if (storage) sheetData = await uploadFileToStorage(file, 'sheets');
-                    else sheetData = await readFileAsDataURL(file); // 로컬 저장소 폴백
+                    else sheetData = await readFileAsDataURL(file); 
                 }
                 
-                // 음원 파일 (스토리지 활용)
                 if (audioInput.files.length > 0) {
                     const file = audioInput.files[0];
                     audioFilename = file.name;
                     if (storage) {
                         audioData = await uploadFileToStorage(file, 'audio');
                     } else {
-                        // 스토리지 없이 Base64 변환 시 용량 제한 안내 (Firestore 1MB 한계 방어)
                         if (file.size > 700000) {
                             showToast('음원 파일이 너무 큽니다. Firebase Storage 구성이 필요합니다.', 'error');
                             btn.disabled = false; btn.innerText = '저장 완료'; return;
@@ -1226,8 +1237,7 @@
 
         window.deleteSheet = async (id) => { showCustomConfirm('악보 삭제', '이 곡의 모든 정보(악보, 음원, 메모)를 삭제하시겠습니까?', async () => { await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info'); }); };
 
-
-        function renderKontiSheetCheckboxes(selectedIds = []) { /* 기존 동일 */
+        function renderKontiSheetCheckboxes(selectedIds = []) { 
             const container = document.getElementById('konti-sheets-checkboxes'); const sheets = getCollectionData('sheets'); container.innerHTML = '';
             if (sheets.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2">등록된 악보가 없습니다.</p>`; return; }
             sheets.forEach(sheet => {
@@ -1238,7 +1248,7 @@
         window.filterKontiSheetCheckboxes = () => { const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase(); document.querySelectorAll('.konti-sheet-item').forEach(item => { if(item.getAttribute('data-title').toLowerCase().includes(search)) item.classList.remove('hidden'); else item.classList.add('hidden'); }); };
         window.moveSheetOrder = (btnElement, dir) => { const container = document.getElementById('konti-sheets-checkboxes'); const item = btnElement.closest('.konti-sheet-item'); if(dir === 'up' && item.previousElementSibling) container.insertBefore(item, item.previousElementSibling); else if(dir === 'down' && item.nextElementSibling) container.insertBefore(item.nextElementSibling, item); };
 
-        function loadKonti() { /* 기존 동일 */
+        function loadKonti() { 
             const list = document.getElementById('konti-list'); const search = (document.getElementById('konti-search')?.value || '').toLowerCase(); let kontiList = getCollectionData('konti'); const sheets = getCollectionData('sheets');
             if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search) || (k.memo && k.memo.toLowerCase().includes(search)));
             list.innerHTML = '';
@@ -1322,7 +1332,7 @@
             } catch (err) { console.error("PDF merge error:", err); showToast('PDF 병합 중 오류가 발생했습니다.', 'error'); }
         };
 
-        function loadArchives() { /* 기존 동일 */
+        function loadArchives() { 
             const list = document.getElementById('archive-list'); const search = (document.getElementById('archive-search')?.value || '').toLowerCase();
             let archives = getCollectionData('archives'); if (search) archives = archives.filter(a => a.title.toLowerCase().includes(search) || (a.memo && a.memo.toLowerCase().includes(search)));
             list.innerHTML = '';
@@ -1378,7 +1388,7 @@
 
         window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
 
-        function loadBoard() { /* 기존 동일 */
+        function loadBoard() { 
             const list = document.getElementById('board-list'); const posts = getCollectionData('board');
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
             if(posts.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs">첫 공지를 남겨보세요.</div>`; return; }
@@ -1399,7 +1409,7 @@
         window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
         window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
 
-        function loadFreeboard() { /* 기존 동일 */
+        function loadFreeboard() { 
             const list = document.getElementById('freeboard-list'); if (!list) return; const posts = getCollectionData('freeboard');
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
             if(posts.length === 0) { list.innerHTML = `<div class="text-center text-gray-400 py-8 flex-1 flex items-center justify-center text-xs">자유롭게 이야기를 나눠보세요.</div>`; return; }
