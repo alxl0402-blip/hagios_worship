@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#3182f6">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiSGFnaW9zIFdvcnNoaXAiLCJzaG9ydF9uYW1lIjoiSGFnaW9zIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMmY0ZjYiLCJ0aGVtZV9jb2xvciI6IiMzMTgyZjYiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzgzNy8zODM3MTAyLnBuZyIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <title>Hagios Worship</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -221,7 +223,6 @@
                         </div>
                     </div>
 
-                    <!-- 앱 설치 유도 배너 (Toss Style) -->
                     <div id="install-banner" class="mt-6 sm:mt-8 toss-card bg-gradient-to-r from-[#e8f3ff] to-[#f4f8ff] p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition hidden" onclick="showInstallGuide()">
                         <div class="flex items-center gap-3 sm:gap-4">
                             <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-[#3182f6] shadow-sm text-lg sm:text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
@@ -233,7 +234,6 @@
                         <div class="text-[#3182f6] font-bold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-full shadow-sm">방법 보기</div>
                     </div>
 
-                    <!-- 홈 화면 위젯 영역 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-6">
                         <div class="toss-card p-4 sm:p-6 flex flex-col">
                             <h3 class="text-sm sm:text-lg font-bold text-[#191f28] mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-regular fa-calendar-check text-[#3182f6]"></i> 다가오는 일정</h3>
@@ -343,13 +343,14 @@
                     </div>
                 </section>
 
+                <!-- 폰트 크기 및 여백 조정 반영 (게시판/공지) -->
                 <section id="view-board" class="view-section hidden fade-in h-full flex flex-col">
                     <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">공지</h2>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0" id="board-list"></div>
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 min-h-0" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
                             <div class="flex gap-2.5">
-                                <textarea id="board-input" rows="2" class="flex-1 px-4 py-3 toss-input text-sm sm:text-base font-medium resize-none" placeholder="공지 내용을 입력하세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <textarea id="board-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[13px] sm:text-base font-medium resize-none" placeholder="공지 내용을 입력하세요 (Shift+Enter로 줄바꿈)"></textarea>
                                 <button id="add-post-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
@@ -361,10 +362,10 @@
                 <section id="view-freeboard" class="view-section hidden fade-in h-full flex flex-col">
                     <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">게시판</h2>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0 bg-[#fbfbfb]" id="freeboard-list"></div>
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 min-h-0 bg-[#fbfbfb]" id="freeboard-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
                             <div class="flex gap-2.5">
-                                <textarea id="freeboard-input" rows="2" class="flex-1 px-4 py-3 toss-input text-sm sm:text-base font-medium resize-none" placeholder="자유롭게 이야기를 나눠보세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <textarea id="freeboard-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[13px] sm:text-base font-medium resize-none" placeholder="자유롭게 이야기를 나눠보세요 (Shift+Enter로 줄바꿈)"></textarea>
                                 <button id="add-freeboard-btn" class="bg-[#f97316] hover:bg-[#ea580c] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
@@ -437,9 +438,9 @@
                 <h3 class="font-bold text-base sm:text-lg text-[#191f28] flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
                 <button onclick="closeAdminModal()" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div class="flex border-b border-gray-100 bg-white">
-                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
-                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition">기존 팀원</button>
+            <div class="flex border-b border-gray-200 bg-white">
+                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3.5 text-sm font-semibold border-b-2 border-[#3182f6] text-[#3182f6] transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
+                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3.5 text-sm font-semibold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition">기존 팀원</button>
             </div>
             <div class="flex-1 overflow-y-auto p-4 sm:p-5 bg-[#fbfbfb]">
                 <div id="admin-pending-view" class="space-y-3 fade-in"></div>
@@ -448,7 +449,7 @@
         </div>
     </div>
 
-    <!-- 기능별 모달창들 (콘티, 악보, 자료실, 일정) -->
+    <!-- 기능별 서브 모달 -->
     <div id="konti-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="toss-card max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto flex flex-col">
             <div class="flex justify-between items-center mb-5">
@@ -457,17 +458,17 @@
             </div>
             <input type="hidden" id="konti-edit-id" value="">
             <div class="flex flex-col gap-4 sm:gap-5 flex-1 overflow-y-auto pr-2">
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-3 toss-input text-sm" placeholder="예: 2026-09-27 주일예배"></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="예: 2026-09-27 주일예배"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="https://..."></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-40 bg-[#f2f4f6]"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-32 sm:w-40 bg-[#f2f4f6]"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-40 sm:max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
                 </div>
             </div>
             <div class="pt-4 sm:pt-5 mt-2">
-                <button id="save-konti-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition">콘티 저장</button>
+                <button id="save-konti-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-[13px] sm:text-base rounded-[14px] font-bold transition">콘티 저장</button>
             </div>
         </div>
     </div>
@@ -482,7 +483,7 @@
             <div class="flex flex-col gap-4 sm:gap-5">
                 <div>
                     <label class="block text-sm font-bold text-[#4e5968] mb-2">곡 제목 <span class="text-red-500">*</span></label>
-                    <input type="text" id="sheet-title" class="w-full px-4 py-3 toss-input text-sm" placeholder="곡 제목 입력">
+                    <input type="text" id="sheet-title" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="곡 제목 입력">
                 </div>
                 
                 <div id="sheet-file-dropzone" class="p-6 border-2 border-dashed border-emerald-200 bg-emerald-50/50 rounded-[20px] text-center cursor-pointer hover:bg-emerald-50 transition relative group">
@@ -503,15 +504,15 @@
 
                 <div>
                     <label class="block text-sm font-bold text-[#4e5968] mb-2">링크 (선택)</label>
-                    <input type="url" id="sheet-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://youtube.com/...">
+                    <input type="url" id="sheet-link" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="https://youtube.com/...">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label>
-                    <textarea id="sheet-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="특이사항이나 코멘트"></textarea>
+                    <textarea id="sheet-memo" rows="2" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm resize-none" placeholder="특이사항이나 코멘트"></textarea>
                 </div>
                 
-                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">저장 완료</button>
+                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-3.5 text-[13px] sm:text-base rounded-[14px] font-bold transition mt-2">저장 완료</button>
             </div>
         </div>
     </div>
@@ -524,12 +525,12 @@
             </div>
             <input type="hidden" id="archive-edit-id" value="">
             <div class="flex flex-col gap-4 sm:gap-5">
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">자료 이름 <span class="text-red-500">*</span></label><input type="text" id="archive-title" class="w-full px-4 py-3 toss-input text-sm" placeholder="자료 이름"></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">파일 첨부 (선택)</label><input type="file" id="archive-file" class="w-full text-sm text-[#4e5968] file:mr-3 file:py-2 file:px-4 file:rounded-[10px] file:border-0 file:font-bold file:bg-[#f2f4f6] file:text-[#333d4b] hover:file:bg-[#e5e8eb]"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">자료 이름 <span class="text-red-500">*</span></label><input type="text" id="archive-title" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="자료 이름"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">파일 첨부 (선택)</label><input type="file" id="archive-file" class="w-full text-[13px] sm:text-sm text-[#4e5968] file:mr-3 file:py-2 file:px-4 file:rounded-[10px] file:border-0 file:font-bold file:bg-[#f2f4f6] file:text-[#333d4b] hover:file:bg-[#e5e8eb]"></div>
                 <div id="archive-current-file-info" class="text-[11px] sm:text-xs text-[#8b95a1]"></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">링크 입력 (선택)</label><input type="url" id="archive-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="archive-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none"></textarea></div>
-                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">등록 완료</button>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">링크 입력 (선택)</label><input type="url" id="archive-link" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="https://..."></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="archive-memo" rows="2" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm resize-none"></textarea></div>
+                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-3.5 text-[13px] sm:text-base rounded-[14px] font-bold transition mt-2">등록 완료</button>
             </div>
         </div>
     </div>
@@ -542,14 +543,14 @@
             </div>
             <input type="hidden" id="cal-edit-id" value="">
             <div class="flex flex-col gap-4 sm:gap-5">
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-3 toss-input text-sm" placeholder=""></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder=""></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
-                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
+                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm bg-[#f2f4f6]"></div>
+                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm bg-[#f2f4f6]"></div>
                 </div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
-                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="세부 내용..."></textarea></div>
-                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">저장하기</button>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm bg-[#f2f4f6]"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm resize-none" placeholder="세부 내용..."></textarea></div>
+                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-[13px] sm:text-base rounded-[14px] font-bold transition mt-2">저장하기</button>
             </div>
         </div>
     </div>
@@ -614,7 +615,7 @@
             closeCustomConfirm();
         });
 
-        // 엔터키 연동
+        // 글로벌 엔터키 이벤트
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return; 
@@ -677,7 +678,6 @@
             }
         });
 
-        // 폰에서 모듈 로드 차단(먹통) 시 자동으로 뚫어주는 오프라인 모드 시스템
         window.addEventListener('load', () => {
             setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '');
             setupDropzone('audio-file-dropzone', 'sheet-audio-file', 'sheet-current-audio-info', '');
@@ -752,7 +752,6 @@
                 refreshUI();
             }
             
-            // 새 알림 생성 시 sourceId (원글 ID)를 함께 저장
             if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board', newId);
             else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard', newId);
             else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic', newId);
@@ -790,10 +789,8 @@
                 store[collectionName] = list;
             }
 
-            // 고유 ID(sourceId) 기반 삭제 또는 구버전 텍스트 기반 삭제 처리
             let notisToDelete = store.notifications.filter(n => n.sourceId === id);
             
-            // 만약 구버전 알림이라 sourceId가 없다면 텍스트 기반으로 찾아 삭제
             if (notisToDelete.length === 0 && itemToDelete) {
                 let textMatch = itemToDelete.text || itemToDelete.title || itemToDelete.name || itemToDelete.memo;
                 if (textMatch) {
@@ -997,7 +994,6 @@
             });
         }
 
-        // === 인증 함수들 ===
         window.toggleAuthMode = function(mode) {
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -1103,7 +1099,6 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // PWA 수동 설치 가이드 전용 로직
         function checkAppInstallation() {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
             const banner = document.getElementById('install-banner');
@@ -1164,6 +1159,12 @@
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
 
+        const boardInput = document.getElementById('board-input');
+        if (boardInput) { boardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-post-btn').click(); } } }); }
+        document.getElementById('add-post-btn').addEventListener('click', async () => { const input = document.getElementById('board-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; });
+        window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
+        window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
+
         function loadFreeboard() { 
             const list = document.getElementById('freeboard-list'); if (!list) return; const posts = getCollectionData('freeboard');
             posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
@@ -1178,6 +1179,13 @@
             });
             setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
         }
+        const freeboardInput = document.getElementById('freeboard-input'); if (freeboardInput) { freeboardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-freeboard-btn').click(); } } }); }
+        const addFreeboardBtn = document.getElementById('add-freeboard-btn'); if (addFreeboardBtn) { addFreeboardBtn.addEventListener('click', async () => { const input = document.getElementById('freeboard-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; }); }
+        window.openEditFreeboard = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success'); };
+        window.deleteFreeboard = async (id) => { await dbDelete('freeboard', id); showToast('게시글이 삭제되었습니다.', 'info'); };
+
+        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+
     </script>
 </body>
 </html>
