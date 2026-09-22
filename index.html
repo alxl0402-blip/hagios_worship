@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#3182f6">
-    <!-- 앱 아이콘 및 이름을 인식하게 해주는 임시 메니페스트 데이터 -->
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiSGFnaW9zIFdvcnNoaXAiLCJzaG9ydF9uYW1lIjoiSGFnaW9zIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMmY0ZjYiLCJ0aGVtZV9jb2xvciI6IiMzMTgyZjYiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMzgzNy8zODM3MTAyLnBuZyIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <title>Hagios Worship</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,10 +47,10 @@
     <style>
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #f2f4f6;
+            background-color: #f2f4f6; 
             color: #333d4b;
             -webkit-text-size-adjust: none;
-            overscroll-behavior-y: none;
+            overscroll-behavior-y: none; 
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -87,7 +86,7 @@
 </head>
 <body class="h-[100dvh] w-screen overflow-hidden flex items-center justify-center bg-[#f2f4f6]">
 
-    <!-- 로그인 화면 -->
+    <!-- 로그인 / 회원가입 오버레이 화면 -->
     <div id="auth-screen" class="fixed inset-0 z-50 bg-[#333d4b]/90 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="toss-card max-w-sm w-full p-8 fade-in">
             <div class="text-center mb-8">
@@ -95,32 +94,32 @@
                     <i class="fa-solid fa-music"></i>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-[#191f28] tracking-tight">Hagios Worship</h1>
-                <p class="text-[#8b95a1] text-[13px] sm:text-sm mt-1.5" id="auth-subtitle">팀 계정에 로그인하세요</p>
+                <p class="text-[#8b95a1] text-sm mt-1.5" id="auth-subtitle">팀 계정에 로그인하세요</p>
             </div>
 
             <div id="login-form" class="space-y-4">
                 <div>
-                    <input type="text" id="login-username" class="w-full px-4 py-3.5 toss-input text-[13px] sm:text-base text-[#333d4b] font-medium" placeholder="사용자 이름">
+                    <input type="text" id="login-username" class="w-full px-4 py-3.5 toss-input text-base text-[#333d4b] font-medium" placeholder="사용자 이름">
                 </div>
                 <div>
-                    <input type="password" id="login-password" class="w-full px-4 py-3.5 toss-input text-[13px] sm:text-base text-[#333d4b] font-medium" placeholder="비밀번호">
+                    <input type="password" id="login-password" class="w-full px-4 py-3.5 toss-input text-base text-[#333d4b] font-medium" placeholder="비밀번호">
                 </div>
-                <button onclick="handleLogin()" class="w-full py-3.5 mt-2 bg-[#3182f6] hover:bg-[#1b64da] text-white font-bold rounded-[14px] transition shadow-md shadow-blue-200/50 text-[13px] sm:text-base">로그인</button>
+                <button onclick="handleLogin()" class="w-full py-3.5 mt-2 bg-[#3182f6] hover:bg-[#1b64da] text-white font-bold rounded-[14px] transition shadow-md shadow-blue-200/50 text-base">로그인</button>
                 <div class="text-center mt-5">
-                    <button onclick="toggleAuthMode('signup')" class="text-[13px] font-semibold text-[#8b95a1] hover:text-[#3182f6] transition">계정이 없으신가요? 회원가입</button>
+                    <button onclick="toggleAuthMode('signup')" class="text-sm font-semibold text-[#8b95a1] hover:text-[#3182f6] transition">계정이 없으신가요? 회원가입</button>
                 </div>
             </div>
 
             <div id="signup-form" class="space-y-4 hidden">
                 <div>
-                    <input type="text" id="signup-username" class="w-full px-4 py-3.5 toss-input text-[13px] sm:text-base text-[#333d4b] font-medium" placeholder="사용할 이름 (예: 김찬양)">
+                    <input type="text" id="signup-username" class="w-full px-4 py-3.5 toss-input text-base text-[#333d4b] font-medium" placeholder="사용할 이름 (예: 김찬양)">
                 </div>
                 <div>
-                    <input type="password" id="signup-password" class="w-full px-4 py-3.5 toss-input text-[13px] sm:text-base text-[#333d4b] font-medium" placeholder="사용할 비밀번호">
+                    <input type="password" id="signup-password" class="w-full px-4 py-3.5 toss-input text-base text-[#333d4b] font-medium" placeholder="사용할 비밀번호">
                 </div>
-                <button onclick="handleSignup()" class="w-full py-3.5 mt-2 bg-[#00c897] hover:bg-[#00a87f] text-white font-bold rounded-[14px] transition shadow-md shadow-emerald-200/50 text-[13px] sm:text-base">가입 신청하기</button>
+                <button onclick="handleSignup()" class="w-full py-3.5 mt-2 bg-[#00c897] hover:bg-[#00a87f] text-white font-bold rounded-[14px] transition shadow-md shadow-emerald-200/50 text-base">가입 신청하기</button>
                 <div class="text-center mt-5">
-                    <button onclick="toggleAuthMode('login')" class="text-[13px] font-semibold text-[#8b95a1] hover:text-[#3182f6] transition">이미 계정이 있으신가요? 로그인</button>
+                    <button onclick="toggleAuthMode('login')" class="text-sm font-semibold text-[#8b95a1] hover:text-[#3182f6] transition">이미 계정이 있으신가요? 로그인</button>
                 </div>
             </div>
         </div>
@@ -129,23 +128,24 @@
     <!-- 메인 앱 컨테이너 -->
     <div id="dashboard-screen" class="w-full h-full flex flex-col md:flex-row overflow-hidden hidden fade-in">
         
-        <!-- 상단 헤더 (모바일 고정) -->
+        <!-- 모바일/PC 통합 상단 헤더 (항상 고정) -->
         <header class="w-full bg-white border-b border-gray-100 flex items-center justify-between px-4 py-3 md:hidden sticky top-0 z-40 flex-shrink-0 backdrop-blur-md bg-white/90">
             <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2 overflow-hidden cursor-pointer group" title="홈으로 이동">
                 <div class="w-8 h-8 bg-[#3182f6] rounded-[10px] flex items-center justify-center shadow-sm flex-shrink-0">
                     <i class="fa-solid fa-music text-white text-xs"></i>
                 </div>
-                <span class="font-bold text-[15px] text-[#191f28] tracking-tight">Hagios</span>
+                <span class="font-bold text-[15px] text-[#191f28] tracking-tight">Hagios Worship</span>
             </div>
             <div class="flex items-center gap-2">
-                <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-50 text-amber-600 px-3 py-2 rounded-xl text-[11px] font-bold transition whitespace-nowrap">회원관리</button>
-                <button onclick="handleLogout()" class="text-[#8b95a1] hover:text-red-500 px-3 py-2 bg-[#f2f4f6] rounded-xl text-[11px] font-bold transition whitespace-nowrap">로그아웃</button>
+                <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-50 text-amber-600 px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">회원관리</button>
+                <button onclick="handleLogout()" class="text-[#8b95a1] hover:text-red-500 px-3 py-2 bg-[#f2f4f6] rounded-xl text-xs font-bold transition whitespace-nowrap">로그아웃</button>
                 <button id="mobile-menu-btn" class="text-[#333d4b] hover:text-[#3182f6] p-2.5 bg-[#f2f4f6] rounded-xl text-xs font-bold transition"><i class="fa-solid fa-bars"></i></button>
             </div>
         </header>
 
         <!-- 사이드바 -->
         <aside class="w-full md:w-64 lg:w-[280px] bg-white border-r border-gray-100 flex flex-col flex-shrink-0 z-30 hidden md:flex absolute md:relative top-[56px] md:top-0 left-0 h-[calc(100dvh-56px)] md:h-full overflow-hidden" id="sidebar-nav-container">
+            <!-- PC 전용 상단 로고 -->
             <div class="hidden md:flex p-6 items-center justify-between border-b border-gray-100">
                 <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2.5 cursor-pointer group" title="홈으로 이동">
                     <div class="w-10 h-10 bg-[#3182f6] rounded-[14px] flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 transition">
@@ -155,201 +155,206 @@
                 </div>
             </div>
             
+            <!-- 데스크탑 관리자/로그아웃 -->
             <div class="hidden md:flex flex-col gap-2 p-5 border-b border-gray-100">
-                <div class="text-xs sm:text-sm font-medium text-[#4e5968] mb-1 px-1 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-user text-[10px]"></i></div> <span id="current-user-name">사용자</span></div>
+                <div class="text-sm font-medium text-[#4e5968] mb-1 px-1 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div> <span id="current-user-name">사용자</span></div>
                 <div class="flex gap-2">
-                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-50 text-amber-600 hover:bg-amber-100 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 관리</button>
-                    <button onclick="handleLogout()" class="flex-1 bg-[#f2f4f6] text-[#4e5968] hover:bg-red-50 hover:text-red-500 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
+                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-50 text-amber-600 hover:bg-amber-100 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 관리</button>
+                    <button onclick="handleLogout()" class="flex-1 bg-[#f2f4f6] text-[#4e5968] hover:bg-red-50 hover:text-red-500 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
                 </div>
             </div>
 
             <nav id="sidebar-nav" class="flex flex-col flex-1 overflow-y-auto py-3 bg-white md:bg-transparent">
                 <ul class="space-y-1 px-3 md:px-4">
-                    <li><button class="nav-item active w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>홈</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>캘린더</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>투두리스트</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>악보</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>콘티</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-archives"><i class="fa-solid fa-folder-open w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>자료실</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-board"><i class="fa-solid fa-bullhorn w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>공지</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-freeboard"><i class="fa-regular fa-comments w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>게시판</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-notifications"><i class="fa-solid fa-bell w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>알림</span></button></li>
+                    <li><button class="nav-item active w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-[#8b95a1] text-lg"></i><span>홈</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-[#8b95a1] text-lg"></i><span>캘린더</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-[#8b95a1] text-lg"></i><span>투두리스트</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-[#8b95a1] text-lg"></i><span>악보</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-[#8b95a1] text-lg"></i><span>콘티</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-archives"><i class="fa-solid fa-folder-open w-5 text-center text-[#8b95a1] text-lg"></i><span>자료실</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-board"><i class="fa-solid fa-bullhorn w-5 text-center text-[#8b95a1] text-lg"></i><span>공지</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-freeboard"><i class="fa-regular fa-comments w-5 text-center text-[#8b95a1] text-lg"></i><span>게시판</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-notifications"><i class="fa-solid fa-bell w-5 text-center text-[#8b95a1] text-lg"></i><span>알림</span></button></li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- 메인 컨텐츠 -->
+        <!-- 메인 컨텐츠 영역 -->
         <main class="flex-1 flex flex-col h-[calc(100dvh-56px)] md:h-[100dvh] overflow-y-auto relative pb-safe">
             <div id="toast-container" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-sm px-4 pointer-events-none items-center"></div>
 
-            <div class="flex-1 p-3 sm:p-6 md:p-8 w-full min-w-0 max-w-5xl mx-auto flex flex-col h-full">
+            <div class="flex-1 p-4 sm:p-6 md:p-8 w-full min-w-0 max-w-5xl mx-auto flex flex-col h-full">
                 
                 <section id="view-dashboard" class="view-section fade-in">
-                    <h3 class="text-[13px] sm:text-lg font-bold text-[#191f28] mb-2 sm:mb-4">바로가기</h3>
-                    <div class="grid grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-2">
+                    <h3 class="text-base sm:text-xl font-bold text-[#191f28] mb-3 sm:mb-4">바로가기</h3>
+                    
+                    <div class="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-2">
                         <div onclick="navigateToView('view-calendar')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-regular fa-calendar-days"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">캘린더</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-regular fa-calendar-days"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">캘린더</span>
                         </div>
                         <div onclick="navigateToView('view-todos')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-solid fa-check-double"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">할 일</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-solid fa-check-double"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">할 일</span>
                         </div>
                         <div onclick="navigateToView('view-sheetmusic')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#00c897] group-hover:scale-105 transition"><i class="fa-solid fa-file-audio"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">악보</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#00c897] group-hover:scale-105 transition"><i class="fa-solid fa-file-audio"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">악보</span>
                         </div>
                         <div onclick="navigateToView('view-konti')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-solid fa-list-ol"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">콘티</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#3182f6] group-hover:scale-105 transition"><i class="fa-solid fa-list-ol"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">콘티</span>
                         </div>
                         <div onclick="navigateToView('view-archives')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group mt-2 lg:mt-0">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-teal-500 group-hover:scale-105 transition"><i class="fa-solid fa-folder-open"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">자료실</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-teal-500 group-hover:scale-105 transition"><i class="fa-solid fa-folder-open"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">자료실</span>
                         </div>
                         <div onclick="navigateToView('view-board')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group mt-2 lg:mt-0">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-amber-500 group-hover:scale-105 transition"><i class="fa-solid fa-bullhorn"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">공지</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-amber-500 group-hover:scale-105 transition"><i class="fa-solid fa-bullhorn"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">공지</span>
                         </div>
                         <div onclick="navigateToView('view-freeboard')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group mt-2 lg:mt-0">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#f97316] group-hover:scale-105 transition"><i class="fa-regular fa-comments"></i></div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">게시판</span>
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-[#f97316] group-hover:scale-105 transition"><i class="fa-regular fa-comments"></i></div>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">게시판</span>
                         </div>
                         <div onclick="navigateToView('view-notifications')" class="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group mt-2 lg:mt-0">
-                            <div class="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-rose-500 group-hover:scale-105 transition relative">
+                            <div class="w-[52px] h-[52px] sm:w-[68px] sm:h-[68px] rounded-[18px] bg-white toss-card flex items-center justify-center text-xl sm:text-2xl text-rose-500 group-hover:scale-105 transition relative">
                                 <i class="fa-solid fa-bell"></i>
                             </div>
-                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-[13px]">알림</span>
+                            <span class="font-semibold text-[#4e5968] text-[11px] sm:text-sm">알림</span>
                         </div>
                     </div>
 
-                    <!-- 앱 설치 배너 -->
-                    <div id="install-banner" class="mt-4 sm:mt-8 toss-card bg-[#e8f3ff] p-3 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition hidden" onclick="showInstallGuide()">
-                        <div class="flex items-center gap-2 sm:gap-4">
-                            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-[#3182f6] shadow-sm text-sm sm:text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <!-- 앱 설치 유도 배너 (Toss Style) -->
+                    <div id="install-banner" class="mt-6 sm:mt-8 toss-card bg-gradient-to-r from-[#e8f3ff] to-[#f4f8ff] p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition hidden" onclick="showInstallGuide()">
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-[#3182f6] shadow-sm text-lg sm:text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
                             <div>
-                                <h4 class="font-bold text-[#191f28] text-[13px] sm:text-base">앱으로 설치하기</h4>
-                                <p class="text-[10px] sm:text-xs text-[#4e5968] mt-0.5">홈 화면에 추가해서 더 편하게!</p>
+                                <h4 class="font-bold text-[#191f28] text-sm sm:text-base">앱 설치 안내</h4>
+                                <p class="text-[11px] sm:text-xs text-[#4e5968] mt-0.5">홈 화면에 추가해서 더 빠르고 편하게!</p>
                             </div>
                         </div>
-                        <div class="text-[#3182f6] font-bold text-[11px] sm:text-sm bg-white px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-sm">설치</div>
+                        <div class="text-[#3182f6] font-bold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-full shadow-sm">방법 보기</div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-6">
-                        <div class="toss-card p-4 flex flex-col">
-                            <h3 class="text-[13px] sm:text-lg font-bold text-[#191f28] mb-2 sm:mb-4 flex items-center gap-1.5 flex-shrink-0"><i class="fa-regular fa-calendar-check text-[#3182f6]"></i> 다가오는 일정</h3>
-                            <div id="home-dday-list" class="space-y-1.5 sm:space-y-3 overflow-y-auto max-h-[120px] sm:max-h-60 pr-1"></div>
+                    <!-- 홈 화면 위젯 영역 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-6">
+                        <div class="toss-card p-4 sm:p-6 flex flex-col">
+                            <h3 class="text-sm sm:text-lg font-bold text-[#191f28] mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-regular fa-calendar-check text-[#3182f6]"></i> 다가오는 일정</h3>
+                            <div id="home-dday-list" class="space-y-2 sm:space-y-3 overflow-y-auto max-h-[200px] sm:max-h-60 pr-1"></div>
                         </div>
-                        <div class="toss-card p-4 flex flex-col">
-                            <h3 class="text-[13px] sm:text-lg font-bold text-[#191f28] mb-2 sm:mb-4 flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-bolt text-amber-500"></i> 새로운 소식</h3>
-                            <div id="home-new-list" class="space-y-1.5 sm:space-y-3 overflow-y-auto max-h-[180px] sm:max-h-60 pr-1"></div>
+                        <div class="toss-card p-4 sm:p-6 flex flex-col">
+                            <h3 class="text-sm sm:text-lg font-bold text-[#191f28] mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-solid fa-bolt text-amber-500"></i> 새로운 소식</h3>
+                            <div id="home-new-list" class="space-y-2 sm:space-y-3 overflow-y-auto max-h-[300px] sm:max-h-60 pr-1"></div>
                         </div>
                     </div>
                 </section>
 
                 <section id="view-calendar" class="view-section hidden fade-in h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-2 sm:mb-4 flex-shrink-0">
-                        <h2 class="text-base sm:text-2xl font-bold text-[#191f28]">캘린더</h2>
-                        <button onclick="openCalendarEventModal()" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-[12px] sm:rounded-[14px] text-[11px] sm:text-sm font-bold transition shadow-sm flex items-center gap-1">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#191f28]">캘린더</h2>
+                        <button onclick="openCalendarEventModal()" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-[14px] text-xs sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> 추가
                         </button>
                     </div>
-                    <div class="toss-card p-2 sm:p-5 mb-2 sm:mb-4 flex-shrink-0">
-                        <div class="flex justify-between items-center mb-1.5 sm:mb-3">
+                    <div class="toss-card p-3 sm:p-5 mb-3 sm:mb-4 flex-shrink-0">
+                        <div class="flex justify-between items-center mb-2 sm:mb-3">
                             <div class="flex items-center gap-1 sm:gap-2">
-                                <button onclick="changeCalendarMonth(-1)" class="w-6 h-6 sm:w-9 sm:h-9 rounded-lg hover:bg-[#f2f4f6] text-[#4e5968] flex items-center justify-center transition text-xs sm:text-base"><i class="fa-solid fa-chevron-left"></i></button>
-                                <h3 id="calendar-title" class="font-bold text-[13px] sm:text-lg text-[#191f28] mx-1 sm:mx-2">2026년 9월</h3>
-                                <button onclick="changeCalendarMonth(1)" class="w-6 h-6 sm:w-9 sm:h-9 rounded-lg hover:bg-[#f2f4f6] text-[#4e5968] flex items-center justify-center transition text-xs sm:text-base"><i class="fa-solid fa-chevron-right"></i></button>
+                                <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl hover:bg-[#f2f4f6] text-[#4e5968] flex items-center justify-center transition text-sm sm:text-base"><i class="fa-solid fa-chevron-left"></i></button>
+                                <h3 id="calendar-title" class="font-bold text-base sm:text-lg text-[#191f28] mx-1 sm:mx-2">2026년 9월</h3>
+                                <button onclick="changeCalendarMonth(1)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl hover:bg-[#f2f4f6] text-[#4e5968] flex items-center justify-center transition text-sm sm:text-base"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
-                            <button onclick="resetCalendarToCurrent()" class="text-[10px] sm:text-sm text-[#3182f6] font-bold px-2 py-1 sm:px-3 sm:py-1.5 bg-[#e8f3ff] rounded-md sm:rounded-lg transition hover:bg-[#d1e6ff]">오늘</button>
+                            <button onclick="resetCalendarToCurrent()" class="text-xs sm:text-sm text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-lg transition hover:bg-[#d1e6ff]">오늘</button>
                         </div>
-                        <div class="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2 text-center text-[10px] sm:text-sm font-bold text-[#8b95a1]">
+                        <div class="grid grid-cols-7 gap-1 mb-1 sm:mb-2 text-center text-[11px] sm:text-sm font-bold text-[#8b95a1]">
                             <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
                         </div>
-                        <div class="grid grid-cols-7 gap-0.5 sm:gap-1 text-center text-[10px] sm:text-sm" id="calendar-grid"></div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm" id="calendar-grid"></div>
                     </div>
-                    <div id="calendar-detail-panel" class="toss-card p-3 sm:p-5 hidden mb-2 flex-1 min-h-[120px] flex flex-col">
-                        <div class="flex justify-between items-center mb-2 pb-1.5 border-b border-gray-100 flex-shrink-0">
-                            <h3 id="calendar-detail-date-title" class="font-bold text-[#191f28] text-[13px] sm:text-lg">날짜</h3>
+                    <div id="calendar-detail-panel" class="toss-card p-4 sm:p-5 hidden mb-4 flex-1 min-h-[150px] flex flex-col">
+                        <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100 flex-shrink-0">
+                            <h3 id="calendar-detail-date-title" class="font-bold text-[#191f28] text-sm sm:text-lg">날짜</h3>
                         </div>
-                        <div id="calendar-detail-content" class="text-xs sm:text-sm text-[#4e5968] space-y-1.5 sm:space-y-3 flex-1 overflow-y-auto pr-1"></div>
+                        <div id="calendar-detail-content" class="text-sm text-[#4e5968] space-y-2.5 sm:space-y-3 flex-1 overflow-y-auto pr-1"></div>
                     </div>
                 </section>
 
                 <section id="view-todos" class="view-section hidden fade-in h-full flex flex-col">
-                    <h2 class="text-base sm:text-2xl font-bold text-[#191f28] mb-2 sm:mb-4 flex-shrink-0">투두리스트</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">투두리스트</h2>
                     <div class="toss-card flex flex-col h-full flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-5" id="todo-list"></div>
-                        <div class="p-2 sm:p-4 border-t border-gray-100 bg-white flex flex-row gap-1.5 sm:gap-3 flex-shrink-0 rounded-b-[20px]">
-                            <input type="text" id="todo-input" class="flex-1 px-3 py-2 sm:px-4 sm:py-3 toss-input text-[12px] sm:text-base font-medium" placeholder="할 일 입력">
-                            <input type="date" id="todo-date" class="w-[100px] sm:w-auto px-2 py-2 sm:px-3 sm:py-3 toss-input text-[10px] sm:text-sm font-semibold text-[#4e5968] bg-[#f2f4f6]">
-                            <button id="add-todo-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-base rounded-xl sm:rounded-[14px] font-bold transition whitespace-nowrap">추가</button>
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5" id="todo-list"></div>
+                        <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex flex-col sm:flex-row gap-2 sm:gap-3 flex-shrink-0 rounded-b-[20px]">
+                            <input type="text" id="todo-input" class="flex-1 px-4 py-3 toss-input text-sm sm:text-base font-medium" placeholder="할 일을 입력하세요">
+                            <div class="flex gap-2">
+                                <input type="date" id="todo-date" class="w-[110px] sm:w-auto px-3 py-3 toss-input text-xs sm:text-sm font-semibold text-[#4e5968] bg-[#f2f4f6]">
+                                <button id="add-todo-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-5 py-3 sm:px-6 sm:py-3 text-sm sm:text-base rounded-[14px] font-bold transition whitespace-nowrap">추가</button>
+                            </div>
                         </div>
                     </div>
                 </section>
                 
                 <section id="view-sheetmusic" class="view-section hidden fade-in h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-2 sm:mb-4 flex-shrink-0">
-                        <h2 class="text-base sm:text-2xl font-bold text-[#191f28]">악보</h2>
-                        <button onclick="openModal('sheet-modal')" class="bg-[#00c897] hover:bg-[#00a87f] text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-[12px] sm:rounded-[14px] text-[11px] sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#191f28]">악보</h2>
+                        <button onclick="openModal('sheet-modal')" class="bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-[14px] text-xs sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> 업로드
                         </button>
                     </div>
-                    <div class="mb-3 sm:mb-5 flex-shrink-0">
+                    <div class="mb-4 sm:mb-5 flex-shrink-0">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-[11px] sm:text-base"></i>
-                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-9 pr-3 py-2.5 sm:pl-12 sm:pr-4 sm:py-3.5 text-[12px] sm:text-base bg-white rounded-xl sm:rounded-[16px] focus:ring-2 focus:ring-[#00c897] outline-none shadow-sm border-none text-[#333d4b] font-medium" placeholder="악보 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-sm sm:text-base"></i>
+                            <input type="text" id="sheet-search" oninput="loadSheets()" class="w-full pl-10 pr-4 py-3 sm:pl-12 sm:pr-4 sm:py-3.5 text-sm sm:text-base bg-white rounded-[16px] focus:ring-2 focus:ring-[#00c897] outline-none shadow-[0_2px_10px_rgba(0,0,0,0.02)] border-none text-[#333d4b] font-medium" placeholder="악보 및 곡 검색...">
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4" id="sheet-list"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4" id="sheet-list"></div>
                     </div>
                 </section>
 
                 <section id="view-konti" class="view-section hidden fade-in h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-2 sm:mb-4 flex-shrink-0">
-                        <h2 class="text-base sm:text-2xl font-bold text-[#191f28]">콘티</h2>
-                        <button onclick="openModal('konti-modal')" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-[12px] sm:rounded-[14px] text-[11px] sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#191f28]">콘티</h2>
+                        <button onclick="openModal('konti-modal')" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-[14px] text-xs sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> 만들기
                         </button>
                     </div>
-                    <div class="mb-3 sm:mb-5 flex-shrink-0">
+                    <div class="mb-4 sm:mb-5 flex-shrink-0">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-[11px] sm:text-base"></i>
-                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-9 pr-3 py-2.5 sm:pl-12 sm:pr-4 sm:py-3.5 text-[12px] sm:text-base bg-white rounded-xl sm:rounded-[16px] focus:ring-2 focus:ring-[#3182f6] outline-none shadow-sm border-none text-[#333d4b] font-medium" placeholder="콘티 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-sm sm:text-base"></i>
+                            <input type="text" id="konti-search" oninput="loadKonti()" class="w-full pl-10 pr-4 py-3 sm:pl-12 sm:pr-4 sm:py-3.5 text-sm sm:text-base bg-white rounded-[16px] focus:ring-2 focus:ring-[#3182f6] outline-none shadow-[0_2px_10px_rgba(0,0,0,0.02)] border-none text-[#333d4b] font-medium" placeholder="콘티 검색...">
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0">
-                        <div class="grid grid-cols-1 gap-2.5 sm:gap-4" id="konti-list"></div>
+                        <div class="grid grid-cols-1 gap-3 sm:gap-4" id="konti-list"></div>
                     </div>
                 </section>
 
                 <section id="view-archives" class="view-section hidden fade-in h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-2 sm:mb-4 flex-shrink-0">
-                        <h2 class="text-base sm:text-2xl font-bold text-[#191f28]">자료실</h2>
-                        <button onclick="openModal('archive-modal')" class="bg-teal-500 hover:bg-teal-600 text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-[12px] sm:rounded-[14px] text-[11px] sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> 등록
+                    <div class="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#191f28]">자료실</h2>
+                        <button onclick="openModal('archive-modal')" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-[14px] text-xs sm:text-sm font-bold transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> 자료 등록
                         </button>
                     </div>
-                    <div class="mb-3 sm:mb-5 flex-shrink-0">
+                    <div class="mb-4 sm:mb-5 flex-shrink-0">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-[11px] sm:text-base"></i>
-                            <input type="text" id="archive-search" oninput="loadArchives()" class="w-full pl-9 pr-3 py-2.5 sm:pl-12 sm:pr-4 sm:py-3.5 text-[12px] sm:text-base bg-white rounded-xl sm:rounded-[16px] focus:ring-2 focus:ring-teal-500 outline-none shadow-sm border-none text-[#333d4b] font-medium" placeholder="자료 검색...">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#8b95a1] text-sm sm:text-base"></i>
+                            <input type="text" id="archive-search" oninput="loadArchives()" class="w-full pl-10 pr-4 py-3 sm:pl-12 sm:pr-4 sm:py-3.5 text-sm sm:text-base bg-white rounded-[16px] focus:ring-2 focus:ring-teal-500 outline-none shadow-[0_2px_10px_rgba(0,0,0,0.02)] border-none text-[#333d4b] font-medium" placeholder="자료 검색...">
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4" id="archive-list"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4" id="archive-list"></div>
                     </div>
                 </section>
 
                 <section id="view-board" class="view-section hidden fade-in h-full flex flex-col">
-                    <h2 class="text-base sm:text-2xl font-bold text-[#191f28] mb-2 sm:mb-4 flex-shrink-0">공지</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">공지</h2>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col gap-2.5 min-h-0" id="board-list"></div>
-                        <div class="p-2 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
-                            <div class="flex gap-2">
-                                <textarea id="board-input" rows="1" class="flex-1 px-3 py-2 sm:px-4 sm:py-3 toss-input text-[12px] sm:text-base font-medium resize-none min-h-[36px]" placeholder="공지 입력 (Shift+Enter 줄바꿈)"></textarea>
-                                <button id="add-post-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3.5 sm:px-6 rounded-xl sm:rounded-[14px] font-bold transition flex items-center justify-center text-sm sm:text-xl">
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0" id="board-list"></div>
+                        <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
+                            <div class="flex gap-2.5">
+                                <textarea id="board-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[13px] sm:text-base font-medium resize-none" placeholder="공지 내용을 입력하세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <button id="add-post-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
                             </div>
@@ -358,13 +363,13 @@
                 </section>
 
                 <section id="view-freeboard" class="view-section hidden fade-in h-full flex flex-col">
-                    <h2 class="text-base sm:text-2xl font-bold text-[#191f28] mb-2 sm:mb-4 flex-shrink-0">게시판</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">게시판</h2>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col gap-2.5 min-h-0 bg-[#fbfbfb]" id="freeboard-list"></div>
-                        <div class="p-2 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
-                            <div class="flex gap-2">
-                                <textarea id="freeboard-input" rows="1" class="flex-1 px-3 py-2 sm:px-4 sm:py-3 toss-input text-[12px] sm:text-base font-medium resize-none min-h-[36px]" placeholder="자유롭게 대화하세요"></textarea>
-                                <button id="add-freeboard-btn" class="bg-[#f97316] hover:bg-[#ea580c] text-white px-3.5 sm:px-6 rounded-xl sm:rounded-[14px] font-bold transition flex items-center justify-center text-sm sm:text-xl">
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0 bg-[#fbfbfb]" id="freeboard-list"></div>
+                        <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
+                            <div class="flex gap-2.5">
+                                <textarea id="freeboard-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[13px] sm:text-base font-medium resize-none" placeholder="자유롭게 이야기를 나눠보세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <button id="add-freeboard-btn" class="bg-[#f97316] hover:bg-[#ea580c] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
                             </div>
@@ -373,14 +378,14 @@
                 </section>
 
                 <section id="view-notifications" class="view-section hidden fade-in h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-2 sm:mb-4 flex-shrink-0">
-                        <h2 class="text-base sm:text-2xl font-bold text-[#191f28]">알림내역</h2>
-                        <button onclick="markAllNotificationsRead()" class="bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#4e5968] px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-[12px] text-[11px] sm:text-sm font-bold transition">
-                            모두 지우기
+                    <div class="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#191f28]">알림내역</h2>
+                        <button onclick="markAllNotificationsRead()" class="bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#4e5968] px-4 py-2 sm:px-4 sm:py-2.5 rounded-[12px] text-xs sm:text-sm font-bold transition">
+                            모든 알림 지우기
                         </button>
                     </div>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
-                        <div class="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col gap-2 min-h-0" id="notifications-list"></div>
+                        <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-2 min-h-0" id="notifications-list"></div>
                     </div>
                 </section>
 
@@ -388,172 +393,170 @@
         </main>
     </div>
 
-    <!-- 설치 안내 모달 (아이폰/안드로이드) -->
+    <!-- Alert / Confirm / Admin Modals / Install Modals -->
     <div id="install-guide-modal" class="fixed inset-0 bg-[#333d4b]/60 z-[80] hidden flex items-center justify-center p-4 backdrop-blur-sm" onclick="closeInstallGuide(event)">
-        <div class="toss-card max-w-xs sm:max-w-sm w-full p-6 sm:p-8 text-center fade-in" onclick="event.stopPropagation()">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-3 sm:mb-4 text-xl sm:text-2xl">
+        <div class="toss-card max-w-sm w-full p-6 sm:p-8 text-center fade-in" onclick="event.stopPropagation()">
+            <div class="w-14 h-14 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-4 text-2xl">
                 <i id="install-os-icon" class="fa-solid fa-mobile-screen"></i>
             </div>
-            <h3 class="font-bold text-[#191f28] text-base sm:text-xl mb-1.5" id="install-title">앱 설치하기</h3>
-            <p class="text-[12px] sm:text-sm text-[#4e5968] mb-4 sm:mb-5 leading-relaxed" id="install-desc">아래의 가이드에 따라 홈 화면에<br>앱을 추가해보세요!</p>
+            <h3 class="font-bold text-[#191f28] text-lg sm:text-xl mb-2" id="install-title">앱 설치하기</h3>
+            <p class="text-sm text-[#4e5968] mb-5 leading-relaxed" id="install-desc">아래의 가이드에 따라 홈 화면에<br>앱을 추가해보세요!</p>
             
-            <div class="bg-[#f2f4f6] rounded-xl sm:rounded-[16px] p-3 sm:p-4 mb-5 sm:mb-6 text-left" id="install-instruction">
-            </div>
+            <div class="bg-[#f2f4f6] rounded-[16px] p-4 mb-6 text-left" id="install-instruction"></div>
             
-            <button onclick="closeInstallGuide()" class="w-full py-3 sm:py-3.5 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#333d4b] rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base">닫기</button>
+            <button onclick="closeInstallGuide()" class="w-full py-3.5 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#333d4b] rounded-[14px] font-bold transition text-sm sm:text-base">닫기</button>
         </div>
     </div>
 
-    <!-- 기본 얼럿/컨펌 -->
     <div id="custom-alert-modal" class="fixed inset-0 bg-[#333d4b]/60 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-xs sm:max-w-sm w-full p-5 sm:p-6 shadow-xl fade-in text-center">
-            <div id="alert-icon-container" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-lg sm:text-xl">
+        <div class="toss-card max-w-xs sm:max-w-sm w-full p-6 shadow-xl fade-in text-center">
+            <div id="alert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
                 <i id="alert-icon" class="fa-solid fa-circle-info"></i>
             </div>
-            <h3 class="font-bold text-[#191f28] text-[15px] sm:text-lg mb-1.5 sm:mb-2" id="alert-title">안내</h3>
-            <p class="text-[12px] sm:text-base text-[#4e5968] mb-4 sm:mb-5 whitespace-pre-line leading-relaxed" id="alert-message">메시지 내용</p>
-            <button id="alert-action-btn" class="w-full py-2.5 sm:py-3 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base">확인</button>
+            <h3 class="font-bold text-[#191f28] text-base sm:text-lg mb-2" id="alert-title">안내</h3>
+            <p class="text-sm sm:text-base text-[#4e5968] mb-5 whitespace-pre-line leading-relaxed" id="alert-message">메시지 내용</p>
+            <button id="alert-action-btn" class="w-full py-3 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-sm sm:text-base">확인</button>
         </div>
     </div>
 
     <div id="custom-confirm-modal" class="fixed inset-0 bg-[#333d4b]/60 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-xs sm:max-w-sm w-full p-5 sm:p-6 shadow-xl fade-in text-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-lg sm:text-xl">
+        <div class="toss-card max-w-xs sm:max-w-sm w-full p-6 shadow-xl fade-in text-center">
+            <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3 class="font-bold text-[#191f28] text-[15px] sm:text-lg mb-1.5 sm:mb-2" id="confirm-title">확인</h3>
-            <p class="text-[12px] sm:text-base text-[#4e5968] mb-4 sm:mb-5" id="confirm-message">정말 진행하시겠습니까?</p>
+            <h3 class="font-bold text-[#191f28] text-base sm:text-lg mb-2" id="confirm-title">확인</h3>
+            <p class="text-sm sm:text-base text-[#4e5968] mb-5" id="confirm-message">정말 진행하시겠습니까?</p>
             <div class="flex gap-2 sm:gap-3">
-                <button onclick="closeCustomConfirm()" class="flex-1 py-2.5 sm:py-3 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#4e5968] rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base">취소</button>
-                <button id="confirm-action-btn" class="flex-1 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base">삭제</button>
+                <button onclick="closeCustomConfirm()" class="flex-1 py-3 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#4e5968] rounded-[14px] font-bold transition text-sm sm:text-base">취소</button>
+                <button id="confirm-action-btn" class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-[14px] font-bold transition text-sm sm:text-base">삭제</button>
             </div>
         </div>
     </div>
 
-    <!-- 관리자 모달 -->
     <div id="admin-modal" class="fixed inset-0 z-[55] hidden bg-[#333d4b]/60 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="toss-card max-w-md w-full overflow-hidden flex flex-col max-h-[80vh]">
-            <div class="p-3 sm:p-5 border-b border-gray-100 flex justify-between items-center bg-white">
-                <h3 class="font-bold text-[15px] sm:text-lg text-[#191f28] flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
-                <button onclick="closeAdminModal()" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-lg sm:text-xl"></i></button>
+            <div class="p-4 sm:p-5 border-b border-gray-100 flex justify-between items-center bg-white">
+                <h3 class="font-bold text-base sm:text-lg text-[#191f28] flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-500"></i> 회원 관리</h3>
+                <button onclick="closeAdminModal()" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <div class="flex border-b border-gray-100 bg-white">
-                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-2.5 sm:py-3.5 text-xs sm:text-base font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
-                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-2.5 sm:py-3.5 text-xs sm:text-base font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition">기존 팀원</button>
+                <button onclick="switchAdminTab('pending')" id="tab-admin-pending" class="flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition">가입 대기 <span id="pending-badge" class="ml-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></button>
+                <button onclick="switchAdminTab('active')" id="tab-admin-active" class="flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition">기존 팀원</button>
             </div>
-            <div class="flex-1 overflow-y-auto p-3 sm:p-5 bg-[#fbfbfb]">
-                <div id="admin-pending-view" class="space-y-2 sm:space-y-3 fade-in"></div>
-                <div id="admin-active-view" class="space-y-2 sm:space-y-3 hidden fade-in"></div>
+            <div class="flex-1 overflow-y-auto p-4 sm:p-5 bg-[#fbfbfb]">
+                <div id="admin-pending-view" class="space-y-3 fade-in"></div>
+                <div id="admin-active-view" class="space-y-3 hidden fade-in"></div>
             </div>
         </div>
     </div>
 
-    <!-- 기능별 모달 -->
+    <!-- 기능별 모달창들 -->
     <div id="konti-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-lg w-full p-4 sm:p-6 shadow-xl fade-in max-h-[90dvh] overflow-y-auto flex flex-col">
-            <div class="flex justify-between items-center mb-3 sm:mb-5">
-                <h3 class="font-bold text-[#191f28] text-[15px] sm:text-xl" id="konti-modal-title">새 콘티 만들기</h3>
-                <button onclick="closeModal('konti-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-lg sm:text-xl"></i></button>
+        <div class="toss-card max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto flex flex-col">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="konti-modal-title">새 콘티 만들기</h3>
+                <button onclick="closeModal('konti-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="konti-edit-id" value="">
-            <div class="flex flex-col gap-3 sm:gap-5 flex-1 overflow-y-auto pr-1">
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">콘티 이름</label><input type="text" id="konti-name" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="예: 2026-09-27 주일예배"></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="https://..."></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
+            <div class="flex flex-col gap-4 sm:gap-5 flex-1 overflow-y-auto pr-2">
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-3 toss-input text-sm" placeholder="예: 2026-09-27 주일예배"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-1.5 sm:mb-2"><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-24 sm:w-40 bg-[#f2f4f6]"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-32 sm:max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[14px] sm:rounded-[16px] p-2 sm:p-3 flex flex-col gap-1 sm:gap-1.5"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-40 bg-[#f2f4f6]"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
                 </div>
             </div>
-            <div class="pt-3 sm:pt-5 mt-1 sm:mt-2">
-                <button id="save-konti-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-2.5 sm:py-3.5 text-[13px] sm:text-base rounded-xl sm:rounded-[14px] font-bold transition">콘티 저장</button>
+            <div class="pt-4 sm:pt-5 mt-2">
+                <button id="save-konti-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition">콘티 저장</button>
             </div>
         </div>
     </div>
 
     <div id="sheet-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-lg w-full p-4 sm:p-6 shadow-xl fade-in max-h-[90dvh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-3 sm:mb-5">
-                <h3 class="font-bold text-[#191f28] text-[15px] sm:text-xl" id="sheet-modal-title">새 악보 및 음원 등록</h3>
-                <button onclick="closeModal('sheet-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-lg sm:text-xl"></i></button>
+        <div class="toss-card max-w-lg w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="sheet-modal-title">새 악보 및 음원 등록</h3>
+                <button onclick="closeModal('sheet-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="sheet-edit-id" value="">
-            <div class="flex flex-col gap-3 sm:gap-5">
+            <div class="flex flex-col gap-4 sm:gap-5">
                 <div>
-                    <label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">곡 제목 <span class="text-red-500">*</span></label>
-                    <input type="text" id="sheet-title" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="곡 제목 입력">
+                    <label class="block text-sm font-bold text-[#4e5968] mb-2">곡 제목 <span class="text-red-500">*</span></label>
+                    <input type="text" id="sheet-title" class="w-full px-4 py-3 toss-input text-sm" placeholder="곡 제목 입력">
                 </div>
                 
-                <div id="sheet-file-dropzone" class="p-4 sm:p-6 border-2 border-dashed border-emerald-200 bg-emerald-50/50 rounded-xl sm:rounded-[20px] text-center cursor-pointer hover:bg-emerald-50 transition relative group">
+                <div id="sheet-file-dropzone" class="p-6 border-2 border-dashed border-emerald-200 bg-emerald-50/50 rounded-[20px] text-center cursor-pointer hover:bg-emerald-50 transition relative group">
                     <input type="file" id="sheet-file" accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
-                    <i class="fa-solid fa-file-pdf text-[#00c897] text-2xl sm:text-3xl mb-1.5 sm:mb-2 group-hover:scale-110 transition"></i>
-                    <p class="text-[11px] sm:text-sm font-bold text-emerald-800 mb-0.5">악보 파일 (PDF/이미지)</p>
-                    <p class="text-[9px] sm:text-xs text-emerald-600/70">여기를 눌러 파일을 첨부하세요</p>
-                    <div id="sheet-current-file-info" class="text-[9px] sm:text-xs text-[#8b95a1] mt-1 sm:mt-2 font-semibold"></div>
+                    <i class="fa-solid fa-file-pdf text-[#00c897] text-3xl mb-2 group-hover:scale-110 transition"></i>
+                    <p class="text-sm font-bold text-emerald-800 mb-0.5">악보 파일 (PDF/이미지)</p>
+                    <p class="text-xs text-emerald-600/70">여기를 눌러 파일을 첨부하세요</p>
+                    <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
-                <div id="audio-file-dropzone" class="p-4 sm:p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-xl sm:rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1 sm:mt-0">
+                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group">
                     <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
-                    <i class="fa-solid fa-file-audio text-purple-400 text-2xl sm:text-3xl mb-1.5 sm:mb-2 group-hover:scale-110 transition"></i>
-                    <p class="text-[11px] sm:text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
-                    <p class="text-[9px] sm:text-xs text-purple-600/70">MP3 파일을 첨부하세요</p>
-                    <div id="sheet-current-audio-info" class="text-[9px] sm:text-xs text-[#8b95a1] mt-1 sm:mt-2 font-semibold"></div>
+                    <i class="fa-solid fa-file-audio text-purple-400 text-3xl mb-2 group-hover:scale-110 transition"></i>
+                    <p class="text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
+                    <p class="text-xs text-purple-600/70">MP3 파일을 첨부하세요</p>
+                    <div id="sheet-current-audio-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">링크 (선택)</label>
-                    <input type="url" id="sheet-link" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="https://youtube.com/...">
+                    <label class="block text-sm font-bold text-[#4e5968] mb-2">링크 (선택)</label>
+                    <input type="url" id="sheet-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://youtube.com/...">
                 </div>
                 
                 <div>
-                    <label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">메모 (선택)</label>
-                    <textarea id="sheet-memo" rows="2" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm resize-none" placeholder="특이사항이나 코멘트"></textarea>
+                    <label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label>
+                    <textarea id="sheet-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="특이사항이나 코멘트"></textarea>
                 </div>
                 
-                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-3 py-2.5 sm:px-4 sm:py-3.5 text-[13px] sm:text-base rounded-xl sm:rounded-[14px] font-bold transition mt-1 sm:mt-2">저장 완료</button>
+                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">저장 완료</button>
             </div>
         </div>
     </div>
 
     <div id="archive-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-md w-full p-4 sm:p-6 shadow-xl fade-in">
-            <div class="flex justify-between items-center mb-3 sm:mb-5">
-                <h3 class="font-bold text-[#191f28] text-[15px] sm:text-xl" id="archive-modal-title">새 자료 등록</h3>
-                <button onclick="closeModal('archive-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-lg sm:text-xl"></i></button>
+        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="archive-modal-title">새 자료 등록</h3>
+                <button onclick="closeModal('archive-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="archive-edit-id" value="">
-            <div class="flex flex-col gap-3 sm:gap-5">
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">자료 이름 <span class="text-red-500">*</span></label><input type="text" id="archive-title" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="자료 이름"></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">파일 첨부 (선택)</label><input type="file" id="archive-file" class="w-full text-[10px] sm:text-sm text-[#4e5968] file:mr-2 sm:file:mr-3 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-[8px] sm:file:rounded-[10px] file:border-0 file:font-bold file:bg-[#f2f4f6] file:text-[#333d4b] hover:file:bg-[#e5e8eb]"></div>
-                <div id="archive-current-file-info" class="text-[9px] sm:text-[11px] text-[#8b95a1]"></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">링크 입력 (선택)</label><input type="url" id="archive-link" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder="https://..."></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">메모 (선택)</label><textarea id="archive-memo" rows="2" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm resize-none"></textarea></div>
-                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-3 py-2.5 sm:px-4 sm:py-3.5 text-[13px] sm:text-base rounded-xl sm:rounded-[14px] font-bold transition mt-1 sm:mt-2">등록 완료</button>
+            <div class="flex flex-col gap-4 sm:gap-5">
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">자료 이름 <span class="text-red-500">*</span></label><input type="text" id="archive-title" class="w-full px-4 py-3 toss-input text-sm" placeholder="자료 이름"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">파일 첨부 (선택)</label><input type="file" id="archive-file" class="w-full text-sm text-[#4e5968] file:mr-3 file:py-2 file:px-4 file:rounded-[10px] file:border-0 file:font-bold file:bg-[#f2f4f6] file:text-[#333d4b] hover:file:bg-[#e5e8eb]"></div>
+                <div id="archive-current-file-info" class="text-[11px] sm:text-xs text-[#8b95a1]"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">링크 입력 (선택)</label><input type="url" id="archive-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="archive-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none"></textarea></div>
+                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">등록 완료</button>
             </div>
         </div>
     </div>
 
     <div id="calendar-event-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-md w-full p-4 sm:p-6 shadow-xl fade-in max-h-[90dvh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-3 sm:mb-5">
-                <h3 class="font-bold text-[#191f28] text-[15px] sm:text-xl" id="cal-modal-title">일정 추가</h3>
-                <button onclick="closeModal('calendar-event-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-lg sm:text-xl"></i></button>
+        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="cal-modal-title">일정 추가</h3>
+                <button onclick="closeModal('calendar-event-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="cal-edit-id" value="">
-            <div class="flex flex-col gap-3 sm:gap-5">
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm" placeholder=""></div>
-                <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                    <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm bg-[#f2f4f6]"></div>
-                    <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm bg-[#f2f4f6]"></div>
+            <div class="flex flex-col gap-4 sm:gap-5">
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">일정 내용</label><input type="text" id="cal-event-text" class="w-full px-4 py-3 toss-input text-sm" placeholder=""></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시작 날짜</label><input type="date" id="cal-event-start" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
+                    <div><label class="block text-sm font-bold text-[#4e5968] mb-2">종료 날짜 (선택)</label><input type="date" id="cal-event-end" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
                 </div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm bg-[#f2f4f6]"></div>
-                <div><label class="block text-[11px] sm:text-sm font-bold text-[#4e5968] mb-1.5 sm:mb-2">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-3 py-2.5 sm:px-4 sm:py-3 toss-input text-xs sm:text-sm resize-none" placeholder="세부 내용..."></textarea></div>
-                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-3 py-2.5 sm:px-4 sm:py-3.5 text-[13px] sm:text-base rounded-xl sm:rounded-[14px] font-bold transition mt-1 sm:mt-2">저장하기</button>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
+                <div><label class="block text-sm font-bold text-[#4e5968] mb-2">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="세부 내용..."></textarea></div>
+                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">저장하기</button>
             </div>
         </div>
     </div>
 
+    <!-- 모든 자바스크립트 함수 및 뼈대 코드 복구 완료 -->
     <script>
         let db = null;
         let auth = null;
@@ -563,6 +566,8 @@
         let currentCalendarDate = new Date();
         let selectedCalendarDateStr = null;
         let store = { users: [], todos: [], calendar: [], sheets: [], board: [], konti: [], archives: [], freeboard: [], notifications: [] };
+        
+        let isAppInitialized = false;
 
         let alertCallback = null;
         function showAlert(title, message, type = 'info', buttonText = '확인', callback = null) {
@@ -574,17 +579,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3 text-xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
             } else {
-                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
+                iconContainer.className = 'w-12 h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-3 text-xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-base shadow-sm';
             }
             alertCallback = callback;
             document.getElementById('custom-alert-modal').classList.remove('hidden');
@@ -612,7 +617,6 @@
             closeCustomConfirm();
         });
 
-        // 엔터키 연동
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return; 
@@ -659,18 +663,35 @@
                         await signInAnonymously(auth);
                     }
                 } catch (authErr) {
-                    console.warn("Custom token auth failed, falling back to anonymous auth:", authErr);
-                    await signInAnonymously(auth);
+                    console.warn("Auth failed", authErr);
                 }
                 
+                isAppInitialized = true;
                 initFirebaseListeners();
                 checkSavedLogin();
                 checkAppInstallation();
             } catch (err) {
                 console.error("Firebase init error:", err);
+                isAppInitialized = true;
                 initLocalFallback();
                 checkSavedLogin();
+                checkAppInstallation();
             }
+        });
+
+        window.addEventListener('load', () => {
+            setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '');
+            setupDropzone('audio-file-dropzone', 'sheet-audio-file', 'sheet-current-audio-info', '');
+            
+            setTimeout(() => {
+                if (!isAppInitialized) {
+                    isAppInitialized = true;
+                    showToast('보안 정책으로 오프라인 모드로 실행됩니다.', 'error');
+                    initLocalFallback();
+                    checkSavedLogin();
+                    checkAppInstallation();
+                }
+            }, 1200);
         });
 
         function checkSavedLogin() {
@@ -684,11 +705,13 @@
         function initLocalFallback() {
             ['users', 'todos', 'calendar', 'sheets', 'board', 'konti', 'archives', 'freeboard', 'notifications'].forEach(key => {
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
+                store[key] = JSON.parse(localStorage.getItem('ccm_' + key));
             });
             refreshUI();
         }
 
         function initFirebaseListeners() {
+            if (!db) return;
             const { collection, onSnapshot, query } = window.firebaseAppModules;
             const attachListener = (collectionName, storeKey) => {
                 const q = query(collection(db, 'artifacts', appId, 'public', 'data', collectionName));
@@ -729,11 +752,13 @@
                 store[collectionName] = list;
                 refreshUI();
             }
-            if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board');
-            else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard');
-            else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic');
-            else if (collectionName === 'konti') createNotification('새 콘티', data.name, 'view-konti');
-            else if (collectionName === 'archives') createNotification('새 자료', data.title, 'view-archives');
+            
+            if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board', newId);
+            else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard', newId);
+            else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic', newId);
+            else if (collectionName === 'konti') createNotification('새 콘티', data.name, 'view-konti', newId);
+            else if (collectionName === 'archives') createNotification('새 자료', data.title, 'view-archives', newId);
+            
             return newId;
         }
 
@@ -764,21 +789,24 @@
                 store[collectionName] = list;
             }
 
-            if (itemToDelete) {
+            let notisToDelete = store.notifications.filter(n => n.sourceId === id);
+            
+            if (notisToDelete.length === 0 && itemToDelete) {
                 let textMatch = itemToDelete.text || itemToDelete.title || itemToDelete.name || itemToDelete.memo;
                 if (textMatch) {
-                    let notisToDelete = store.notifications.filter(n => n.message === textMatch);
-                    for (let noti of notisToDelete) {
-                        if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
-                            const { doc, deleteDoc } = window.firebaseAppModules;
-                            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
-                        } else {
-                            let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
-                            list = list.filter(n => n.id != noti.id);
-                            localStorage.setItem('ccm_notifications', JSON.stringify(list));
-                            store.notifications = list;
-                        }
-                    }
+                    notisToDelete = store.notifications.filter(n => n.message === textMatch && !n.sourceId);
+                }
+            }
+
+            for (let noti of notisToDelete) {
+                if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
+                    const { doc, deleteDoc } = window.firebaseAppModules;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
+                } else {
+                    let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
+                    list = list.filter(n => n.id != noti.id);
+                    localStorage.setItem('ccm_notifications', JSON.stringify(list));
+                    store.notifications = list;
                 }
             }
             refreshUI();
@@ -789,9 +817,11 @@
             return JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
         }
 
-        async function createNotification(title, message, targetView) {
+        async function createNotification(title, message, targetView, sourceId) {
             const notiData = {
-                title, message, targetView, createdAt: Date.now(),
+                title, message, targetView, 
+                sourceId: sourceId || null, 
+                createdAt: Date.now(),
                 readBy: [currentUser ? currentUser.username : '익명']
             };
             if (db && auth && auth.currentUser) {
@@ -849,18 +879,18 @@
                 }).sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
                 ddayList.innerHTML = '';
                 if(upcoming.length === 0) {
-                    ddayList.innerHTML = '<div class="text-[11px] sm:text-sm text-[#8b95a1] font-medium p-2 sm:p-4 text-center py-3 sm:py-4">다가오는 일정이 없습니다.</div>';
+                    ddayList.innerHTML = '<div class="text-[11px] sm:text-sm text-[#8b95a1] font-medium p-2 text-center py-3">다가오는 일정이 없습니다.</div>';
                 } else {
                     upcoming.slice(0, 5).forEach(ev => {
                         const evDate = new Date(ev.startDate); const diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
                         let ddayText = diffDays === 0 ? 'D-Day' : `D-${diffDays}`;
                         ddayList.innerHTML += `
-                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-[#f2f4f6] rounded-xl sm:rounded-[14px] mb-1.5 sm:mb-2.5 cursor-pointer hover:bg-[#e5e8eb] transition" onclick="navigateToView('view-calendar'); selectCalendarDate('${ev.startDate}')">
-                                <div class="flex items-center gap-2 sm:gap-2.5 overflow-hidden">
-                                    <span class="text-[9px] sm:text-[11px] font-bold text-white bg-[#3182f6] px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-md sm:rounded-full">${ddayText}</span>
+                            <div class="flex items-center justify-between p-2.5 sm:p-3 bg-[#f2f4f6] rounded-xl mb-1.5 cursor-pointer hover:bg-[#e5e8eb] transition" onclick="navigateToView('view-calendar'); selectCalendarDate('${ev.startDate}')">
+                                <div class="flex items-center gap-2 overflow-hidden">
+                                    <span class="text-[9px] sm:text-[11px] font-bold text-white bg-[#3182f6] px-1.5 py-0.5 rounded-full">${ddayText}</span>
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(ev.text)}</span>
                                 </div>
-                                <span class="text-[9px] sm:text-[11px] font-bold text-[#8b95a1] flex-shrink-0 bg-white px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded shadow-sm">${ev.startDate.substring(5).replace('-','.')}</span>
+                                <span class="text-[9px] sm:text-[11px] font-bold text-[#8b95a1] flex-shrink-0 bg-white px-1.5 py-0.5 rounded shadow-sm">${ev.startDate.substring(5).replace('-','.')}</span>
                             </div>
                         `;
                     });
@@ -872,17 +902,17 @@
                 let unreadNotis = store.notifications.filter(n => !(n.readBy || []).includes(username)).sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
                 newList.innerHTML = '';
                 if(unreadNotis.length === 0) {
-                    newList.innerHTML = '<div class="text-[11px] sm:text-sm text-[#8b95a1] font-medium p-2 sm:p-4 text-center py-3 sm:py-4">모든 소식을 확인하셨습니다!</div>';
+                    newList.innerHTML = '<div class="text-[11px] sm:text-sm text-[#8b95a1] font-medium p-2 text-center py-3">모든 소식을 확인하셨습니다!</div>';
                 } else {
                     unreadNotis.slice(0, 5).forEach(noti => {
                         newList.innerHTML += `
-                            <div id="noti-item-home-${noti.id}" class="notification-item flex items-center justify-between p-2.5 sm:p-3 bg-amber-50/70 rounded-xl sm:rounded-[14px] mb-1.5 sm:mb-2.5 cursor-pointer hover:bg-amber-100 transition" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
+                            <div id="noti-item-home-${noti.id}" class="notification-item flex items-center justify-between p-2.5 sm:p-3 bg-amber-50/70 rounded-xl mb-1.5 cursor-pointer hover:bg-amber-100 transition" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
                                 <div class="flex flex-col overflow-hidden w-full pr-2">
-                                    <span class="text-[9px] sm:text-[11px] font-bold text-amber-600 mb-0.5 flex items-center gap-1 sm:gap-1.5"><i class="fa-solid fa-sparkles"></i> ${escapeHtml(noti.title)}</span>
+                                    <span class="text-[9px] sm:text-[11px] font-bold text-amber-600 mb-0.5 flex items-center gap-1.5"><i class="fa-solid fa-sparkles"></i> ${escapeHtml(noti.title)}</span>
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(noti.message)}</span>
                                 </div>
-                                <div class="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0 text-[#8b95a1] hover:text-[#333d4b] transition" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                                    <i class="fa-solid fa-xmark text-[10px] sm:text-xs"></i>
+                                <div class="w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0 text-[#8b95a1] hover:text-[#333d4b] transition" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
+                                    <i class="fa-solid fa-xmark text-xs"></i>
                                 </div>
                             </div>
                         `;
@@ -898,18 +928,18 @@
             if (!list) return;
             list.innerHTML = '';
             if(notis.length === 0) {
-                list.innerHTML = '<div class="text-xs sm:text-sm text-[#8b95a1] font-medium p-6 sm:p-8 text-center flex-1 flex items-center justify-center">수신된 새 알림이 없습니다.</div>'; return;
+                list.innerHTML = '<div class="text-xs sm:text-sm text-[#8b95a1] font-medium p-8 text-center flex-1 flex items-center justify-center">수신된 새 알림이 없습니다.</div>'; return;
             }
             notis.forEach(noti => {
                 list.innerHTML += `
-                    <div id="noti-item-${noti.id}" class="notification-item p-3 sm:p-4 rounded-xl sm:rounded-[16px] bg-[#f2f4f6] cursor-pointer hover:bg-[#e5e8eb] transition relative group" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
+                    <div id="noti-item-${noti.id}" class="notification-item p-3 sm:p-4 rounded-xl bg-[#f2f4f6] cursor-pointer hover:bg-[#e5e8eb] transition relative group" onclick="dismissNotification(event, '${noti.id}'); navigateToView('${noti.targetView}');">
                         <div class="flex items-center justify-between mb-1.5 pr-6">
                             <h4 class="text-[11px] sm:text-sm font-bold text-[#3182f6]">${escapeHtml(noti.title)}</h4>
                             <span class="text-[8px] sm:text-[10px] font-bold text-[#8b95a1]">${new Date(noti.createdAt).toLocaleString()}</span>
                         </div>
                         <p class="text-[11px] sm:text-sm text-[#333d4b] font-bold truncate pr-4">${escapeHtml(noti.message)}</p>
-                        <button class="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                            <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
+                        <button class="absolute top-3 right-3 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
+                            <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
                 `;
@@ -964,7 +994,6 @@
             });
         }
 
-        // === 인증 함수들 ===
         window.toggleAuthMode = function(mode) {
             if(mode === 'signup') {
                 document.getElementById('login-form').classList.add('hidden');
@@ -1044,11 +1073,11 @@
             const pendingView = document.getElementById('admin-pending-view');
             pendingView.innerHTML = '';
             if(pendingUsers.length === 0) pendingView.innerHTML = '<div class="text-center text-[#8b95a1] py-4 text-xs sm:text-sm font-semibold">가입 대기 중인 인원이 없습니다.</div>';
-            else pendingUsers.forEach(u => { pendingView.innerHTML += `<div class="flex items-center justify-between p-2.5 sm:p-4 bg-white rounded-xl sm:rounded-[16px] shadow-sm border border-gray-100"><div><p class="font-bold text-[13px] sm:text-base text-[#191f28]">${escapeHtml(u.username)}</p><p class="text-[9px] sm:text-xs text-[#8b95a1] font-semibold mt-0.5">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p></div><div class="flex gap-1.5 sm:gap-2"><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-[11px] sm:text-sm rounded-lg sm:rounded-xl transition font-bold">거부</button><button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-[#3182f6] hover:bg-[#1b64da] text-white text-[11px] sm:text-sm rounded-lg sm:rounded-xl transition font-bold">승인</button></div></div>`; });
+            else pendingUsers.forEach(u => { pendingView.innerHTML += `<div class="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100"><div><p class="font-bold text-sm text-[#191f28]">${escapeHtml(u.username)}</p><p class="text-[10px] text-[#8b95a1] font-semibold mt-0.5">가입일: ${new Date(u.createdAt).toLocaleDateString()}</p></div><div class="flex gap-2"><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-xs rounded-lg transition font-bold">거부</button><button onclick="adminActionUser('${u.id}', 'approve', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-[#3182f6] hover:bg-[#1b64da] text-white text-xs rounded-lg transition font-bold">승인</button></div></div>`; });
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
             if(activeUsers.length === 0) activeView.innerHTML = '<div class="text-center text-[#8b95a1] py-4 text-xs sm:text-sm font-semibold">등록된 팀원이 없습니다.</div>';
-            else activeUsers.forEach(u => { const isSuspended = u.status === 'suspended'; activeView.innerHTML += `<div class="flex items-center justify-between p-2.5 sm:p-4 bg-white rounded-xl sm:rounded-[16px] shadow-sm border border-gray-100 ${isSuspended ? 'opacity-50' : ''}"><div><p class="font-bold text-[13px] sm:text-base text-[#191f28] flex items-center gap-1 sm:gap-1.5">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-md">정지됨</span>' : ''}</p></div><div class="flex gap-1.5 sm:gap-2"><button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 ${isSuspended ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} text-[11px] sm:text-sm rounded-lg sm:rounded-xl transition font-bold">${isSuspended ? '해제' : '정지'}</button><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-[11px] sm:text-sm rounded-lg sm:rounded-xl transition font-bold">삭제</button></div></div>`; });
+            else activeUsers.forEach(u => { const isSuspended = u.status === 'suspended'; activeView.innerHTML += `<div class="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 ${isSuspended ? 'opacity-50' : ''}"><div><p class="font-bold text-sm text-[#191f28] flex items-center gap-1.5">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-md">정지됨</span>' : ''}</p></div><div class="flex gap-2"><button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} text-xs rounded-lg transition font-bold">${isSuspended ? '해제' : '정지'}</button><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-xs rounded-lg transition font-bold">삭제</button></div></div>`; });
         }
 
         window.adminActionUser = async function(id, action, username) {
@@ -1064,45 +1093,26 @@
             if(type === 'success') { iconClass = 'fa-check text-[#00c897]'; }
             else if(type === 'error') { iconClass = 'fa-xmark text-red-400'; }
             
-            toast.className = `flex items-center gap-2 sm:gap-3 px-4 py-3 sm:px-5 sm:py-4 rounded-[14px] sm:rounded-[16px] shadow-lg ${bgClass} fade-in pointer-events-auto text-[13px] sm:text-base z-[9999] opacity-90`;
-            toast.innerHTML = `<i class="fa-solid ${iconClass} text-base sm:text-lg"></i> <span class="font-bold">${message}</span>`;
+            toast.className = `flex items-center gap-3 px-5 py-4 rounded-[16px] shadow-lg ${bgClass} fade-in pointer-events-auto text-sm sm:text-base z-[9999] opacity-90`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-lg"></i> <span class="font-bold">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const banner = document.getElementById('install-banner');
-            if (banner) banner.classList.remove('hidden');
-        });
-
         function checkAppInstallation() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
             const banner = document.getElementById('install-banner');
             
             if (isStandalone) {
                 if(banner) banner.classList.add('hidden');
-            } else if (isIOS) {
+            } else {
                 if(banner) banner.classList.remove('hidden');
             }
         }
 
-        window.showInstallGuide = async function() {
+        window.showInstallGuide = function() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('install-banner').classList.add('hidden');
-                }
-                deferredPrompt = null;
-                return;
-            }
-
             const modal = document.getElementById('install-guide-modal');
             const icon = document.getElementById('install-os-icon');
             const instruction = document.getElementById('install-instruction');
@@ -1110,19 +1120,19 @@
             if (isIOS) {
                 icon.className = 'fa-brands fa-apple';
                 instruction.innerHTML = `
-                    <ol class="list-decimal pl-4 space-y-2.5 sm:space-y-3 text-[#333d4b] font-medium text-[12px] sm:text-sm">
-                        <li>화면 하단 메뉴에서 <span class="bg-white px-1.5 py-0.5 rounded border border-gray-200"><i class="fa-solid fa-arrow-up-from-bracket text-blue-500"></i> 공유</span> 버튼을 누릅니다.</li>
-                        <li>메뉴를 위로 올려 <span class="font-bold text-[#191f28]">'홈 화면에 추가'</span>를 선택합니다.</li>
-                        <li>우측 상단의 <span class="font-bold text-[#191f28]">'추가'</span> 버튼을 누릅니다.</li>
+                    <ol class="list-decimal pl-4 space-y-3 text-[#333d4b] font-medium text-sm">
+                        <li>하단 메뉴에서 <span class="bg-white px-1.5 py-0.5 rounded border border-gray-200"><i class="fa-solid fa-arrow-up-from-bracket text-blue-500"></i> 공유</span> 버튼 누르기</li>
+                        <li>화면을 올려 <span class="font-bold text-[#191f28]">'홈 화면에 추가'</span> 터치</li>
+                        <li>우측 상단의 <span class="font-bold text-[#191f28]">'추가'</span> 누르기</li>
                     </ol>
                 `;
             } else {
                 icon.className = 'fa-brands fa-android text-emerald-500';
                 instruction.innerHTML = `
-                    <ol class="list-decimal pl-4 space-y-2.5 sm:space-y-3 text-[#333d4b] font-medium text-[12px] sm:text-sm">
-                        <li>브라우저 우측 상단의 <span class="bg-white px-1.5 py-0.5 rounded border border-gray-200"><i class="fa-solid fa-ellipsis-vertical"></i> 더보기</span> 버튼을 누릅니다.</li>
-                        <li><span class="font-bold text-[#191f28]">'홈 화면에 추가'</span> 또는 <span class="font-bold text-[#191f28]">'앱 설치'</span>를 선택합니다.</li>
-                        <li><span class="font-bold text-[#191f28]">'추가'</span> 버튼을 누릅니다.</li>
+                    <ol class="list-decimal pl-4 space-y-3 text-[#333d4b] font-medium text-sm">
+                        <li>우측 상단의 <span class="bg-white px-1.5 py-0.5 rounded border border-gray-200"><i class="fa-solid fa-ellipsis-vertical"></i> 더보기</span> 버튼 누르기</li>
+                        <li><span class="font-bold text-[#191f28]">'홈 화면에 추가'</span> 터치</li>
+                        <li><span class="font-bold text-[#191f28]">'추가'</span> 버튼 누르기</li>
                     </ol>
                 `;
             }
@@ -1133,6 +1143,455 @@
             if(e && e.target !== e.currentTarget) return;
             document.getElementById('install-guide-modal').classList.add('hidden');
         };
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const viewSections = document.querySelectorAll('.view-section');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active')); e.currentTarget.classList.add('active');
+                viewSections.forEach(sec => sec.classList.add('hidden'));
+                const targetId = e.currentTarget.getAttribute('data-target'); document.getElementById(targetId).classList.remove('hidden');
+                if (targetId === 'view-konti') renderKontiSheetCheckboxes();
+                if (window.innerWidth < 768) document.getElementById('sidebar-nav-container').classList.add('hidden');
+            });
+        });
+        window.navigateToView = (targetId) => {
+            navItems.forEach(nav => { if (nav.getAttribute('data-target') === targetId) nav.classList.add('active'); else nav.classList.remove('active'); });
+            viewSections.forEach(sec => sec.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden');
+            if (targetId === 'view-konti') renderKontiSheetCheckboxes();
+            if (window.innerWidth < 768) document.getElementById('sidebar-nav-container').classList.add('hidden');
+        };
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => document.getElementById('sidebar-nav-container').classList.toggle('hidden'));
+
+        function renderCalendar() { 
+            const grid = document.getElementById('calendar-grid'); const titleEl = document.getElementById('calendar-title');
+            if(!grid || !titleEl) return;
+            grid.innerHTML = '';
+            const year = currentCalendarDate.getFullYear(); const month = currentCalendarDate.getMonth();
+            titleEl.textContent = `${year}년 ${month + 1}월`;
+            const firstDayIndex = new Date(year, month, 1).getDay(); const totalDays = new Date(year, month + 1, 0).getDate();
+            const today = new Date(); const calendarEvents = getCollectionData('calendar');
+            if (!selectedCalendarDateStr) selectedCalendarDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            for(let i = 0; i < firstDayIndex; i++) grid.innerHTML += `<div class="p-1 rounded-[10px] bg-[#f2f4f6]/50 min-h-[50px]"></div>`;
+            for(let i = 1; i <= totalDays; i++) {
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === i;
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                let bgClass = isToday ? 'bg-[#e8f3ff]' : 'bg-[#fbfbfb]';
+                let textClass = isToday ? 'text-[#3182f6]' : 'text-[#333d4b]';
+                if (selectedCalendarDateStr === dateKey) { bgClass = 'bg-[#3182f6] shadow-md ring-2 ring-blue-200'; textClass = 'text-white'; }
+                
+                const dayEvents = calendarEvents.filter(ev => { if (!ev.startDate) return false; return dateKey >= ev.startDate && dateKey <= (ev.endDate || ev.startDate); });
+                let eventsHtml = '';
+                dayEvents.slice(0, 2).forEach(dt => { eventsHtml += `<div class="text-[9px] bg-[#3182f6] text-white px-1.5 py-0.5 rounded-md truncate w-full text-left mt-0.5 font-semibold" title="${escapeHtml(dt.text)}">${dt.time ? `[${dt.time}] ` : ''}${escapeHtml(dt.text)}</div>`; });
+                if (dayEvents.length > 2) eventsHtml += `<div class="text-[9px] text-[#8b95a1] font-bold mt-0.5 px-1">+${dayEvents.length - 2}</div>`;
+                grid.innerHTML += `<div onclick="selectCalendarDate('${dateKey}')" class="p-1.5 rounded-[10px] ${bgClass} min-h-[50px] flex flex-col justify-start items-start cursor-pointer hover:bg-[#d1e6ff] transition group"><div class="w-full flex justify-between items-center mb-0.5"><span class="text-xs font-bold ${textClass}">${i}</span>${dayEvents.length > 0 ? `<span class="w-1.5 h-1.5 rounded-full ${selectedCalendarDateStr === dateKey ? 'bg-white' : 'bg-[#3182f6]'}"></span>` : ''}</div><div class="w-full flex flex-col gap-0.5 overflow-hidden">${eventsHtml}</div></div>`;
+            }
+            renderCalendarDetailPanel();
+        }
+        window.selectCalendarDate = (dateStr) => { selectedCalendarDateStr = dateStr; renderCalendar(); };
+        function renderCalendarDetailPanel() { 
+            const panelEl = document.getElementById('calendar-detail-panel'); const titleEl = document.getElementById('calendar-detail-date-title'); const contentEl = document.getElementById('calendar-detail-content');
+            if(!panelEl || !titleEl || !contentEl) return;
+            if(!selectedCalendarDateStr) { panelEl.classList.add('hidden'); return; }
+            const dayEvents = getCollectionData('calendar').filter(ev => { if (!ev.startDate) return false; return selectedCalendarDateStr >= ev.startDate && selectedCalendarDateStr <= (ev.endDate || ev.startDate); });
+            if (dayEvents.length === 0) { panelEl.classList.add('hidden'); return; }
+            panelEl.classList.remove('hidden'); titleEl.textContent = `${selectedCalendarDateStr}`;
+            let html = '';
+            dayEvents.forEach(ev => {
+                const isOwner = !!currentUser;
+                const actionBtns = isOwner ? `<div class="flex items-center gap-1.5"><button onclick="openEditCalendarEvent('${ev.id}')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5 text-xs"><i class="fa-solid fa-pen"></i></button><button onclick="deleteCalendarEvent('${ev.id}')" class="text-[#8b95a1] hover:text-red-500 p-1.5 text-xs"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                let timeDisplay = ev.time ? `<span class="bg-[#f2f4f6] text-[#4e5968] text-[10px] px-2 py-1 rounded-md font-bold"><i class="fa-regular fa-clock mr-1"></i>${ev.time}</span>` : '';
+                let periodDisplay = ev.startDate !== ev.endDate ? `<span class="text-[10px] font-semibold text-[#8b95a1]">기간: ${ev.startDate} ~ ${ev.endDate}</span>` : '';
+                let detailText = ev.detail ? `<div class="mt-2 text-xs text-[#4e5968] bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(ev.detail)}</div>` : '';
+                html += `<div class="bg-white border border-gray-100 rounded-[16px] p-4 relative group mb-2 shadow-sm"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2 flex-wrap"><h4 class="font-bold text-[#191f28] text-sm">${escapeHtml(ev.text)}</h4>${timeDisplay}</div>${actionBtns}</div>${periodDisplay ? `<div class="mb-1.5">${periodDisplay}</div>` : ''}${detailText}</div>`;
+            });
+            contentEl.innerHTML = html;
+        }
+        window.changeCalendarMonth = (dir) => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir); renderCalendar(); };
+        window.resetCalendarToCurrent = () => { currentCalendarDate = new Date(); selectedCalendarDateStr = null; renderCalendar(); };
+        window.openCalendarEventModal = () => { document.getElementById('cal-edit-id').value = ''; document.getElementById('cal-event-text').value = ''; document.getElementById('cal-event-start').value = selectedCalendarDateStr || new Date().toISOString().split('T')[0]; document.getElementById('cal-event-end').value = ''; document.getElementById('cal-event-time').value = ''; document.getElementById('cal-event-detail').value = ''; document.getElementById('cal-modal-title').textContent = '일정 추가'; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
+        window.openEditCalendarEvent = (id) => { const ev = getCollectionData('calendar').find(item => item.id == id); if(!ev) return; document.getElementById('cal-edit-id').value = ev.id; document.getElementById('cal-event-text').value = ev.text || ''; document.getElementById('cal-event-start').value = ev.startDate || ''; document.getElementById('cal-event-end').value = ev.endDate || ''; document.getElementById('cal-event-time').value = ev.time || ''; document.getElementById('cal-event-detail').value = ev.detail || ''; document.getElementById('cal-modal-title').textContent = '일정 수정'; document.getElementById('calendar-event-modal').classList.remove('hidden'); };
+        document.getElementById('save-cal-event-btn').addEventListener('click', async () => { const editId = document.getElementById('cal-edit-id').value; const text = document.getElementById('cal-event-text').value.trim(); const startDate = document.getElementById('cal-event-start').value; const endDate = document.getElementById('cal-event-end').value || startDate; const time = document.getElementById('cal-event-time').value; const detail = document.getElementById('cal-event-detail').value.trim(); if (!text || !startDate) { showToast('일정 내용과 시작 날짜를 입력해주세요.', 'error'); return; } closeModal('calendar-event-modal'); if (editId) { await dbUpdate('calendar', editId, { text, startDate, endDate, time, detail }); showToast('일정이 수정되었습니다.', 'success'); } else { await dbAdd('calendar', { text, startDate, endDate, time, detail, createdAt: Date.now(), author: currentUser.username }); showToast('일정이 추가되었습니다.', 'success'); } selectedCalendarDateStr = startDate; renderCalendar(); });
+        window.deleteCalendarEvent = async (id) => { showCustomConfirm('일정 삭제', '이 일정을 삭제하시겠습니까?', async () => { await dbDelete('calendar', id); showToast('일정이 삭제되었습니다.', 'info'); renderCalendar(); }); };
+
+        function loadTodos() { 
+            const list = document.getElementById('todo-list'); const todos = getCollectionData('todos'); list.innerHTML = '';
+            if(todos.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 text-xs font-semibold">등록된 할 일이 없습니다.</div>`; return; }
+            todos.forEach((todo) => {
+                const isOwner = currentUser && (currentUser.isAdmin || (todo.author && todo.author === currentUser.username));
+                const actionBtns = isOwner ? `<button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition p-1.5" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
+                const item = document.createElement('div');
+                item.className = `flex items-center gap-3 p-3 border-b border-gray-100 hover:bg-[#fbfbfb] transition group ${todo.completed ? 'opacity-50' : ''}`;
+                let dateBadge = todo.dueDate ? `<span class="text-[10px] bg-[#f2f4f6] text-[#4e5968] px-2 py-1 rounded-md font-bold flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
+                item.innerHTML = `<button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-[#3182f6] border-[#3182f6] text-white' : 'border-[#d1d6db] text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-xs"></i></button><span class="flex-1 text-sm ${todo.completed ? 'line-through text-[#8b95a1]' : 'text-[#333d4b]'} font-bold">${escapeHtml(todo.text)}</span>${dateBadge}<div class="flex items-center gap-1"><button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-up"></i></button><button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-down"></i></button>${actionBtns}</div>`;
+                list.appendChild(item);
+            });
+        }
+        document.getElementById('add-todo-btn').addEventListener('click', async () => { const input = document.getElementById('todo-input'); const dateInput = document.getElementById('todo-date'); const text = input.value.trim(); if(!text) return; await dbAdd('todos', { text, dueDate: dateInput.value, completed: false, createdAt: Date.now(), author: currentUser.username }); input.value = ''; dateInput.value = ''; showToast('할 일이 추가되었습니다.', 'success'); });
+        window.openEditTodo = (id, currentText, currentDate) => { const newText = prompt("할 일 수정", currentText); if (newText === null || !newText.trim()) return; const newDate = prompt("기한 수정 (YYYY-MM-DD)", currentDate); if (newDate === null) return; dbUpdate('todos', id, { text: newText.trim(), dueDate: newDate.trim() }); showToast('수정되었습니다.', 'success'); };
+        window.toggleTodo = async (id) => { const todo = getCollectionData('todos').find(t => t.id == id); if(todo) await dbUpdate('todos', id, { completed: !todo.completed }); };
+        window.moveTodoOrder = async (id, direction) => { let todos = getCollectionData('todos'); const index = todos.findIndex(t => t.id == id); if (index === -1) return; if (direction === 'up' && index > 0) { const temp = todos[index]; todos[index] = todos[index - 1]; todos[index - 1] = temp; } else if (direction === 'down' && index < todos.length - 1) { const temp = todos[index]; todos[index] = todos[index + 1]; todos[index + 1] = temp; } else return; if (db && auth && auth.currentUser) { store.todos = todos; loadTodos(); } else { localStorage.setItem('ccm_todos', JSON.stringify(todos)); store.todos = todos; loadTodos(); } };
+        window.deleteTodo = async (id) => { await dbDelete('todos', id); showToast('할 일이 삭제되었습니다.', 'info'); };
+
+        function loadSheets() {
+            const list = document.getElementById('sheet-list');
+            const search = (document.getElementById('sheet-search')?.value || '').toLowerCase();
+            let sheets = getCollectionData('sheets');
+            if (search) sheets = sheets.filter(s => s.title.toLowerCase().includes(search) || (s.memo && s.memo.toLowerCase().includes(search)));
+            list.innerHTML = '';
+            if(sheets.length === 0) {
+                list.innerHTML = `<div class="col-span-full text-center text-[#8b95a1] py-8 text-xs font-semibold bg-white rounded-[20px]">등록된 악보/음원이 없습니다.</div>`;
+                return;
+            }
+            sheets.forEach(sheet => {
+                const isOwner = !!currentUser; 
+                const actionBtns = isOwner ? `<div class="absolute top-3 right-3 flex items-center gap-1 bg-white/80 rounded-lg backdrop-blur-sm p-1 z-10"><button onclick="openEditSheet('${sheet.id}')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5 rounded-md hover:bg-[#e8f3ff]"><i class="fa-solid fa-pen"></i></button><button onclick="deleteSheet('${sheet.id}')" class="text-[#8b95a1] hover:text-red-500 p-1.5 rounded-md hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+
+                const item = document.createElement('div');
+                item.className = 'toss-card p-4 flex flex-col hover:shadow-md transition relative group';
+                
+                const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-10 mt-3 rounded-[10px] outline-none"></audio>` : '';
+                const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#f97316] font-bold hover:underline bg-orange-50 px-3 py-1.5 rounded-lg"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
+                const downloadBtn = sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>` : '';
+                const memoHtml = sheet.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] border border-gray-100 p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-[16px] ${sheet.data ? 'bg-emerald-50 text-[#00c897]' : 'bg-[#f2f4f6] text-[#8b95a1]'} flex items-center justify-center flex-shrink-0 text-xl"><i class="fa-solid fa-music"></i></div>
+                        <div class="flex-1 overflow-hidden pr-10">
+                            <h4 class="font-bold text-[#191f28] text-sm truncate leading-tight">${escapeHtml(sheet.title)}</h4>
+                        </div>
+                    </div>
+                    <div id="sheet-detail-${sheet.id}" class="flex flex-col mt-3 pt-3 border-t border-gray-100">
+                        <div class="flex flex-wrap gap-2 items-center">
+                            ${downloadBtn}
+                            ${linkHtml}
+                        </div>
+                        ${audioPlayer}
+                        ${memoHtml}
+                    </div>
+                    ${actionBtns}
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.downloadSheet = (id) => {
+            const sheet = getCollectionData('sheets').find(s => s.id == id);
+            if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
+            try {
+                if (sheet.data.startsWith('http')) {
+                    const link = document.createElement('a');
+                    link.href = sheet.data; link.target = '_blank';
+                    link.download = sheet.filename || `${sheet.title}.pdf`;
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                    showToast('다운로드가 시작되었습니다.', 'success');
+                    return;
+                }
+                
+                const arr = sheet.data.split(',');
+                let mime = 'application/pdf';
+                if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n);
+                while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+                const blob = new Blob([u8arr], {type: mime});
+                const filename = sheet.filename || `${sheet.title || 'sheet'}.pdf`;
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a'); link.href = blobUrl; link.download = filename;
+                document.body.appendChild(link); link.click();
+                setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 1000);
+                showToast('다운로드가 시작되었습니다.', 'success');
+            } catch (e) {
+                console.error("Download error:", e);
+                try { const win = window.open(sheet.data, '_blank'); if (!win) window.location.href = sheet.data; } catch (err) { showToast('오류가 발생했습니다.', 'error'); }
+            }
+        };
+
+        document.getElementById('add-sheet-btn').addEventListener('click', async () => {
+            const editId = document.getElementById('sheet-edit-id').value;
+            const title = document.getElementById('sheet-title').value.trim();
+            const fileInput = document.getElementById('sheet-file');
+            const audioInput = document.getElementById('sheet-audio-file');
+            const link = document.getElementById('sheet-link').value.trim();
+            const memo = document.getElementById('sheet-memo').value.trim();
+
+            if (!title) { showToast('곡 제목을 입력해주세요.', 'error'); return; }
+            const btn = document.getElementById('add-sheet-btn');
+            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...';
+
+            try {
+                let sheetData = null, sheetFilename = null;
+                let audioData = null, audioFilename = null;
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    sheetFilename = file.name;
+                    if (storage) sheetData = await uploadFileToStorage(file, 'sheets');
+                    else sheetData = await readFileAsDataURL(file); 
+                }
+                
+                if (audioInput.files.length > 0) {
+                    const file = audioInput.files[0];
+                    audioFilename = file.name;
+                    if (storage) {
+                        audioData = await uploadFileToStorage(file, 'audio');
+                    } else {
+                        if (file.size > 700000) {
+                            showToast('음원 파일이 너무 큽니다.', 'error');
+                            btn.disabled = false; btn.innerText = '저장 완료'; return;
+                        }
+                        audioData = await readFileAsDataURL(file);
+                    }
+                }
+
+                if (editId) {
+                    let updatePayload = { title, link, memo };
+                    if (sheetData) { updatePayload.data = sheetData; updatePayload.filename = sheetFilename; }
+                    if (audioData) { updatePayload.audioData = audioData; updatePayload.audioFilename = audioFilename; }
+                    
+                    await dbUpdate('sheets', editId, updatePayload);
+                    showToast('정보가 수정되었습니다.', 'success');
+                } else {
+                    if (!sheetData && !audioData && !link && !memo) {
+                        showToast('최소 한 가지는 입력해야 합니다.', 'error');
+                        btn.disabled = false; btn.innerText = '저장 완료'; return;
+                    }
+                    await dbAdd('sheets', { 
+                        title, link, memo, 
+                        data: sheetData, filename: sheetFilename, 
+                        audioData: audioData, audioFilename: audioFilename, 
+                        createdAt: Date.now(),
+                        author: currentUser.username
+                    });
+                    showToast('성공적으로 등록되었습니다.', 'success');
+                }
+                closeModal('sheet-modal');
+            } catch (err) {
+                console.error(err); showToast('저장 중 오류가 발생했습니다.', 'error');
+            } finally {
+                btn.disabled = false; btn.innerText = '저장 완료';
+            }
+        });
+
+        window.openEditSheet = (id) => {
+            let sheet = getCollectionData('sheets').find(s => s.id == id); if (!sheet) return;
+            document.getElementById('sheet-edit-id').value = sheet.id;
+            document.getElementById('sheet-title').value = sheet.title || '';
+            document.getElementById('sheet-link').value = sheet.link || '';
+            document.getElementById('sheet-memo').value = sheet.memo || '';
+            
+            document.getElementById('sheet-current-file-info').textContent = sheet.filename ? `현재: ${sheet.filename}` : '등록된 악보 없음';
+            document.getElementById('sheet-current-audio-info').textContent = sheet.audioFilename ? `현재: ${sheet.audioFilename}` : (sheet.audioData ? '현재: 오디오 파일 있음' : '등록된 음원 없음');
+            
+            document.getElementById('sheet-file').value = '';
+            document.getElementById('sheet-audio-file').value = '';
+            
+            document.getElementById('sheet-modal-title').textContent = '악보/음원 수정';
+            document.getElementById('sheet-modal').classList.remove('hidden');
+        };
+
+        window.deleteSheet = async (id) => { showCustomConfirm('악보 삭제', '이 곡의 모든 정보를 삭제하시겠습니까?', async () => { await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        function renderKontiSheetCheckboxes(selectedIds = []) { 
+            const container = document.getElementById('konti-sheets-checkboxes'); const sheets = getCollectionData('sheets'); container.innerHTML = '';
+            if (sheets.length === 0) { container.innerHTML = `<p class="text-xs text-[#8b95a1] font-bold text-center py-4">등록된 악보가 없습니다.</p>`; return; }
+            sheets.forEach(sheet => {
+                const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
+                container.innerHTML += `<div class="konti-sheet-item flex items-center justify-between p-2 rounded-[12px] hover:bg-[#f2f4f6] transition" data-title="${escapeHtml(sheet.title)}"><label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden"><input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-5 h-5 text-[#3182f6] rounded border-gray-300 flex-shrink-0"><span class="text-xs text-[#333d4b] font-semibold truncate">${escapeHtml(sheet.title)}</span></label><div class="flex items-center gap-1"><button type="button" onclick="moveSheetOrder(this, 'up')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-up"></i></button><button type="button" onclick="moveSheetOrder(this, 'down')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-down"></i></button></div></div>`;
+            });
+        }
+        window.filterKontiSheetCheckboxes = () => { const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase(); document.querySelectorAll('.konti-sheet-item').forEach(item => { if(item.getAttribute('data-title').toLowerCase().includes(search)) item.classList.remove('hidden'); else item.classList.add('hidden'); }); };
+        window.moveSheetOrder = (btnElement, dir) => { const container = document.getElementById('konti-sheets-checkboxes'); const item = btnElement.closest('.konti-sheet-item'); if(dir === 'up' && item.previousElementSibling) container.insertBefore(item, item.previousElementSibling); else if(dir === 'down' && item.nextElementSibling) container.insertBefore(item.nextElementSibling, item); };
+
+        function loadKonti() { 
+            const list = document.getElementById('konti-list'); const search = (document.getElementById('konti-search')?.value || '').toLowerCase(); let kontiList = getCollectionData('konti'); const sheets = getCollectionData('sheets');
+            if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search) || (k.memo && k.memo.toLowerCase().includes(search)));
+            list.innerHTML = '';
+            if(kontiList.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 text-xs font-semibold bg-white rounded-[20px]">등록된 콘티가 없습니다.</div>`; return; }
+            kontiList.forEach(konti => {
+                const isOwner = !!currentUser;
+                const actionBtns = isOwner ? `<button onclick="openEditKonti('${konti.id}')" class="text-[#8b95a1] hover:text-[#3182f6] p-2 text-sm bg-[#f2f4f6] rounded-[10px] hover:bg-[#e8f3ff]"><i class="fa-solid fa-pen"></i></button><button onclick="deleteKonti('${konti.id}')" class="text-[#8b95a1] hover:text-red-500 p-2 text-sm bg-[#f2f4f6] rounded-[10px] hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
+                const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-[#8b95a1] font-medium">포함된 악보가 없습니다.</p>` : '';
+                kontiSheets.forEach((sheet, idx) => { sheetsHtml += `<div class="flex items-center justify-between p-3 bg-[#fbfbfb] rounded-[14px] border border-gray-100"><div class="flex items-center gap-3 overflow-hidden"><span class="w-6 h-6 rounded-full bg-[#3182f6] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-bold text-[#333d4b] truncate">${escapeHtml(sheet.title)}</span></div>${sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>` : ''}</div>`; });
+                let linkHtml = konti.link ? `<a href="${konti.link}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-red-600 hover:underline font-bold"><i class="fa-brands fa-youtube"></i> 유튜브 링크</a>` : '';
+                let memoHtml = konti.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-amber-50/50 p-4 rounded-[14px] whitespace-pre-wrap">${escapeHtml(konti.memo)}</div>` : '';
+                
+                const item = document.createElement('div'); item.className = 'toss-card p-4';
+                item.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3 pb-3 border-b border-gray-100"><div><h3 class="font-bold text-[#191f28] text-sm">${escapeHtml(konti.name)}</h3><div class="flex gap-3 items-center mt-1.5"><span class="text-[10px] text-[#8b95a1] font-bold bg-[#f2f4f6] px-2.5 py-1 rounded-md">총 ${kontiSheets.length}곡</span>${linkHtml}</div></div><div class="flex items-center gap-2 w-full sm:w-auto justify-end"><button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3.5 py-2 rounded-[10px] text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드</button>${actionBtns}</div></div>${memoHtml}<div class="flex flex-col gap-2 mt-3">${sheetsHtml}</div>`;
+                list.appendChild(item);
+            });
+        }
+
+        document.getElementById('save-konti-btn').addEventListener('click', async () => {
+            const editId = document.getElementById('konti-edit-id').value; const name = document.getElementById('konti-name').value.trim();
+            const link = document.getElementById('konti-link').value.trim(); const memo = document.getElementById('konti-memo').value.trim();
+            let sheetIds = []; document.querySelectorAll('.konti-sheet-item').forEach(item => { const cb = item.querySelector('.konti-sheet-checkbox'); if (cb && cb.checked) sheetIds.push(cb.value); });
+            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; } closeModal('konti-modal');
+            if (editId) { await dbUpdate('konti', editId, { name, link, memo, sheetIds }); showToast('콘티가 수정되었습니다.', 'success'); } 
+            else { await dbAdd('konti', { name, link, memo, sheetIds, createdAt: Date.now(), author: currentUser.username }); showToast('콘티가 생성되었습니다.', 'success'); }
+        });
+
+        window.openEditKonti = (id) => {
+            let konti = getCollectionData('konti').find(k => k.id == id); if (!konti) return;
+            document.getElementById('konti-edit-id').value = konti.id; document.getElementById('konti-name').value = konti.name;
+            document.getElementById('konti-link').value = konti.link || ''; document.getElementById('konti-memo').value = konti.memo || '';
+            document.getElementById('konti-modal-title').textContent = '콘티 수정'; renderKontiSheetCheckboxes(konti.sheetIds || []);
+            const container = document.getElementById('konti-sheets-checkboxes'); const items = Array.from(container.children);
+            items.sort((a,b) => {
+                const aCb = a.querySelector('input'); const bCb = b.querySelector('input');
+                const aIdx = (konti.sheetIds||[]).indexOf(aCb.value); const bIdx = (konti.sheetIds||[]).indexOf(bCb.value);
+                if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx; if (aIdx !== -1) return -1; if (bIdx !== -1) return 1; return 0;
+            });
+            container.innerHTML = ''; items.forEach(item => container.appendChild(item)); document.getElementById('konti-modal').classList.remove('hidden');
+        };
+        window.deleteKonti = async (id) => { showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?', async () => { await dbDelete('konti', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        window.downloadKontiMergedPdf = async (kontiId) => {
+            let konti = getCollectionData('konti').find(k => k.id == kontiId); let sheets = getCollectionData('sheets'); if (!konti) return;
+            const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined && s.data);
+            if (kontiSheets.length === 0) { showToast('병합할 악보 파일이 없습니다.', 'error'); return; }
+
+            showToast(`[${konti.name}] 전체 악보 다운로드 준비 중...`, 'info');
+            try {
+                const { PDFDocument } = PDFLib; const mergedPdf = await PDFDocument.create();
+
+                for (let i = 0; i < kontiSheets.length; i++) {
+                    let sheet = kontiSheets[i]; let dataUrl = sheet.data; if (!dataUrl) continue;
+                    try {
+                        let bytes;
+                        let isPdf = dataUrl.includes('application/pdf') || dataUrl.split('?')[0].toLowerCase().endsWith('.pdf');
+                        let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
+
+                        if (dataUrl.startsWith('http')) {
+                            const res = await fetch(dataUrl);
+                            bytes = new Uint8Array(await res.arrayBuffer());
+                        } else {
+                            let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
+                            let len = binaryString.length; bytes = new Uint8Array(len);
+                            for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
+                        }
+
+                        if (isPdf) {
+                            const donorPdf = await PDFDocument.load(bytes);
+                            const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
+                            copiedPages.forEach((page) => mergedPdf.addPage(page));
+                        } else {
+                            let embeddedImage = isPng ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
+                            const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
+                            page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
+                        }
+                    } catch (e) { console.error("Error processing sheet file:", e); showToast(`[${sheet.title}] 다운로드 중 오류`, 'error'); }
+                }
+                const mergedPdfBytes = await mergedPdf.save(); const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = `${konti.name.replace(/ /g, '_')}_통합악보.pdf`;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link); setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                showToast('다운로드가 완료되었습니다.', 'success');
+            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 다운로드 중 오류가 발생했습니다.', 'error'); }
+        };
+
+        function loadArchives() { 
+            const list = document.getElementById('archive-list'); const search = (document.getElementById('archive-search')?.value || '').toLowerCase();
+            let archives = getCollectionData('archives'); if (search) archives = archives.filter(a => a.title.toLowerCase().includes(search) || (a.memo && a.memo.toLowerCase().includes(search)));
+            list.innerHTML = '';
+            if(archives.length === 0) { list.innerHTML = `<div class="col-span-full text-center text-[#8b95a1] py-8 text-xs font-semibold bg-white rounded-[20px]">등록된 자료가 없습니다.</div>`; return; }
+            archives.forEach(arc => {
+                const isOwner = currentUser && (currentUser.isAdmin || (arc.author && arc.author === currentUser.username));
+                const actionBtns = isOwner ? `<div class="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition bg-white/85 backdrop-blur-sm rounded-lg p-1 z-10"><button onclick="openEditArchive('${arc.id}')" class="text-[#8b95a1] hover:text-teal-600 p-1.5 text-xs hover:bg-teal-50 rounded"><i class="fa-solid fa-pen"></i></button><button onclick="deleteArchive('${arc.id}')" class="text-[#8b95a1] hover:text-red-500 p-1.5 text-xs hover:bg-red-50 rounded"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                
+                const item = document.createElement('div'); item.className = 'toss-card p-4 relative group flex flex-col justify-between';
+                const linkHtml = arc.link ? `<a href="${arc.link}" target="_blank" class="text-xs text-teal-600 hover:underline font-bold bg-teal-50 px-3 py-1.5 rounded-lg inline-block mt-2 truncate max-w-full"><i class="fa-solid fa-link"></i> ${escapeHtml(arc.link)}</a>` : '';
+                const downloadBtn = arc.data ? `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>` : '';
+                const memoHtml = arc.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
+                const fileBadge = arc.filename ? `<span class="text-[10px] text-white bg-teal-500 font-bold px-2 py-0.5 rounded-md truncate max-w-[150px] inline-block align-middle ml-2">${escapeHtml(arc.filename)}</span>` : '';
+                item.innerHTML = `<div class="flex items-start gap-3 mb-2 pr-12"><div class="w-10 h-10 rounded-[14px] bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 text-xl"><i class="fa-solid fa-file-lines"></i></div><div class="flex-1 overflow-hidden"><h4 class="font-bold text-[#191f28] text-sm">${escapeHtml(arc.title)}${fileBadge}</h4><p class="text-[10px] text-[#8b95a1] font-bold mt-1">${new Date(arc.createdAt).toLocaleDateString()}</p></div></div><div class="flex flex-col gap-2 items-start">${linkHtml}${downloadBtn}</div>${memoHtml}${actionBtns}`;
+                list.appendChild(item);
+            });
+        }
+
+        window.downloadArchive = (id) => {
+            const arc = getCollectionData('archives').find(a => a.id == id); if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
+            try {
+                const arr = arc.data.split(','); let mime = 'application/octet-stream';
+                if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+                const blob = new Blob([u8arr], {type: mime}); const filename = arc.filename || 'downloaded_file';
+                const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = filename;
+                document.body.appendChild(link); link.click(); setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 1000);
+            } catch (e) { console.error(e); showToast('다운로드 오류', 'error'); }
+        };
+        
+        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
+        window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
+        window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        window.openModal = function(id) {
+            if (id === 'sheet-modal') {
+                document.getElementById('sheet-edit-id').value = ''; document.getElementById('sheet-title').value = '';
+                document.getElementById('sheet-file').value = ''; document.getElementById('sheet-audio-file').value = '';
+                document.getElementById('sheet-link').value = ''; document.getElementById('sheet-memo').value = '';
+                document.getElementById('sheet-current-file-info').textContent = ''; document.getElementById('sheet-current-audio-info').textContent = '';
+                document.getElementById('sheet-modal-title').textContent = '새 악보 및 음원 등록';
+            } else if (id === 'konti-modal') {
+                document.getElementById('konti-edit-id').value = ''; document.getElementById('konti-name').value = '';
+                document.getElementById('konti-link').value = ''; document.getElementById('konti-memo').value = '';
+                document.getElementById('konti-modal-title').textContent = '새 콘티 만들기';
+                if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
+                renderKontiSheetCheckboxes();
+            } else if (id === 'archive-modal') {
+                document.getElementById('archive-edit-id').value = ''; document.getElementById('archive-title').value = '';
+                document.getElementById('archive-link').value = ''; document.getElementById('archive-memo').value = '';
+                document.getElementById('archive-file').value = ''; document.getElementById('archive-current-file-info').textContent = '';
+                document.getElementById('archive-modal-title').textContent = '새 자료 등록';
+            }
+            document.getElementById(id).classList.remove('hidden');
+        };
+
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
+
+        function loadBoard() { 
+            const list = document.getElementById('board-list'); const posts = getCollectionData('board');
+            posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
+            if(posts.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 flex-1 flex items-center justify-center text-xs font-semibold">첫 공지를 남겨보세요.</div>`; return; }
+            posts.forEach(post => {
+                const item = document.createElement('div'); item.className = 'flex flex-col w-[90%] sm:w-[85%] self-start items-start mb-4 group';
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-[#8b95a1] ml-2 mb-1.5">${escapeHtml(post.author)}</div>` : '';
+                const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-[#8b95a1] hover:text-[#3182f6] transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-2 w-full"><div class="px-3.5 py-2.5 rounded-[20px] rounded-tl-sm bg-white text-[#191f28] shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[13px] sm:text-base font-medium whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-1 flex-shrink-0"><span class="text-[9px] font-bold text-[#b0b8c1]">${post.time}</span>${actionButtons}</div></div>`;
+                list.appendChild(item);
+            });
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
+        }
+
+        const boardInput = document.getElementById('board-input');
+        if (boardInput) { boardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-post-btn').click(); } } }); }
+        document.getElementById('add-post-btn').addEventListener('click', async () => { const input = document.getElementById('board-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; });
+        window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
+        window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
+
+        function loadFreeboard() { 
+            const list = document.getElementById('freeboard-list'); if (!list) return; const posts = getCollectionData('freeboard');
+            posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
+            if(posts.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 flex-1 flex items-center justify-center text-xs font-semibold">자유롭게 이야기를 나눠보세요.</div>`; return; }
+            posts.forEach(post => {
+                const item = document.createElement('div'); item.className = 'flex flex-col w-[90%] sm:w-[85%] self-start items-start mb-4 group';
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-[#8b95a1] ml-2 mb-1.5">${escapeHtml(post.author)}</div>` : '';
+                const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-[#8b95a1] hover:text-orange-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="openEditFreeboard('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="deleteFreeboard('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-2 w-full"><div class="px-3.5 py-2.5 rounded-[20px] rounded-tl-sm bg-white text-[#191f28] shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[13px] sm:text-base font-medium whitespace-pre-wrap leading-relaxed w-full">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-1 flex-shrink-0"><span class="text-[9px] font-bold text-[#b0b8c1]">${post.time}</span>${actionButtons}</div></div>`;
+                list.appendChild(item);
+            });
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
+        }
+        const freeboardInput = document.getElementById('freeboard-input'); if (freeboardInput) { freeboardInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (e.shiftKey) { return; } else { e.preventDefault(); if (e.isComposing) return; document.getElementById('add-freeboard-btn').click(); } } }); }
+        const addFreeboardBtn = document.getElementById('add-freeboard-btn'); if (addFreeboardBtn) { addFreeboardBtn.addEventListener('click', async () => { const input = document.getElementById('freeboard-input'); const text = input.value.trim(); if(!text) return; const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; const authorName = currentUser ? currentUser.username : '익명'; await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() }); input.value = ''; }); }
+        window.openEditFreeboard = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success'); };
+        window.deleteFreeboard = async (id) => { await dbDelete('freeboard', id); showToast('게시글이 삭제되었습니다.', 'info'); };
+
+        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     </script>
 </body>
 </html>
