@@ -2,12 +2,10 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- 화면 확대 방지 및 모바일 앱 최적화 메타 태그 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hagios Worship</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 트렌디한 프리텐다드 폰트 적용 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -47,12 +45,11 @@
     <style>
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #f2f4f6; /* 토스 느낌의 라이트 그레이 배경 */
+            background-color: #f2f4f6; 
             color: #333d4b;
             -webkit-text-size-adjust: none;
-            overscroll-behavior-y: none; /* 부드러운 스크롤 바운스 제어 */
+            overscroll-behavior-y: none; 
         }
-        /* 세련된 스크롤바 */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #d1d6db; border-radius: 10px; }
@@ -61,13 +58,11 @@
         .fade-in { animation: fadeIn 0.2s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 토스 스타일 네비게이션 활성화 상태 */
         .nav-item.active { background-color: #e8f3ff; color: #3182f6; font-weight: 700; }
         .nav-item.active i { color: #3182f6; }
         
         .notification-item.hide { display: none; }
         
-        /* 둥근 카드 공통 클래스 */
         .toss-card {
             background: white;
             border-radius: 20px;
@@ -75,7 +70,6 @@
             border: none;
         }
         
-        /* 인풋 둥근 스타일 */
         .toss-input {
             background-color: #f2f4f6;
             border: none;
@@ -88,7 +82,6 @@
         }
     </style>
 </head>
-<!-- h-[100dvh]를 사용하여 모바일 하단바 짤림 완벽 방지 -->
 <body class="h-[100dvh] w-screen overflow-hidden flex items-center justify-center bg-[#f2f4f6]">
 
     <!-- 로그인 / 회원가입 오버레이 화면 -->
@@ -142,15 +135,14 @@
                 <span class="font-bold text-[15px] text-[#191f28] tracking-tight">Hagios Worship</span>
             </div>
             <div class="flex items-center gap-2">
-                <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-50 text-amber-600 px-3 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">회원관리</button>
-                <button onclick="handleLogout()" class="text-[#8b95a1] hover:text-red-500 px-3 py-2 bg-[#f2f4f6] rounded-xl text-xs font-bold transition whitespace-nowrap">로그아웃</button>
-                <button id="mobile-menu-btn" class="text-[#333d4b] hover:text-[#3182f6] p-2.5 bg-[#f2f4f6] rounded-xl text-sm font-bold transition"><i class="fa-solid fa-bars"></i></button>
+                <button id="admin-menu-btn-mobile" onclick="openAdminModal()" class="hidden bg-amber-50 text-amber-600 px-3 py-2 rounded-xl text-[11px] font-bold transition whitespace-nowrap">회원관리</button>
+                <button onclick="handleLogout()" class="text-[#8b95a1] hover:text-red-500 px-3 py-2 bg-[#f2f4f6] rounded-xl text-[11px] font-bold transition whitespace-nowrap">로그아웃</button>
+                <button id="mobile-menu-btn" class="text-[#333d4b] hover:text-[#3182f6] p-2.5 bg-[#f2f4f6] rounded-xl text-xs font-bold transition"><i class="fa-solid fa-bars"></i></button>
             </div>
         </header>
 
         <!-- 사이드바 -->
         <aside class="w-full md:w-64 lg:w-[280px] bg-white border-r border-gray-100 flex flex-col flex-shrink-0 z-30 hidden md:flex absolute md:relative top-[56px] md:top-0 left-0 h-[calc(100dvh-56px)] md:h-full overflow-hidden" id="sidebar-nav-container">
-            <!-- PC 전용 상단 로고 -->
             <div class="hidden md:flex p-6 items-center justify-between border-b border-gray-100">
                 <div onclick="navigateToView('view-dashboard')" class="flex items-center gap-2.5 cursor-pointer group" title="홈으로 이동">
                     <div class="w-10 h-10 bg-[#3182f6] rounded-[14px] flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 transition">
@@ -160,32 +152,30 @@
                 </div>
             </div>
             
-            <!-- 데스크탑 관리자/로그아웃 -->
             <div class="hidden md:flex flex-col gap-2 p-5 border-b border-gray-100">
-                <div class="text-sm font-medium text-[#4e5968] mb-1 px-1 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div> <span id="current-user-name">사용자</span></div>
+                <div class="text-xs sm:text-sm font-medium text-[#4e5968] mb-1 px-1 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-user text-[10px]"></i></div> <span id="current-user-name">사용자</span></div>
                 <div class="flex gap-2">
-                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-50 text-amber-600 hover:bg-amber-100 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 관리</button>
-                    <button onclick="handleLogout()" class="flex-1 bg-[#f2f4f6] text-[#4e5968] hover:bg-red-50 hover:text-red-500 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
+                    <button id="admin-menu-btn-desktop" onclick="openAdminModal()" class="hidden flex-1 bg-amber-50 text-amber-600 hover:bg-amber-100 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 관리</button>
+                    <button onclick="handleLogout()" class="flex-1 bg-[#f2f4f6] text-[#4e5968] hover:bg-red-50 hover:text-red-500 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃</button>
                 </div>
             </div>
 
             <nav id="sidebar-nav" class="flex flex-col flex-1 overflow-y-auto py-3 bg-white md:bg-transparent">
                 <ul class="space-y-1 px-3 md:px-4">
-                    <li><button class="nav-item active w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-[#8b95a1] text-lg"></i><span>홈</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-[#8b95a1] text-lg"></i><span>캘린더</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-[#8b95a1] text-lg"></i><span>투두리스트</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-[#8b95a1] text-lg"></i><span>악보</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-[#8b95a1] text-lg"></i><span>콘티</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-archives"><i class="fa-solid fa-folder-open w-5 text-center text-[#8b95a1] text-lg"></i><span>자료실</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-board"><i class="fa-solid fa-bullhorn w-5 text-center text-[#8b95a1] text-lg"></i><span>공지</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-freeboard"><i class="fa-regular fa-comments w-5 text-center text-[#8b95a1] text-lg"></i><span>게시판</span></button></li>
-                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-sm sm:text-base font-semibold" data-target="view-notifications"><i class="fa-solid fa-bell w-5 text-center text-[#8b95a1] text-lg"></i><span>알림</span></button></li>
+                    <li><button class="nav-item active w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-dashboard"><i class="fa-solid fa-house w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>홈</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-calendar"><i class="fa-regular fa-calendar-days w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>캘린더</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-todos"><i class="fa-solid fa-check-double w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>투두리스트</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-sheetmusic"><i class="fa-solid fa-file-audio w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>악보</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-konti"><i class="fa-solid fa-list-ol w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>콘티</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-archives"><i class="fa-solid fa-folder-open w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>자료실</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-board"><i class="fa-solid fa-bullhorn w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>공지</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-freeboard"><i class="fa-regular fa-comments w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>게시판</span></button></li>
+                    <li><button class="nav-item w-full flex items-center gap-3.5 px-4 py-3 text-[#4e5968] rounded-[16px] hover:bg-[#f2f4f6] transition text-left text-[13px] sm:text-[15px] font-semibold" data-target="view-notifications"><i class="fa-solid fa-bell w-5 text-center text-[#8b95a1] text-base sm:text-lg"></i><span>알림</span></button></li>
                 </ul>
             </nav>
         </aside>
 
         <!-- 메인 컨텐츠 영역 -->
-        <!-- 높이를 h-[100dvh] 에 맞추고 padding-bottom safe area 추가 -->
         <main class="flex-1 flex flex-col h-[calc(100dvh-56px)] md:h-[100dvh] overflow-y-auto relative pb-safe">
             <div id="toast-container" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-sm px-4 pointer-events-none items-center"></div>
 
@@ -232,18 +222,18 @@
                     </div>
 
                     <!-- 앱 설치 유도 배너 (Toss Style) -->
-                    <div id="install-banner" class="mt-6 sm:mt-8 toss-card bg-gradient-to-r from-[#e8f3ff] to-[#f4f8ff] p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition" onclick="showInstallGuide()">
+                    <div id="install-banner" class="mt-6 sm:mt-8 toss-card bg-gradient-to-r from-[#e8f3ff] to-[#f4f8ff] p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition hidden" onclick="showInstallGuide()">
                         <div class="flex items-center gap-3 sm:gap-4">
                             <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-[#3182f6] shadow-sm text-lg sm:text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
                             <div>
-                                <h4 class="font-bold text-[#191f28] text-sm sm:text-base">앱으로 설치하기</h4>
+                                <h4 class="font-bold text-[#191f28] text-sm sm:text-base">앱 설치 안내</h4>
                                 <p class="text-[11px] sm:text-xs text-[#4e5968] mt-0.5">홈 화면에 추가해서 더 빠르고 편하게!</p>
                             </div>
                         </div>
-                        <div class="text-[#3182f6] font-bold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-full shadow-sm">설치</div>
+                        <div class="text-[#3182f6] font-bold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-full shadow-sm">방법 보기</div>
                     </div>
 
-                    <!-- 홈 화면 위젯 영역 (가변 높이 적용) -->
+                    <!-- 홈 화면 위젯 영역 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-6">
                         <div class="toss-card p-4 sm:p-6 flex flex-col">
                             <h3 class="text-sm sm:text-lg font-bold text-[#191f28] mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-regular fa-calendar-check text-[#3182f6]"></i> 다가오는 일정</h3>
@@ -359,7 +349,7 @@
                         <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0" id="board-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
                             <div class="flex gap-2.5">
-                                <textarea id="board-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[12px] sm:text-base font-medium resize-none" placeholder="공지 내용을 입력하세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <textarea id="board-input" rows="2" class="flex-1 px-4 py-3 toss-input text-sm sm:text-base font-medium resize-none" placeholder="공지 내용을 입력하세요 (Shift+Enter로 줄바꿈)"></textarea>
                                 <button id="add-post-btn" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
@@ -374,7 +364,7 @@
                         <div class="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3 min-h-0 bg-[#fbfbfb]" id="freeboard-list"></div>
                         <div class="p-3 sm:p-4 border-t border-gray-100 bg-white flex-shrink-0 rounded-b-[20px]">
                             <div class="flex gap-2.5">
-                                <textarea id="freeboard-input" rows="2" class="flex-1 px-4 py-3 toss-input text-[12px] sm:text-base font-medium resize-none" placeholder="자유롭게 이야기를 나눠보세요 (Shift+Enter로 줄바꿈)"></textarea>
+                                <textarea id="freeboard-input" rows="2" class="flex-1 px-4 py-3 toss-input text-sm sm:text-base font-medium resize-none" placeholder="자유롭게 이야기를 나눠보세요 (Shift+Enter로 줄바꿈)"></textarea>
                                 <button id="add-freeboard-btn" class="bg-[#f97316] hover:bg-[#ea580c] text-white px-5 sm:px-6 rounded-[14px] font-bold transition flex items-center justify-center text-lg sm:text-xl">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
@@ -405,14 +395,14 @@
             <div class="w-14 h-14 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-4 text-2xl">
                 <i id="install-os-icon" class="fa-solid fa-mobile-screen"></i>
             </div>
-            <h3 class="font-bold text-[#191f28] text-lg sm:text-xl mb-2" id="install-title">앱 설치하기</h3>
-            <p class="text-sm text-[#4e5968] mb-5 leading-relaxed" id="install-desc">아래의 가이드에 따라 홈 화면에<br>앱을 추가해보세요!</p>
+            <h3 class="font-bold text-[#191f28] text-lg sm:text-xl mb-2" id="install-title">앱 설치 안내</h3>
+            <p class="text-sm text-[#4e5968] mb-5 leading-relaxed" id="install-desc">폰 화면 하단 메뉴를 이용해서<br>홈 화면에 앱을 추가하세요!</p>
             
             <div class="bg-[#f2f4f6] rounded-[16px] p-4 mb-6 text-left" id="install-instruction">
                 <!-- JS에서 채워짐 -->
             </div>
             
-            <button onclick="closeInstallGuide()" class="w-full py-3.5 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#333d4b] rounded-[14px] font-bold transition text-sm sm:text-base">닫기</button>
+            <button onclick="closeInstallGuide()" class="w-full py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-sm sm:text-base shadow-sm">확인했습니다</button>
         </div>
     </div>
 
@@ -466,14 +456,14 @@
                 <button onclick="closeModal('konti-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <input type="hidden" id="konti-edit-id" value="">
-            <div class="flex flex-col gap-4 sm:gap-5 flex-1 overflow-y-auto pr-1">
+            <div class="flex flex-col gap-4 sm:gap-5 flex-1 overflow-y-auto pr-2">
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">콘티 이름</label><input type="text" id="konti-name" class="w-full px-4 py-3 toss-input text-sm" placeholder="예: 2026-09-27 주일예배"></div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">유튜브/레퍼런스 링크 (선택)</label><input type="url" id="konti-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="konti-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="주의사항이나 코멘트"></textarea></div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-32 sm:w-40 bg-[#f2f4f6]"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-40 sm:max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
+                    <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-40 bg-[#f2f4f6]"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
                 </div>
             </div>
             <div class="pt-4 sm:pt-5 mt-2">
@@ -521,7 +511,7 @@
                     <textarea id="sheet-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="특이사항이나 코멘트"></textarea>
                 </div>
                 
-                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">저장 완료</button>
+                <button id="add-sheet-btn" class="w-full bg-[#00c897] hover:bg-[#00a87f] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">저장 완료</button>
             </div>
         </div>
     </div>
@@ -539,7 +529,7 @@
                 <div id="archive-current-file-info" class="text-[11px] sm:text-xs text-[#8b95a1]"></div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">링크 입력 (선택)</label><input type="url" id="archive-link" class="w-full px-4 py-3 toss-input text-sm" placeholder="https://..."></div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">메모 (선택)</label><textarea id="archive-memo" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none"></textarea></div>
-                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">등록 완료</button>
+                <button id="add-archive-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">등록 완료</button>
             </div>
         </div>
     </div>
@@ -559,7 +549,7 @@
                 </div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">시간 (선택사항)</label><input type="time" id="cal-event-time" class="w-full px-4 py-3 toss-input text-sm bg-[#f2f4f6]"></div>
                 <div><label class="block text-sm font-bold text-[#4e5968] mb-2">세부 내용 (선택)</label><textarea id="cal-event-detail" rows="2" class="w-full px-4 py-3 toss-input text-sm resize-none" placeholder="세부 내용..."></textarea></div>
-                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2">저장하기</button>
+                <button id="save-cal-event-btn" class="w-full bg-[#3182f6] hover:bg-[#1b64da] text-white px-4 py-3.5 text-base rounded-[14px] font-bold transition mt-2 shadow-sm">저장하기</button>
             </div>
         </div>
     </div>
@@ -761,11 +751,14 @@
                 store[collectionName] = list;
                 refreshUI();
             }
-            if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board');
-            else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard');
-            else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic');
-            else if (collectionName === 'konti') createNotification('새 콘티', data.name, 'view-konti');
-            else if (collectionName === 'archives') createNotification('새 자료', data.title, 'view-archives');
+            
+            // 새 알림 생성 시 sourceId (원글 ID)를 함께 저장
+            if (collectionName === 'board') createNotification('새 공지', data.text, 'view-board', newId);
+            else if (collectionName === 'freeboard') createNotification('새 게시판 글', data.text, 'view-freeboard', newId);
+            else if (collectionName === 'sheets') createNotification('새 악보 등록', data.title, 'view-sheetmusic', newId);
+            else if (collectionName === 'konti') createNotification('새 콘티', data.name, 'view-konti', newId);
+            else if (collectionName === 'archives') createNotification('새 자료', data.title, 'view-archives', newId);
+            
             return newId;
         }
 
@@ -782,6 +775,7 @@
             }
         }
 
+        // 특정 데이터 삭제 시 관련 알림도 함께 삭제하는 동기화 기능
         async function dbDelete(collectionName, id) {
             let items = getCollectionData(collectionName);
             let itemToDelete = items.find(x => x.id == id);
@@ -796,21 +790,26 @@
                 store[collectionName] = list;
             }
 
-            if (itemToDelete) {
+            // 고유 ID(sourceId) 기반 삭제 또는 구버전 텍스트 기반 삭제 처리
+            let notisToDelete = store.notifications.filter(n => n.sourceId === id);
+            
+            // 만약 구버전 알림이라 sourceId가 없다면 텍스트 기반으로 찾아 삭제
+            if (notisToDelete.length === 0 && itemToDelete) {
                 let textMatch = itemToDelete.text || itemToDelete.title || itemToDelete.name || itemToDelete.memo;
                 if (textMatch) {
-                    let notisToDelete = store.notifications.filter(n => n.message === textMatch);
-                    for (let noti of notisToDelete) {
-                        if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
-                            const { doc, deleteDoc } = window.firebaseAppModules;
-                            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
-                        } else {
-                            let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
-                            list = list.filter(n => n.id != noti.id);
-                            localStorage.setItem('ccm_notifications', JSON.stringify(list));
-                            store.notifications = list;
-                        }
-                    }
+                    notisToDelete = store.notifications.filter(n => n.message === textMatch && !n.sourceId);
+                }
+            }
+
+            for (let noti of notisToDelete) {
+                if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
+                    const { doc, deleteDoc } = window.firebaseAppModules;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
+                } else {
+                    let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
+                    list = list.filter(n => n.id != noti.id);
+                    localStorage.setItem('ccm_notifications', JSON.stringify(list));
+                    store.notifications = list;
                 }
             }
             refreshUI();
@@ -821,9 +820,11 @@
             return JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
         }
 
-        async function createNotification(title, message, targetView) {
+        async function createNotification(title, message, targetView, sourceId) {
             const notiData = {
-                title, message, targetView, createdAt: Date.now(),
+                title, message, targetView, 
+                sourceId: sourceId || null, 
+                createdAt: Date.now(),
                 readBy: [currentUser ? currentUser.username : '익명']
             };
             if (db && auth && auth.currentUser) {
