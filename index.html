@@ -461,7 +461,7 @@
 
                 <div>
                     <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-32 sm:w-40 bg-[#f2f4f6]"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-40 sm:max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
                 </div>
             </div>
             <div class="pt-4 sm:pt-5 mt-2">
@@ -491,7 +491,7 @@
                     <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
-                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1 sm:mt-0">
+                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group">
                     <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
                     <i class="fa-solid fa-file-audio text-purple-400 text-3xl mb-2 group-hover:scale-110 transition"></i>
                     <p class="text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
@@ -533,7 +533,7 @@
     </div>
 
     <div id="calendar-event-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
+        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90dvh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
                 <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="cal-modal-title">일정 추가</h3>
                 <button onclick="closeModal('calendar-event-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -552,7 +552,7 @@
         </div>
     </div>
 
-    <!-- 모든 자바스크립트 함수 완벽 복구 및 무한 확장 방지 적용 -->
+    <!-- 스크립트 코드 모음 -->
     <script>
         let db = null;
         let auth = null;
@@ -614,7 +614,6 @@
             closeCustomConfirm();
         });
 
-        // 텍스트 입력 시 위로 자연스럽게 늘어나는 자동 높이 조절 함수
         function autoResizeTextarea(e) {
             e.target.style.height = '44px';
             e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
@@ -895,7 +894,7 @@
                         let ddayText = diffDays === 0 ? 'D-Day' : `D-${diffDays}`;
                         ddayList.innerHTML += `
                             <div class="flex items-center justify-between p-2.5 sm:p-3 bg-[#f2f4f6] rounded-xl mb-1.5 cursor-pointer hover:bg-[#e5e8eb] transition" onclick="navigateToView('view-calendar'); selectCalendarDate('${ev.startDate}')">
-                                <div class="flex items-center gap-2 sm:gap-2.5 overflow-hidden">
+                                <div class="flex items-center gap-2 overflow-hidden">
                                     <span class="text-[9px] sm:text-[11px] font-bold text-white bg-[#3182f6] px-1.5 py-0.5 rounded-full">${ddayText}</span>
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(ev.text)}</span>
                                 </div>
@@ -1066,8 +1065,8 @@
         window.openAdminModal = function() { renderAdminViews(); document.getElementById('admin-modal').classList.remove('hidden'); };
         window.closeAdminModal = function() { document.getElementById('admin-modal').classList.add('hidden'); };
         window.switchAdminTab = function(tab) {
-            const pendingClass = 'flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition';
-            const inactiveClass = 'flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition';
+            const pendingClass = 'flex-1 py-3.5 text-sm font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition';
+            const inactiveClass = 'flex-1 py-3.5 text-sm font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition';
             document.getElementById('tab-admin-pending').className = tab === 'pending' ? pendingClass : inactiveClass;
             document.getElementById('tab-admin-active').className = tab === 'active' ? pendingClass : inactiveClass;
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
@@ -1249,12 +1248,12 @@
             if(todos.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 text-xs font-semibold">등록된 할 일이 없습니다.</div>`; return; }
             todos.forEach((todo) => {
                 const isOwner = currentUser && (currentUser.isAdmin || (todo.author && todo.author === currentUser.username));
-                const actionBtns = isOwner ? `<button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition p-1.5" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can"></i></button>` : '';
+                const actionBtns = isOwner ? `<button onclick="openEditTodo('${todo.id}', '${escapeHtml(todo.text)}', '${todo.dueDate || ''}')" class="text-[#8b95a1] hover:text-[#3182f6] p-1 sm:p-1.5"><i class="fa-solid fa-pen text-xs sm:text-sm"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition p-1 sm:p-1.5" onclick="deleteTodo('${todo.id}')"><i class="fa-solid fa-trash-can text-xs sm:text-sm"></i></button>` : '';
 
                 const item = document.createElement('div');
-                item.className = `flex items-center gap-3 p-3 border-b border-gray-100 hover:bg-[#fbfbfb] transition group ${todo.completed ? 'opacity-50' : ''}`;
+                item.className = `flex items-center gap-2 sm:gap-3 p-2.5 sm:p-4 border-b border-gray-100 hover:bg-[#fbfbfb] transition group ${todo.completed ? 'opacity-50' : ''}`;
                 let dateBadge = todo.dueDate ? `<span class="text-[10px] bg-[#f2f4f6] text-[#4e5968] px-2 py-1 rounded-md font-bold flex-shrink-0">${escapeHtml(todo.dueDate)}</span>` : '';
-                item.innerHTML = `<button class="w-6 h-6 rounded-full border-2 ${todo.completed ? 'bg-[#3182f6] border-[#3182f6] text-white' : 'border-[#d1d6db] text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-xs"></i></button><span class="flex-1 text-sm ${todo.completed ? 'line-through text-[#8b95a1]' : 'text-[#333d4b]'} font-bold">${escapeHtml(todo.text)}</span>${dateBadge}<div class="flex items-center gap-1"><button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-up"></i></button><button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-down"></i></button>${actionBtns}</div>`;
+                item.innerHTML = `<button class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 ${todo.completed ? 'bg-[#3182f6] border-[#3182f6] text-white' : 'border-[#d1d6db] text-transparent'} flex items-center justify-center transition flex-shrink-0" onclick="toggleTodo('${todo.id}')"><i class="fa-solid fa-check text-[10px] sm:text-xs"></i></button><span class="flex-1 text-[13px] sm:text-sm ${todo.completed ? 'line-through text-[#8b95a1]' : 'text-[#333d4b]'} font-semibold sm:font-bold leading-snug">${escapeHtml(todo.text)}</span>${dateBadge}<div class="flex items-center gap-0.5 sm:gap-1"><button onclick="moveTodoOrder('${todo.id}', 'up')" class="text-[#8b95a1] hover:text-[#3182f6] p-1 sm:p-1.5"><i class="fa-solid fa-chevron-up text-xs sm:text-sm"></i></button><button onclick="moveTodoOrder('${todo.id}', 'down')" class="text-[#8b95a1] hover:text-[#3182f6] p-1 sm:p-1.5"><i class="fa-solid fa-chevron-down text-xs sm:text-sm"></i></button>${actionBtns}</div>`;
                 list.appendChild(item);
             });
         }
