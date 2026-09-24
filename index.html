@@ -223,7 +223,6 @@
                         </div>
                     </div>
 
-                    <!-- 앱 설치 유도 배너 (Toss Style) -->
                     <div id="install-banner" class="mt-6 sm:mt-8 toss-card bg-gradient-to-r from-[#e8f3ff] to-[#f4f8ff] p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition hidden" onclick="showInstallGuide()">
                         <div class="flex items-center gap-3 sm:gap-4">
                             <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center text-[#3182f6] shadow-sm text-lg sm:text-xl"><i class="fa-solid fa-mobile-screen"></i></div>
@@ -235,7 +234,6 @@
                         <div class="text-[#3182f6] font-bold text-xs sm:text-sm bg-white px-3 py-1.5 rounded-full shadow-sm">방법 보기</div>
                     </div>
 
-                    <!-- 홈 화면 위젯 영역 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 sm:mt-6">
                         <div class="toss-card p-4 sm:p-6 flex flex-col">
                             <h3 class="text-sm sm:text-lg font-bold text-[#191f28] mb-3 sm:mb-4 flex items-center gap-2 flex-shrink-0"><i class="fa-regular fa-calendar-check text-[#3182f6]"></i> 다가오는 일정</h3>
@@ -345,7 +343,6 @@
                     </div>
                 </section>
 
-                <!-- 폰트 자동 높이 조절 기능 및 무한확장 방지 적용 -->
                 <section id="view-board" class="view-section hidden fade-in h-full flex flex-col">
                     <h2 class="text-xl sm:text-2xl font-bold text-[#191f28] mb-3 sm:mb-4 flex-shrink-0">공지</h2>
                     <div class="toss-card flex flex-col flex-1 min-h-0">
@@ -464,7 +461,7 @@
 
                 <div>
                     <div class="flex justify-between items-center mb-2"><label class="block text-sm font-bold text-[#4e5968]">포함할 악보 선택</label><input type="text" id="konti-sheet-search" oninput="filterKontiSheetCheckboxes()" placeholder="검색..." class="px-3 py-1.5 text-xs sm:text-sm border border-gray-200 rounded-lg outline-none focus:border-[#3182f6] w-32 sm:w-40 bg-[#f2f4f6]"></div>
-                    <div id="konti-sheets-checkboxes" class="max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
+                    <div id="konti-sheets-checkboxes" class="max-h-40 sm:max-h-48 overflow-y-auto border border-gray-100 bg-[#fbfbfb] rounded-[16px] p-3 flex flex-col gap-1.5"></div>
                 </div>
             </div>
             <div class="pt-4 sm:pt-5 mt-2">
@@ -494,7 +491,7 @@
                     <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
-                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group">
+                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1 sm:mt-0">
                     <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
                     <i class="fa-solid fa-file-audio text-purple-400 text-3xl mb-2 group-hover:scale-110 transition"></i>
                     <p class="text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
@@ -536,7 +533,7 @@
     </div>
 
     <div id="calendar-event-modal" class="fixed inset-0 bg-[#333d4b]/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90dvh] overflow-y-auto">
+        <div class="toss-card max-w-md w-full p-5 sm:p-6 shadow-xl fade-in max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-5">
                 <h3 class="font-bold text-[#191f28] text-base sm:text-xl" id="cal-modal-title">일정 추가</h3>
                 <button onclick="closeModal('calendar-event-modal')" class="text-[#8b95a1] hover:text-[#333d4b] transition"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -555,7 +552,7 @@
         </div>
     </div>
 
-    <!-- 모든 자바스크립트 함수 완벽 복구 -->
+    <!-- 모든 자바스크립트 함수 완벽 복구 및 무한 확장 방지 적용 -->
     <script>
         let db = null;
         let auth = null;
@@ -601,9 +598,10 @@
         document.getElementById('alert-action-btn').addEventListener('click', closeAlert);
 
         let confirmCallback = null;
-        function showCustomConfirm(title, message, callback) {
+        function showCustomConfirm(title, message, callback, btnText = '삭제') {
             document.getElementById('confirm-title').textContent = title;
             document.getElementById('confirm-message').textContent = message;
+            document.getElementById('confirm-action-btn').textContent = btnText;
             confirmCallback = callback;
             document.getElementById('custom-confirm-modal').classList.remove('hidden');
         }
@@ -616,14 +614,13 @@
             closeCustomConfirm();
         });
 
-        // 텍스트 입력 시 카카오톡처럼 위로 자연스럽게 늘어나는 자동 조절 함수
+        // 텍스트 입력 시 위로 자연스럽게 늘어나는 자동 높이 조절 함수
         function autoResizeTextarea(e) {
             e.target.style.height = '44px';
             e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
             e.target.style.overflowY = e.target.scrollHeight > 120 ? 'auto' : 'hidden';
         }
 
-        // 엔터키 작동 (팝업 및 폼)
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return; 
@@ -686,7 +683,6 @@
             }
         });
 
-        // 폰에서 모듈 로드 차단(먹통) 시 자동으로 뚫어주는 오프라인 모드 시스템 및 높이 조절
         window.addEventListener('load', () => {
             setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '');
             setupDropzone('audio-file-dropzone', 'sheet-audio-file', 'sheet-current-audio-info', '');
@@ -899,7 +895,7 @@
                         let ddayText = diffDays === 0 ? 'D-Day' : `D-${diffDays}`;
                         ddayList.innerHTML += `
                             <div class="flex items-center justify-between p-2.5 sm:p-3 bg-[#f2f4f6] rounded-xl mb-1.5 cursor-pointer hover:bg-[#e5e8eb] transition" onclick="navigateToView('view-calendar'); selectCalendarDate('${ev.startDate}')">
-                                <div class="flex items-center gap-2 overflow-hidden">
+                                <div class="flex items-center gap-2 sm:gap-2.5 overflow-hidden">
                                     <span class="text-[9px] sm:text-[11px] font-bold text-white bg-[#3182f6] px-1.5 py-0.5 rounded-full">${ddayText}</span>
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(ev.text)}</span>
                                 </div>
@@ -1043,7 +1039,7 @@
             if(!user) { showAlert('로그인 실패', '가입되지 않은 이름입니다. 먼저 회원가입을 진행해주세요.', 'error'); return; }
             if(user.password !== password) { showAlert('로그인 실패', '비밀번호 오류입니다.', 'error', '다시 입력하기'); return; }
             if(user.status === 'pending') { showAlert('승인 대기 중', '관리자 승인을 기다리고 있습니다.\n승인 후 로그인해주세요.', 'info', '확인'); return; }
-            if(user.status === 'suspended') { showAlert('이용 정지', '일시 정지된 계정입니다.\n관리자에게 문의하세요.', 'error', '확인'); return; }
+            if(user.status === 'suspended') { showAlert('이용 정지', '관리자에 의해 사용이 중지되었습니다.\n자세한 사항은 관리자에게 문의하세요.', 'error', '확인'); return; }
             currentUser = user;
             localStorage.setItem('hagios_current_user', JSON.stringify(user));
             startWorkspace();
@@ -1070,8 +1066,8 @@
         window.openAdminModal = function() { renderAdminViews(); document.getElementById('admin-modal').classList.remove('hidden'); };
         window.closeAdminModal = function() { document.getElementById('admin-modal').classList.add('hidden'); };
         window.switchAdminTab = function(tab) {
-            const pendingClass = 'flex-1 py-3 text-xs sm:text-sm font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition';
-            const inactiveClass = 'flex-1 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition';
+            const pendingClass = 'flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-[#3182f6] text-[#3182f6] transition';
+            const inactiveClass = 'flex-1 py-3.5 text-sm sm:text-base font-bold border-b-2 border-transparent text-[#8b95a1] hover:text-[#4e5968] transition';
             document.getElementById('tab-admin-pending').className = tab === 'pending' ? pendingClass : inactiveClass;
             document.getElementById('tab-admin-active').className = tab === 'active' ? pendingClass : inactiveClass;
             document.getElementById('admin-pending-view').style.display = tab === 'pending' ? 'block' : 'none';
@@ -1090,13 +1086,34 @@
             const activeView = document.getElementById('admin-active-view');
             activeView.innerHTML = '';
             if(activeUsers.length === 0) activeView.innerHTML = '<div class="text-center text-[#8b95a1] py-4 text-xs sm:text-sm font-semibold">등록된 팀원이 없습니다.</div>';
-            else activeUsers.forEach(u => { const isSuspended = u.status === 'suspended'; activeView.innerHTML += `<div class="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 ${isSuspended ? 'opacity-50' : ''}"><div><p class="font-bold text-sm text-[#191f28] flex items-center gap-1.5">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-md">정지됨</span>' : ''}</p></div><div class="flex gap-2"><button onclick="adminActionUser('${u.id}', '${isSuspended ? 'approve' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} text-xs rounded-lg transition font-bold">${isSuspended ? '해제' : '정지'}</button><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-xs rounded-lg transition font-bold">삭제</button></div></div>`; });
+            else activeUsers.forEach(u => { const isSuspended = u.status === 'suspended'; activeView.innerHTML += `<div class="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100 ${isSuspended ? 'opacity-50' : ''}"><div><p class="font-bold text-sm text-[#191f28] flex items-center gap-1.5">${escapeHtml(u.username)} ${isSuspended ? '<span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-md">정지됨</span>' : ''}</p></div><div class="flex gap-2"><button onclick="adminActionUser('${u.id}', '${isSuspended ? 'unsuspend' : 'suspend'}', '${escapeHtml(u.username)}')" class="px-3 py-1.5 ${isSuspended ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'} text-xs rounded-lg transition font-bold">${isSuspended ? '해제' : '정지'}</button><button onclick="adminActionUser('${u.id}', 'delete', '${escapeHtml(u.username)}')" class="px-3 py-1.5 bg-[#f2f4f6] hover:bg-red-50 text-[#4e5968] hover:text-red-500 text-xs rounded-lg transition font-bold">삭제</button></div></div>`; });
         }
 
         window.adminActionUser = async function(id, action, username) {
-            if(action === 'approve') { await dbUpdate('users', id, { status: 'approved' }); showToast(`${username}님의 권한이 승인되었습니다.`, 'success'); renderAdminViews(); }
-            else if(action === 'suspend') { showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => { await dbUpdate('users', id, { status: 'suspended' }); showToast(`${username}님의 계정이 정지되었습니다.`, 'info'); renderAdminViews(); }); }
-            else if(action === 'delete') { showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => { await dbDelete('users', id); showToast(`${username}님의 계정이 삭제되었습니다.`, 'info'); renderAdminViews(); }); }
+            if(action === 'approve') { 
+                await dbUpdate('users', id, { status: 'approved' }); 
+                showToast(`${username}님의 권한이 승인되었습니다.`, 'success'); 
+                renderAdminViews(); 
+            }
+            else if(action === 'unsuspend') { 
+                await dbUpdate('users', id, { status: 'approved' }); 
+                showToast(`${username}님의 계정 정지가 해제되었습니다.`, 'success'); 
+                renderAdminViews(); 
+            }
+            else if(action === 'suspend') { 
+                showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => { 
+                    await dbUpdate('users', id, { status: 'suspended' }); 
+                    showToast(`${username}님의 계정이 정지되었습니다.`, 'info'); 
+                    renderAdminViews(); 
+                }, '정지'); 
+            }
+            else if(action === 'delete') { 
+                showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => { 
+                    await dbDelete('users', id); 
+                    showToast(`${username}님의 계정이 삭제되었습니다.`, 'info'); 
+                    renderAdminViews(); 
+                }, '삭제'); 
+            }
         };
 
         function showToast(message, type = 'info') {
@@ -1586,7 +1603,7 @@
             const authorName = currentUser ? currentUser.username : '익명'; 
             await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() }); 
             input.value = ''; 
-            input.style.height = 'auto'; // 제출 후 원래 높이로 복구
+            input.style.height = '44px'; // 제출 후 원래 높이로 복구
         });
         window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
         window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
@@ -1613,7 +1630,7 @@
             const authorName = currentUser ? currentUser.username : '익명'; 
             await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() }); 
             input.value = ''; 
-            input.style.height = 'auto'; // 제출 후 원래 높이로 복구
+            input.style.height = '44px'; // 제출 후 원래 높이로 복구
         });
         
         window.openEditFreeboard = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success'); };
