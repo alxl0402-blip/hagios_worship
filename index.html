@@ -400,7 +400,7 @@
             
             <div class="bg-[#f2f4f6] rounded-[16px] p-4 mb-6 text-left" id="install-instruction"></div>
             
-            <button onclick="closeInstallGuide()" class="w-full py-3.5 bg-[#f2f4f6] hover:bg-[#e5e8eb] text-[#333d4b] rounded-[14px] font-bold transition text-sm sm:text-base shadow-sm">확인했습니다</button>
+            <button onclick="closeInstallGuide()" class="w-full py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-sm sm:text-base shadow-sm">확인했습니다</button>
         </div>
     </div>
 
@@ -491,7 +491,7 @@
                     <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
-                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group">
+                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1 sm:mt-0">
                     <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
                     <i class="fa-solid fa-file-audio text-purple-400 text-3xl mb-2 group-hover:scale-110 transition"></i>
                     <p class="text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
@@ -575,17 +575,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             } else {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             }
             alertCallback = callback;
             document.getElementById('custom-alert-modal').classList.remove('hidden');
@@ -920,7 +920,7 @@
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(noti.message)}</span>
                                 </div>
                                 <div class="w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0 text-[#8b95a1] hover:text-[#333d4b] transition" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                                    <i class="fa-solid fa-xmark text-[10px] sm:text-xs"></i>
+                                    <i class="fa-solid fa-xmark text-xs"></i>
                                 </div>
                             </div>
                         `;
@@ -946,8 +946,8 @@
                             <span class="text-[8px] sm:text-[10px] font-bold text-[#8b95a1]">${new Date(noti.createdAt).toLocaleString()}</span>
                         </div>
                         <p class="text-[11px] sm:text-sm text-[#333d4b] font-bold truncate pr-4">${escapeHtml(noti.message)}</p>
-                        <button class="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                            <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
+                        <button class="absolute top-3 right-3 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
+                            <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
                 `;
@@ -1287,7 +1287,7 @@
                 let downloadBtn = '';
                 if (sheet.data) {
                     if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
-                        // Storage나 Blob 형태일 경우 a 태그 속성으로 직접 다운로드 (팝업 튕김 방지)
+                        // Storage나 Blob 형태일 경우 a 태그 속성으로 직접 다운로드
                         downloadBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</a>`;
                     } else {
                         // Data URL 방식 (옛날 방식 유지 보완)
@@ -1318,23 +1318,38 @@
             });
         }
 
-        window.downloadSheet = (id) => {
+        window.downloadSheet = async (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
             
             try {
-                // 다운로드 방식 일원화
-                const link = document.createElement('a');
-                link.href = sheet.data; 
-                link.download = sheet.filename || `${sheet.title}.pdf`;
-                link.target = '_blank';
-                document.body.appendChild(link); 
-                link.click(); 
-                document.body.removeChild(link);
-                showToast('다운로드가 시작되었습니다.', 'success');
+                showToast('다운로드를 준비 중입니다...', 'info');
+                if (sheet.data.startsWith('http')) {
+                    // Firebase Storage 파일은 강제 다운로드를 위해 Blob으로 먼저 변환합니다.
+                    const response = await fetch(sheet.data);
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = sheet.filename || `${sheet.title}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                } else {
+                    // 구버전 파일 (Base64) 처리
+                    const link = document.createElement('a');
+                    link.href = sheet.data; 
+                    link.download = sheet.filename || `${sheet.title}.pdf`;
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    document.body.removeChild(link);
+                }
             } catch (e) {
                 console.error("Download error:", e);
-                showToast('다운로드 방식 오류입니다.', 'error');
+                // 브라우저 보안 등으로 막힐 경우 최후의 수단으로 새 창 열기 (Fallback)
+                window.open(sheet.data, '_blank');
             }
         };
 
@@ -1450,7 +1465,11 @@
                 kontiSheets.forEach((sheet, idx) => { 
                     let downBtn = '';
                     if(sheet.data) {
-                        downBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</a>`;
+                        if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
+                            downBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</a>`;
+                        } else {
+                            downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
+                        }
                     }
                     sheetsHtml += `<div class="flex items-center justify-between p-3 bg-[#fbfbfb] rounded-[14px] border border-gray-100"><div class="flex items-center gap-3 overflow-hidden"><span class="w-6 h-6 rounded-full bg-[#3182f6] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-bold text-[#333d4b] truncate">${escapeHtml(sheet.title)}</span></div>${downBtn}</div>`; 
                 });
@@ -1546,7 +1565,11 @@
                 // 자료실도 똑같이 직접 다운로드 되도록 수정
                 let downloadBtn = '';
                 if(arc.data){
-                    downloadBtn = `<a href="${arc.data}" download="${arc.filename || 'downloaded_file'}" target="_blank" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</a>`;
+                    if (arc.data.startsWith('http') || arc.data.startsWith('blob:')) {
+                        downloadBtn = `<a href="${arc.data}" download="${arc.filename || 'downloaded_file'}" target="_blank" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</a>`;
+                    } else {
+                        downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
+                    }
                 }
                 
                 const memoHtml = arc.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
@@ -1556,17 +1579,38 @@
             });
         }
 
-        window.downloadArchive = (id) => {
-            const arc = getCollectionData('archives').find(a => a.id == id); if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
+        window.downloadArchive = async (id) => {
+            const arc = getCollectionData('archives').find(a => a.id == id); 
+            if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
+            
             try {
-                const link = document.createElement('a');
-                link.href = arc.data; 
-                link.download = arc.filename || 'downloaded_file';
-                link.target = '_blank';
-                document.body.appendChild(link); 
-                link.click(); 
-                document.body.removeChild(link);
-            } catch (e) { console.error(e); showToast('다운로드 오류', 'error'); }
+                showToast('다운로드를 준비 중입니다...', 'info');
+                if (arc.data.startsWith('http')) {
+                    // Firebase Storage 자료실 파일도 강제 다운로드 처리
+                    const response = await fetch(arc.data);
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    const link = document.createElement('a');
+                    link.href = blobUrl; 
+                    link.download = arc.filename || 'downloaded_file';
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                } else {
+                    // 구버전 자료실 파일 처리
+                    const link = document.createElement('a');
+                    link.href = arc.data; 
+                    link.download = arc.filename || 'downloaded_file';
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    document.body.removeChild(link);
+                }
+            } catch (e) { 
+                console.error(e); 
+                window.open(arc.data, '_blank');
+            }
         };
         
         document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
