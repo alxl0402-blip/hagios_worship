@@ -105,7 +105,6 @@
                     <input type="password" id="login-password" class="w-full px-4 py-3.5 toss-input text-base text-[#333d4b] font-medium" placeholder="비밀번호">
                 </div>
                 
-                <!-- 자동 로그인 체크박스 추가 -->
                 <div class="flex items-center gap-2 mt-1 px-1">
                     <input type="checkbox" id="auto-login-check" class="w-4 h-4 text-[#3182f6] bg-gray-100 border-gray-300 rounded focus:ring-[#3182f6] cursor-pointer" checked>
                     <label for="auto-login-check" class="text-sm text-[#4e5968] font-medium cursor-pointer select-none">자동 로그인</label>
@@ -718,11 +717,31 @@
             }
         }
 
+        // 실시간 계정 정지/삭제 검증 로직 (실시간 밴 해머)
+        function verifyCurrentUser() {
+            if (!currentUser || currentUser.username === '관리자') return true;
+            const upToDateUser = store.users.find(u => u.username === currentUser.username);
+            
+            // 유저가 삭제되었거나, 상태가 '승인됨(approved)'이 아니면 즉시 추방
+            if (!upToDateUser || upToDateUser.status !== 'approved') {
+                localStorage.removeItem('hagios_current_user');
+                sessionStorage.removeItem('hagios_current_user');
+                document.getElementById('dashboard-screen').classList.add('hidden');
+                document.getElementById('auth-screen').classList.remove('hidden');
+                currentUser = null;
+                showAlert('접근 제한', '관리자에 의해 계정이 정지되었거나 삭제되었습니다.', 'error');
+                return false;
+            }
+            currentUser = upToDateUser; // 최신 상태 동기화
+            return true;
+        }
+
         function initLocalFallback() {
             ['users', 'todos', 'calendar', 'sheets', 'board', 'konti', 'archives', 'freeboard', 'notifications'].forEach(key => {
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
                 store[key] = JSON.parse(localStorage.getItem('ccm_' + key));
             });
+            if (currentUser && !verifyCurrentUser()) return; // 오프라인 시에도 검증
             refreshUI();
         }
 
@@ -735,7 +754,11 @@
                     store[storeKey] = [];
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
                     
-                    if(collectionName === 'users' && currentUser && currentUser.isAdmin) renderAdminViews();
+                    if(collectionName === 'users') {
+                        // 유저 목록이 갱신될 때마다 현재 접속자의 상태를 검사해서 정지당했으면 쫓아냄
+                        if (currentUser && !verifyCurrentUser()) return;
+                        if(currentUser && currentUser.isAdmin) renderAdminViews();
+                    }
                     if(currentUser) refreshUI();
                 }, (error) => { console.error(`Error loading ${collectionName}:`, error); });
             };
@@ -954,8 +977,8 @@
                             <span class="text-[8px] sm:text-[10px] font-bold text-[#8b95a1]">${new Date(noti.createdAt).toLocaleString()}</span>
                         </div>
                         <p class="text-[11px] sm:text-sm text-[#333d4b] font-bold truncate pr-4">${escapeHtml(noti.message)}</p>
-                        <button class="absolute top-3 right-3 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                            <i class="fa-solid fa-xmark text-sm"></i>
+                        <button class="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 text-[#8b95a1] hover:text-[#333d4b] transition px-1 py-1 rounded" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
+                            <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
                         </button>
                     </div>
                 `;
@@ -1368,7 +1391,14 @@
                 const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-10 mt-3 rounded-[10px] outline-none"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#f97316] font-bold hover:underline bg-orange-50 px-3 py-1.5 rounded-lg"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 
-                const downloadBtn = sheet.data ? `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>` : '';
+                let downloadBtn = '';
+                if (sheet.data) {
+                    if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
+                        downloadBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</a>`;
+                    } else {
+                        downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>`;
+                    }
+                }
                 
                 const memoHtml = sheet.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] border border-gray-100 p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
 
@@ -1393,10 +1423,23 @@
             });
         }
 
-        window.downloadSheet = (id) => {
+        window.downloadSheet = async (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
-            window.forceDownload(sheet.data, sheet.filename || `${sheet.title}.pdf`);
+            
+            try {
+                showToast('다운로드가 시작되었습니다.', 'success');
+                const link = document.createElement('a');
+                link.href = sheet.data;
+                link.download = sheet.filename || `${sheet.title}.pdf`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) {
+                console.error("Download error:", e);
+                window.open(sheet.data, '_blank');
+            }
         };
 
         document.getElementById('add-sheet-btn').addEventListener('click', async () => {
@@ -1417,7 +1460,7 @@
 
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    if (file.size > 2000000) { // 악보 파일 2MB 용량 제한
+                    if (file.size > 2000000) { 
                         showToast('악보 파일 용량은 2MB를 넘을 수 없습니다.', 'error');
                         btn.disabled = false; btn.innerText = '저장 완료'; return;
                     }
@@ -1514,7 +1557,11 @@
                 kontiSheets.forEach((sheet, idx) => { 
                     let downBtn = '';
                     if(sheet.data) {
-                        downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
+                        if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
+                            downBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</a>`;
+                        } else {
+                            downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
+                        }
                     }
                     sheetsHtml += `<div class="flex items-center justify-between p-3 bg-[#fbfbfb] rounded-[14px] border border-gray-100"><div class="flex items-center gap-3 overflow-hidden"><span class="w-6 h-6 rounded-full bg-[#3182f6] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-bold text-[#333d4b] truncate">${escapeHtml(sheet.title)}</span></div>${downBtn}</div>`; 
                 });
@@ -1622,7 +1669,11 @@
                 
                 let downloadBtn = '';
                 if(arc.data){
-                    downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
+                    if (arc.data.startsWith('http') || arc.data.startsWith('blob:')) {
+                        downloadBtn = `<a href="${arc.data}" download="${arc.filename || 'downloaded_file'}" target="_blank" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</a>`;
+                    } else {
+                        downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
+                    }
                 }
                 
                 const memoHtml = arc.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
@@ -1632,10 +1683,37 @@
             });
         }
 
-        window.downloadArchive = (id) => {
+        window.downloadArchive = async (id) => {
             const arc = getCollectionData('archives').find(a => a.id == id); 
             if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
-            window.forceDownload(arc.data, arc.filename || 'downloaded_file');
+            
+            try {
+                showToast('다운로드가 시작되었습니다.', 'success');
+                if (arc.data.startsWith('http')) {
+                    const response = await fetch(arc.data);
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    const link = document.createElement('a');
+                    link.href = blobUrl; 
+                    link.download = arc.filename || 'downloaded_file';
+                    link.target = '_blank';
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                } else {
+                    const link = document.createElement('a');
+                    link.href = arc.data; 
+                    link.download = arc.filename || 'downloaded_file';
+                    document.body.appendChild(link); 
+                    link.click(); 
+                    document.body.removeChild(link);
+                }
+            } catch (e) { 
+                console.error(e); 
+                window.open(arc.data, '_blank');
+            }
         };
         
         document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; if (fileInput.files[0].size > 5000000) { showToast('자료는 5MB 이내로 올려주세요.', 'error'); btn.disabled = false; btn.innerText = '등록 완료'; return; } fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
