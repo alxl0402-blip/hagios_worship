@@ -491,7 +491,7 @@
                     <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
 
-                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group">
+                <div id="audio-file-dropzone" class="p-6 border-2 border-dashed border-purple-200 bg-purple-50/50 rounded-[20px] text-center cursor-pointer hover:bg-purple-50 transition relative group mt-1 sm:mt-0">
                     <input type="file" id="sheet-audio-file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
                     <i class="fa-solid fa-file-audio text-purple-400 text-3xl mb-2 group-hover:scale-110 transition"></i>
                     <p class="text-sm font-bold text-purple-800 mb-0.5">음원 파일 (선택)</p>
@@ -575,17 +575,17 @@
             const icon = document.getElementById('alert-icon');
             
             if (type === 'success') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-check';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             } else if (type === 'error') {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-xmark';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-red-500 hover:bg-red-600 text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             } else {
-                iconContainer.className = 'w-12 h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-3 text-xl';
+                iconContainer.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#e8f3ff] text-[#3182f6] flex items-center justify-center mx-auto mb-2 sm:mb-3 text-lg sm:text-xl';
                 icon.className = 'fa-solid fa-circle-info';
-                document.getElementById('alert-action-btn').className = 'w-full py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-[14px] font-bold transition text-base shadow-sm';
+                document.getElementById('alert-action-btn').className = 'w-full py-2.5 sm:py-3.5 bg-[#3182f6] hover:bg-[#1b64da] text-white rounded-xl sm:rounded-[14px] font-bold transition text-[13px] sm:text-base shadow-sm';
             }
             alertCallback = callback;
             document.getElementById('custom-alert-modal').classList.remove('hidden');
@@ -920,7 +920,7 @@
                                     <span class="text-[11px] sm:text-sm text-[#333d4b] truncate font-bold">${escapeHtml(noti.message)}</span>
                                 </div>
                                 <div class="w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm flex-shrink-0 text-[#8b95a1] hover:text-[#333d4b] transition" onclick="dismissNotification(event, '${noti.id}')" title="알림 지우기">
-                                    <i class="fa-solid fa-xmark text-xs"></i>
+                                    <i class="fa-solid fa-xmark text-[10px] sm:text-xs"></i>
                                 </div>
                             </div>
                         `;
@@ -954,6 +954,51 @@
             });
         }
 
+        // 브라우저 팝업 차단을 우회하여 강제로 파일을 다운로드시키는 핵심 함수
+        window.forceDownload = async (dataUrl, filename) => {
+            try {
+                showToast('파일을 불러오는 중입니다...', 'info');
+                let blob;
+                if (dataUrl.startsWith('http')) {
+                    // Firebase Storage 외부 링크일 경우 fetch 시도
+                    const res = await fetch(dataUrl);
+                    blob = await res.blob();
+                } else if (dataUrl.startsWith('data:')) {
+                    // Base64 데이터일 경우 Blob으로 변환 (모바일에서 가장 안정적임)
+                    const arr = dataUrl.split(',');
+                    let mime = 'application/octet-stream';
+                    if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
+                    const bstr = atob(arr[1]); 
+                    let n = bstr.length; 
+                    const u8arr = new Uint8Array(n); 
+                    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+                    blob = new Blob([u8arr], {type: mime});
+                } else {
+                    throw new Error("Unknown data format");
+                }
+                
+                const blobUrl = URL.createObjectURL(blob); 
+                const link = document.createElement('a'); 
+                link.href = blobUrl; 
+                link.download = filename || 'download';
+                document.body.appendChild(link); 
+                link.click(); 
+                setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 2000);
+                showToast('다운로드가 완료되었습니다.', 'success');
+            } catch (e) {
+                console.error("Force download error:", e);
+                // fetch 실패 등 오류 발생 시 최후의 수단으로 새 창 열기
+                const link = document.createElement('a'); 
+                link.href = dataUrl; 
+                link.download = filename || 'download';
+                link.target = '_blank';
+                document.body.appendChild(link); 
+                link.click(); 
+                document.body.removeChild(link);
+                showToast('보안 정책으로 새 창에서 열렸습니다. (직접 저장해주세요)', 'info');
+            }
+        };
+
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 if (!file) { resolve(null); return; }
@@ -971,9 +1016,10 @@
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
             const storageRef = ref(storage, `artifacts/${appId}/public/${folderName}/${fileName}`);
             
-            // 파이어베이스에 올릴 때, 브라우저가 창으로 열지 않고 무조건 다운로드 하도록 강제 꼬리표 장착!
+            // 파이어베이스 업로드 시 강제 다운로드 속성(octet-stream) 부여
             const metadata = {
-                contentDisposition: `attachment; filename*=utf-8''${encodeURIComponent(file.name)}`
+                contentType: 'application/octet-stream',
+                contentDisposition: `attachment; filename="${encodeURIComponent(file.name)}"`
             };
             
             await uploadBytes(storageRef, file, metadata);
@@ -1314,36 +1360,10 @@
             });
         }
 
-        window.downloadSheet = async (id) => {
+        window.downloadSheet = (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
-            
-            try {
-                showToast('다운로드를 준비 중입니다...', 'info');
-                if (sheet.data.startsWith('http')) {
-                    const response = await fetch(sheet.data);
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
-                    
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = sheet.filename || `${sheet.title}.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-                } else {
-                    const link = document.createElement('a');
-                    link.href = sheet.data; 
-                    link.download = sheet.filename || `${sheet.title}.pdf`;
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link);
-                }
-            } catch (e) {
-                console.error("Download error:", e);
-                window.open(sheet.data, '_blank');
-            }
+            window.forceDownload(sheet.data, sheet.filename || `${sheet.title}.pdf`);
         };
 
         document.getElementById('add-sheet-btn').addEventListener('click', async () => {
@@ -1364,9 +1384,13 @@
 
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
+                    if (file.size > 2000000) { // 악보 파일 2MB 용량 제한
+                        showToast('악보 파일 용량은 2MB를 넘을 수 없습니다.', 'error');
+                        btn.disabled = false; btn.innerText = '저장 완료'; return;
+                    }
                     sheetFilename = file.name;
-                    if (storage) sheetData = await uploadFileToStorage(file, 'sheets');
-                    else sheetData = await readFileAsDataURL(file); 
+                    // 다운로드 및 콘티 병합 기능 무조건 성공을 위해 무조건 Base64로 저장
+                    sheetData = await readFileAsDataURL(file); 
                 }
                 
                 if (audioInput.files.length > 0) {
@@ -1375,7 +1399,7 @@
                     if (storage) {
                         audioData = await uploadFileToStorage(file, 'audio');
                     } else {
-                        if (file.size > 700000) {
+                        if (file.size > 5000000) {
                             showToast('음원 파일이 너무 큽니다.', 'error');
                             btn.disabled = false; btn.innerText = '저장 완료'; return;
                         }
@@ -1562,39 +1586,13 @@
             });
         }
 
-        window.downloadArchive = async (id) => {
+        window.downloadArchive = (id) => {
             const arc = getCollectionData('archives').find(a => a.id == id); 
             if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
-            
-            try {
-                showToast('다운로드가 시작되었습니다.', 'success');
-                if (arc.data.startsWith('http')) {
-                    const response = await fetch(arc.data);
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
-                    
-                    const link = document.createElement('a');
-                    link.href = blobUrl; 
-                    link.download = arc.filename || 'downloaded_file';
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-                } else {
-                    const link = document.createElement('a');
-                    link.href = arc.data; 
-                    link.download = arc.filename || 'downloaded_file';
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link);
-                }
-            } catch (e) { 
-                console.error(e); 
-                window.open(arc.data, '_blank');
-            }
+            window.forceDownload(arc.data, arc.filename || 'downloaded_file');
         };
         
-        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; if (storage) { fileData = await uploadFileToStorage(fileInput.files[0], 'archives'); } else { fileData = await readFileAsDataURL(fileInput.files[0]); } } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
+        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; if (fileInput.files[0].size > 5000000) { showToast('자료는 5MB 이내로 올려주세요.', 'error'); btn.disabled = false; btn.innerText = '등록 완료'; return; } fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
         window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
         window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
 
@@ -1678,6 +1676,51 @@
         window.deleteFreeboard = async (id) => { await dbDelete('freeboard', id); showToast('게시글이 삭제되었습니다.', 'info'); };
 
         function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+        
+        // 브라우저 팝업 차단을 우회하여 강제로 파일을 다운로드시키는 핵심 엔진
+        window.forceDownload = async (dataUrl, filename) => {
+            try {
+                showToast('파일을 불러오는 중입니다...', 'info');
+                let blob;
+                if (dataUrl.startsWith('http')) {
+                    // Firebase Storage 외부 링크일 경우 fetch 시도 (CORS 허용 시 작동)
+                    const res = await fetch(dataUrl);
+                    blob = await res.blob();
+                } else if (dataUrl.startsWith('data:')) {
+                    // Base64 데이터일 경우 Blob으로 완벽 변환 (모바일 강제 다운로드 핵심)
+                    const arr = dataUrl.split(',');
+                    let mime = 'application/octet-stream';
+                    if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
+                    const bstr = atob(arr[1]); 
+                    let n = bstr.length; 
+                    const u8arr = new Uint8Array(n); 
+                    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+                    blob = new Blob([u8arr], {type: mime});
+                } else {
+                    throw new Error("Unknown data format");
+                }
+                
+                const blobUrl = URL.createObjectURL(blob); 
+                const link = document.createElement('a'); 
+                link.href = blobUrl; 
+                link.download = filename || 'download';
+                document.body.appendChild(link); 
+                link.click(); 
+                setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 2000);
+                showToast('다운로드가 시작되었습니다.', 'success');
+            } catch (e) {
+                console.error("Force download error:", e);
+                // 브라우저가 막거나 fetch 실패 시 최후의 수단으로 창 열기
+                const link = document.createElement('a'); 
+                link.href = dataUrl; 
+                link.download = filename || 'download';
+                link.target = '_blank';
+                document.body.appendChild(link); 
+                link.click(); 
+                document.body.removeChild(link);
+                showToast('보안 정책으로 새 창에서 열렸습니다. (직접 저장해주세요)', 'info');
+            }
+        };
     </script>
 </body>
 </html>
