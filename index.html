@@ -489,10 +489,11 @@
                     <input type="text" id="sheet-title" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="곡 제목 입력">
                 </div>
                 
+                <!-- 파일 다중 선택 가능하도록 multiple 속성 추가 -->
                 <div id="sheet-file-dropzone" class="p-6 border-2 border-dashed border-emerald-200 bg-emerald-50/50 rounded-[20px] text-center cursor-pointer hover:bg-emerald-50 transition relative group">
-                    <input type="file" id="sheet-file" accept=".pdf,image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드">
+                    <input type="file" id="sheet-file" accept=".pdf,image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드 (여러 개 선택 가능)">
                     <i class="fa-solid fa-file-pdf text-[#00c897] text-3xl mb-2 group-hover:scale-110 transition"></i>
-                    <p class="text-sm font-bold text-emerald-800 mb-0.5">악보 파일 (PDF/이미지)</p>
+                    <p class="text-sm font-bold text-emerald-800 mb-0.5">악보 파일 (여러 개 가능)</p>
                     <p class="text-xs text-emerald-600/70">여기를 눌러 파일을 첨부하세요</p>
                     <div id="sheet-current-file-info" class="text-xs text-[#8b95a1] mt-2 font-semibold"></div>
                 </div>
@@ -558,7 +559,6 @@
         </div>
     </div>
 
-    <!-- 스크립트 코드 모음 -->
     <script>
         let db = null;
         let auth = null;
@@ -689,7 +689,7 @@
         });
 
         window.addEventListener('load', () => {
-            setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '');
+            setupDropzone('sheet-file-dropzone', 'sheet-file', 'sheet-current-file-info', '파일 여러 개 선택 가능');
             setupDropzone('audio-file-dropzone', 'sheet-audio-file', 'sheet-current-audio-info', '');
             
             const boardInput = document.getElementById('board-input');
@@ -708,21 +708,11 @@
             }, 1200);
         });
 
-        // 자동 로그인 체킹
-        function checkSavedLogin() {
-            const savedUser = localStorage.getItem('hagios_current_user') || sessionStorage.getItem('hagios_current_user');
-            if(savedUser) {
-                currentUser = JSON.parse(savedUser);
-                startWorkspace();
-            }
-        }
-
-        // 실시간 계정 정지/삭제 검증 로직 (실시간 밴 해머)
+        // 실시간 계정 정지/삭제 검증 로직
         function verifyCurrentUser() {
             if (!currentUser || currentUser.username === '관리자') return true;
             const upToDateUser = store.users.find(u => u.username === currentUser.username);
             
-            // 유저가 삭제되었거나, 상태가 '승인됨(approved)'이 아니면 즉시 추방
             if (!upToDateUser || upToDateUser.status !== 'approved') {
                 localStorage.removeItem('hagios_current_user');
                 sessionStorage.removeItem('hagios_current_user');
@@ -732,8 +722,16 @@
                 showAlert('접근 제한', '관리자에 의해 계정이 정지되었거나 삭제되었습니다.', 'error');
                 return false;
             }
-            currentUser = upToDateUser; // 최신 상태 동기화
+            currentUser = upToDateUser; 
             return true;
+        }
+
+        function checkSavedLogin() {
+            const savedUser = localStorage.getItem('hagios_current_user') || sessionStorage.getItem('hagios_current_user');
+            if(savedUser) {
+                currentUser = JSON.parse(savedUser);
+                startWorkspace();
+            }
         }
 
         function initLocalFallback() {
@@ -741,7 +739,7 @@
                 if (!localStorage.getItem('ccm_' + key)) localStorage.setItem('ccm_' + key, JSON.stringify([]));
                 store[key] = JSON.parse(localStorage.getItem('ccm_' + key));
             });
-            if (currentUser && !verifyCurrentUser()) return; // 오프라인 시에도 검증
+            if (currentUser && !verifyCurrentUser()) return;
             refreshUI();
         }
 
@@ -755,7 +753,6 @@
                     snapshot.forEach(docSnap => { store[storeKey].push({ id: docSnap.id, ...docSnap.data() }); });
                     
                     if(collectionName === 'users') {
-                        // 유저 목록이 갱신될 때마다 현재 접속자의 상태를 검사해서 정지당했으면 쫓아냄
                         if (currentUser && !verifyCurrentUser()) return;
                         if(currentUser && currentUser.isAdmin) renderAdminViews();
                     }
@@ -985,51 +982,6 @@
             });
         }
 
-        // 브라우저 팝업 차단을 우회하여 강제로 파일을 다운로드시키는 핵심 함수
-        window.forceDownload = async (dataUrl, filename) => {
-            try {
-                showToast('파일을 불러오는 중입니다...', 'info');
-                let blob;
-                if (dataUrl.startsWith('http')) {
-                    // Firebase Storage 외부 링크일 경우 fetch 시도 (CORS 허용 시 작동)
-                    const res = await fetch(dataUrl);
-                    blob = await res.blob();
-                } else if (dataUrl.startsWith('data:')) {
-                    // Base64 데이터일 경우 Blob으로 완벽 변환 (모바일 강제 다운로드 핵심)
-                    const arr = dataUrl.split(',');
-                    let mime = 'application/octet-stream';
-                    if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
-                    const bstr = atob(arr[1]); 
-                    let n = bstr.length; 
-                    const u8arr = new Uint8Array(n); 
-                    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
-                    blob = new Blob([u8arr], {type: mime});
-                } else {
-                    throw new Error("Unknown data format");
-                }
-                
-                const blobUrl = URL.createObjectURL(blob); 
-                const link = document.createElement('a'); 
-                link.href = blobUrl; 
-                link.download = filename || 'download';
-                document.body.appendChild(link); 
-                link.click(); 
-                setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 2000);
-                showToast('다운로드가 시작되었습니다.', 'success');
-            } catch (e) {
-                console.error("Force download error:", e);
-                // 브라우저가 막거나 fetch 실패 시 최후의 수단으로 창 열기
-                const link = document.createElement('a'); 
-                link.href = dataUrl; 
-                link.download = filename || 'download';
-                link.target = '_blank';
-                document.body.appendChild(link); 
-                link.click(); 
-                document.body.removeChild(link);
-                showToast('보안 정책으로 새 창에서 열렸습니다. (직접 저장해주세요)', 'info');
-            }
-        };
-
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 if (!file) { resolve(null); return; }
@@ -1040,6 +992,7 @@
             });
         }
 
+        // Firebase Storage 파일 업로드 (강제 다운로드 속성 부여)
         async function uploadFileToStorage(file, folderName) {
             if (!storage) throw new Error("Firebase Storage가 설정되지 않았습니다.");
             const { ref, uploadBytes, getDownloadURL } = window.firebaseAppModules;
@@ -1047,7 +1000,6 @@
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
             const storageRef = ref(storage, `artifacts/${appId}/public/${folderName}/${fileName}`);
             
-            // 파이어베이스 업로드 시 강제 다운로드 속성(octet-stream) 부여
             const metadata = {
                 contentType: 'application/octet-stream',
                 contentDisposition: `attachment; filename="${encodeURIComponent(file.name)}"`
@@ -1080,8 +1032,13 @@
                 }
             });
             input.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                info.textContent = file ? `선택됨: ${file.name}` : defaultText;
+                if (e.target.files.length > 1) {
+                    info.textContent = `선택됨: 총 ${e.target.files.length}개 파일`;
+                } else if (e.target.files.length === 1) {
+                    info.textContent = `선택됨: ${e.target.files[0].name}`;
+                } else {
+                    info.textContent = defaultText;
+                }
             });
         }
 
@@ -1108,7 +1065,6 @@
             showAlert('가입 신청 완료', '회원가입 신청이 완료되었습니다.\n관리자의 승인이 떨어지면 로그인이 가능합니다.', 'success', '로그인 화면으로 돌아가기', () => { toggleAuthMode('login'); });
         };
 
-        // 자동 로그인 여부 체킹 후 세션/로컬 스토리지 분리 저장
         window.handleLogin = function() {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
@@ -1200,41 +1156,24 @@
             if(action === 'approve') { 
                 await dbUpdate('users', id, { status: 'approved' }); 
                 showToast(`${username}님의 권한이 승인되었습니다.`, 'success'); 
-                renderAdminViews(); 
             }
             else if(action === 'unsuspend') { 
                 await dbUpdate('users', id, { status: 'approved' }); 
                 showToast(`${username}님의 계정 정지가 해제되었습니다.`, 'success'); 
-                renderAdminViews(); 
             }
             else if(action === 'suspend') { 
                 showCustomConfirm('계정 일시 정지', `${username}님의 접속을 일시적으로 차단하시겠습니까?`, async () => { 
                     await dbUpdate('users', id, { status: 'suspended' }); 
                     showToast(`${username}님의 계정이 정지되었습니다.`, 'info'); 
-                    renderAdminViews(); 
                 }, '정지'); 
             }
             else if(action === 'delete') { 
                 showCustomConfirm('계정 영구 삭제', `${username}님의 계정을 완전히 삭제하시겠습니까?`, async () => { 
                     await dbDelete('users', id); 
                     showToast(`${username}님의 계정이 삭제되었습니다.`, 'info'); 
-                    renderAdminViews(); 
                 }, '삭제'); 
             }
         };
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div');
-            let iconClass = 'fa-circle-info text-[#3182f6]';
-            let bgClass = 'bg-[#191f28] text-white';
-            if(type === 'success') { iconClass = 'fa-check text-[#00c897]'; }
-            else if(type === 'error') { iconClass = 'fa-xmark text-red-400'; }
-            
-            toast.className = `flex items-center gap-3 px-5 py-4 rounded-[16px] shadow-lg ${bgClass} fade-in pointer-events-auto text-sm sm:text-base z-[9999] opacity-90`;
-            toast.innerHTML = `<i class="fa-solid ${iconClass} text-lg"></i> <span class="font-bold">${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
-        }
 
         function checkAppInstallation() {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -1391,20 +1330,19 @@
                 const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-10 mt-3 rounded-[10px] outline-none"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#f97316] font-bold hover:underline bg-orange-50 px-3 py-1.5 rounded-lg"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 
+                // 다중 파일이 등록된 악보일 경우 다운로드 버튼 처리
                 let downloadBtn = '';
-                if (sheet.data) {
-                    if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
-                        downloadBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</a>`;
-                    } else {
-                        downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>`;
-                    }
+                if (sheet.pages && sheet.pages.length > 0) {
+                    downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 모두 받기 (${sheet.pages.length}장)</button>`;
+                } else if (sheet.data) {
+                    downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 받기</button>`;
                 }
                 
                 const memoHtml = sheet.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] border border-gray-100 p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(sheet.memo)}</div>` : '';
 
                 item.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-[16px] ${sheet.data ? 'bg-emerald-50 text-[#00c897]' : 'bg-[#f2f4f6] text-[#8b95a1]'} flex items-center justify-center flex-shrink-0 text-xl"><i class="fa-solid fa-music"></i></div>
+                        <div class="w-12 h-12 rounded-[16px] ${(sheet.data || (sheet.pages && sheet.pages.length > 0)) ? 'bg-emerald-50 text-[#00c897]' : 'bg-[#f2f4f6] text-[#8b95a1]'} flex items-center justify-center flex-shrink-0 text-xl"><i class="fa-solid fa-music"></i></div>
                         <div class="flex-1 overflow-hidden pr-10">
                             <h4 class="font-bold text-[#191f28] text-sm truncate leading-tight">${escapeHtml(sheet.title)}</h4>
                         </div>
@@ -1425,20 +1363,18 @@
 
         window.downloadSheet = async (id) => {
             const sheet = getCollectionData('sheets').find(s => s.id == id);
-            if (!sheet || !sheet.data) { showToast('악보 파일이 존재하지 않습니다.', 'error'); return; }
+            if (!sheet) return;
             
-            try {
-                showToast('다운로드가 시작되었습니다.', 'success');
-                const link = document.createElement('a');
-                link.href = sheet.data;
-                link.download = sheet.filename || `${sheet.title}.pdf`;
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch (e) {
-                console.error("Download error:", e);
-                window.open(sheet.data, '_blank');
+            // 다중 파일인 경우 반복 다운로드
+            if (sheet.pages && sheet.pages.length > 0) {
+                showToast(`총 ${sheet.pages.length}장의 악보 다운로드를 시작합니다.`, 'info');
+                for (let i = 0; i < sheet.pages.length; i++) {
+                    await window.forceDownload(sheet.pages[i].data, sheet.pages[i].filename || `${sheet.title}_${i+1}`);
+                }
+            } else if (sheet.data) {
+                await window.forceDownload(sheet.data, sheet.filename || `${sheet.title}.pdf`);
+            } else {
+                showToast('악보 파일이 존재하지 않습니다.', 'error');
             }
         };
 
@@ -1455,18 +1391,26 @@
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...';
 
             try {
-                let sheetData = null, sheetFilename = null;
+                let sheetDataList = [];
+                let mainData = null, mainFilename = null;
                 let audioData = null, audioFilename = null;
 
+                // 악보 여러 장 업로드 로직
                 if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    if (file.size > 2000000) { 
-                        showToast('악보 파일 용량은 2MB를 넘을 수 없습니다.', 'error');
-                        btn.disabled = false; btn.innerText = '저장 완료'; return;
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        let f = fileInput.files[i];
+                        let uploadedUrl;
+                        if (storage) {
+                            uploadedUrl = await uploadFileToStorage(f, 'sheets');
+                        } else {
+                            uploadedUrl = await readFileAsDataURL(f); 
+                        }
+                        sheetDataList.push({ data: uploadedUrl, filename: f.name });
                     }
-                    sheetFilename = file.name;
-                    // 다운로드 및 콘티 병합 기능 무조건 성공을 위해 무조건 Base64로 저장
-                    sheetData = await readFileAsDataURL(file); 
+                    if (sheetDataList.length > 0) {
+                        mainData = sheetDataList[0].data;
+                        mainFilename = sheetDataList[0].filename;
+                    }
                 }
                 
                 if (audioInput.files.length > 0) {
@@ -1475,29 +1419,33 @@
                     if (storage) {
                         audioData = await uploadFileToStorage(file, 'audio');
                     } else {
-                        if (file.size > 5000000) {
-                            showToast('음원 파일이 너무 큽니다.', 'error');
-                            btn.disabled = false; btn.innerText = '저장 완료'; return;
-                        }
                         audioData = await readFileAsDataURL(file);
                     }
                 }
 
                 if (editId) {
                     let updatePayload = { title, link, memo };
-                    if (sheetData) { updatePayload.data = sheetData; updatePayload.filename = sheetFilename; }
-                    if (audioData) { updatePayload.audioData = audioData; updatePayload.audioFilename = audioFilename; }
+                    if (sheetDataList.length > 0) { 
+                        updatePayload.data = mainData; 
+                        updatePayload.filename = mainFilename; 
+                        updatePayload.pages = sheetDataList;
+                    }
+                    if (audioData) { 
+                        updatePayload.audioData = audioData; 
+                        updatePayload.audioFilename = audioFilename; 
+                    }
                     
                     await dbUpdate('sheets', editId, updatePayload);
                     showToast('정보가 수정되었습니다.', 'success');
                 } else {
-                    if (!sheetData && !audioData && !link && !memo) {
+                    if (sheetDataList.length === 0 && !audioData && !link && !memo) {
                         showToast('최소 한 가지는 입력해야 합니다.', 'error');
                         btn.disabled = false; btn.innerText = '저장 완료'; return;
                     }
                     await dbAdd('sheets', { 
                         title, link, memo, 
-                        data: sheetData, filename: sheetFilename, 
+                        data: mainData, filename: mainFilename, 
+                        pages: sheetDataList, // 다중 파일 배열 저장
                         audioData: audioData, audioFilename: audioFilename, 
                         createdAt: Date.now(),
                         author: currentUser.username
@@ -1506,7 +1454,13 @@
                 }
                 closeModal('sheet-modal');
             } catch (err) {
-                console.error(err); showToast('저장 중 오류가 발생했습니다.', 'error');
+                console.error(err); 
+                // 업로드 에러 상세 표시
+                if (err.name === 'QuotaExceededError') {
+                    showToast('저장소 용량이 가득 찼습니다. 파일을 줄여주세요.', 'error');
+                } else {
+                    showToast('저장 중 서버 오류가 발생했습니다.', 'error');
+                }
             } finally {
                 btn.disabled = false; btn.innerText = '저장 완료';
             }
@@ -1519,7 +1473,13 @@
             document.getElementById('sheet-link').value = sheet.link || '';
             document.getElementById('sheet-memo').value = sheet.memo || '';
             
-            document.getElementById('sheet-current-file-info').textContent = sheet.filename ? `현재: ${sheet.filename}` : '등록된 악보 없음';
+            let fileInfoText = '등록된 악보 없음';
+            if (sheet.pages && sheet.pages.length > 0) {
+                fileInfoText = `현재: 총 ${sheet.pages.length}개 파일`;
+            } else if (sheet.filename) {
+                fileInfoText = `현재: ${sheet.filename}`;
+            }
+            document.getElementById('sheet-current-file-info').textContent = fileInfoText;
             document.getElementById('sheet-current-audio-info').textContent = sheet.audioFilename ? `현재: ${sheet.audioFilename}` : (sheet.audioData ? '현재: 오디오 파일 있음' : '등록된 음원 없음');
             
             document.getElementById('sheet-file').value = '';
@@ -1556,12 +1516,8 @@
                 
                 kontiSheets.forEach((sheet, idx) => { 
                     let downBtn = '';
-                    if(sheet.data) {
-                        if (sheet.data.startsWith('http') || sheet.data.startsWith('blob:')) {
-                            downBtn = `<a href="${sheet.data}" download="${sheet.filename || sheet.title + '.pdf'}" target="_blank" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</a>`;
-                        } else {
-                            downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
-                        }
+                    if(sheet.data || (sheet.pages && sheet.pages.length > 0)) {
+                        downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
                     }
                     sheetsHtml += `<div class="flex items-center justify-between p-3 bg-[#fbfbfb] rounded-[14px] border border-gray-100"><div class="flex items-center gap-3 overflow-hidden"><span class="w-6 h-6 rounded-full bg-[#3182f6] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-bold text-[#333d4b] truncate">${escapeHtml(sheet.title)}</span></div>${downBtn}</div>`; 
                 });
@@ -1601,45 +1557,66 @@
 
         window.downloadKontiMergedPdf = async (kontiId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId); let sheets = getCollectionData('sheets'); if (!konti) return;
-            const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined && s.data);
+            const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
             if (kontiSheets.length === 0) { showToast('병합할 악보 파일이 없습니다.', 'error'); return; }
 
-            showToast(`[${konti.name}] 전체 악보 다운로드 준비 중...`, 'info');
+            showToast(`[${konti.name}] 악보를 조립 중입니다...`, 'info');
             try {
                 const { PDFDocument } = PDFLib; const mergedPdf = await PDFDocument.create();
                 let successCount = 0;
 
                 for (let i = 0; i < kontiSheets.length; i++) {
-                    let sheet = kontiSheets[i]; let dataUrl = sheet.data; if (!dataUrl) continue;
-                    try {
-                        let bytes;
-                        let isPdf = dataUrl.includes('application/pdf') || dataUrl.split('?')[0].toLowerCase().endsWith('.pdf');
-                        let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
+                    let sheet = kontiSheets[i];
+                    // 여러 장(pages)이 있으면 모두 합치고, 없으면 기존 단일 데이터 처리
+                    let pagesToProcess = (sheet.pages && sheet.pages.length > 0) ? sheet.pages : [];
+                    if (pagesToProcess.length === 0 && sheet.data) {
+                        pagesToProcess.push({ data: sheet.data, filename: sheet.filename });
+                    }
 
-                        if (dataUrl.startsWith('http')) {
-                            const res = await fetch(dataUrl);
-                            if (!res.ok) throw new Error("CORS 보안으로 파일 읽기 차단됨");
-                            bytes = new Uint8Array(await res.arrayBuffer());
-                        } else {
-                            let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
-                            let len = binaryString.length; bytes = new Uint8Array(len);
-                            for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
-                        }
+                    for (let p = 0; p < pagesToProcess.length; p++) {
+                        let dataUrl = pagesToProcess[p].data;
+                        if (!dataUrl) continue;
 
-                        if (isPdf) {
-                            const donorPdf = await PDFDocument.load(bytes);
-                            const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
-                            copiedPages.forEach((page) => mergedPdf.addPage(page));
-                            successCount++;
-                        } else {
-                            let embeddedImage = isPng ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
-                            const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
-                            page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
-                            successCount++;
+                        try {
+                            let bytes;
+                            let isPdf = dataUrl.includes('application/pdf') || dataUrl.split('?')[0].toLowerCase().endsWith('.pdf');
+                            let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
+
+                            if (dataUrl.startsWith('http')) {
+                                // CORS 보안 차단을 뚫는 프록시 우회 통신 모터 가동!
+                                let res;
+                                try {
+                                    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(dataUrl);
+                                    res = await fetch(proxyUrl);
+                                    if (!res.ok) throw new Error("Proxy failed");
+                                } catch (proxyErr) {
+                                    // 프록시 실패 시 원본 직접 요청 (최후의 수단)
+                                    res = await fetch(dataUrl);
+                                    if (!res.ok) throw new Error("Fetch failed");
+                                }
+                                bytes = new Uint8Array(await res.arrayBuffer());
+                            } else {
+                                // Base64 직접 변환
+                                let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
+                                let len = binaryString.length; bytes = new Uint8Array(len);
+                                for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
+                            }
+
+                            if (isPdf) {
+                                const donorPdf = await PDFDocument.load(bytes);
+                                const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
+                                copiedPages.forEach((page) => mergedPdf.addPage(page));
+                                successCount++;
+                            } else {
+                                let embeddedImage = isPng ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
+                                const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
+                                page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
+                                successCount++;
+                            }
+                        } catch (e) { 
+                            console.error("Error processing sheet file:", e); 
+                            showToast(`[${sheet.title}] 병합 실패 (악보를 지우고 다시 등록해주세요!)`, 'error'); 
                         }
-                    } catch (e) { 
-                        console.error("Error processing sheet file:", e); 
-                        showToast(`[${sheet.title}] 병합 실패 (다시 올려주세요!)`, 'error'); 
                     }
                 }
                 
@@ -1652,7 +1629,7 @@
                 const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = `${konti.name.replace(/ /g, '_')}_통합악보.pdf`;
                 document.body.appendChild(link); link.click(); document.body.removeChild(link); setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
                 showToast('다운로드가 완료되었습니다.', 'success');
-            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 다운로드 중 오류가 발생했습니다.', 'error'); }
+            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 합치기 중 서버 오류가 발생했습니다.', 'error'); }
         };
 
         function loadArchives() { 
@@ -1669,11 +1646,7 @@
                 
                 let downloadBtn = '';
                 if(arc.data){
-                    if (arc.data.startsWith('http') || arc.data.startsWith('blob:')) {
-                        downloadBtn = `<a href="${arc.data}" download="${arc.filename || 'downloaded_file'}" target="_blank" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</a>`;
-                    } else {
-                        downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
-                    }
+                    downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
                 }
                 
                 const memoHtml = arc.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
@@ -1683,40 +1656,13 @@
             });
         }
 
-        window.downloadArchive = async (id) => {
+        window.downloadArchive = (id) => {
             const arc = getCollectionData('archives').find(a => a.id == id); 
             if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
-            
-            try {
-                showToast('다운로드가 시작되었습니다.', 'success');
-                if (arc.data.startsWith('http')) {
-                    const response = await fetch(arc.data);
-                    const blob = await response.blob();
-                    const blobUrl = URL.createObjectURL(blob);
-                    
-                    const link = document.createElement('a');
-                    link.href = blobUrl; 
-                    link.download = arc.filename || 'downloaded_file';
-                    link.target = '_blank';
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-                } else {
-                    const link = document.createElement('a');
-                    link.href = arc.data; 
-                    link.download = arc.filename || 'downloaded_file';
-                    document.body.appendChild(link); 
-                    link.click(); 
-                    document.body.removeChild(link);
-                }
-            } catch (e) { 
-                console.error(e); 
-                window.open(arc.data, '_blank');
-            }
+            window.forceDownload(arc.data, arc.filename || 'downloaded_file');
         };
         
-        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; if (fileInput.files[0].size > 5000000) { showToast('자료는 5MB 이내로 올려주세요.', 'error'); btn.disabled = false; btn.innerText = '등록 완료'; return; } fileData = await readFileAsDataURL(fileInput.files[0]); } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
+        document.getElementById('add-archive-btn').addEventListener('click', async () => { const editId = document.getElementById('archive-edit-id').value; const title = document.getElementById('archive-title').value.trim(); const link = document.getElementById('archive-link').value.trim(); const memo = document.getElementById('archive-memo').value.trim(); const fileInput = document.getElementById('archive-file'); if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } const btn = document.getElementById('add-archive-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리 중...'; try { let fileData = null, filename = null; if (fileInput.files.length > 0) { filename = fileInput.files[0].name; if (storage) { fileData = await uploadFileToStorage(fileInput.files[0], 'archives'); } else { fileData = await readFileAsDataURL(fileInput.files[0]); } } if (editId) { let payload = { title, link, memo }; if (fileData) { payload.data = fileData; payload.filename = filename; } await dbUpdate('archives', editId, payload); showToast('자료가 수정되었습니다.', 'success'); } else { await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); showToast('자료가 등록되었습니다.', 'success'); } closeModal('archive-modal'); } catch(e) { console.error(e); showToast('오류가 발생했습니다.', 'error'); } finally { btn.disabled = false; btn.innerText = '등록 완료'; } });
         window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
         window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
 
