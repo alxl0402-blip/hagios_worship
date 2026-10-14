@@ -489,7 +489,6 @@
                     <input type="text" id="sheet-title" class="w-full px-4 py-3 toss-input text-[13px] sm:text-sm" placeholder="곡 제목 입력">
                 </div>
                 
-                <!-- 파일 다중 선택 가능하도록 multiple 속성 추가 -->
                 <div id="sheet-file-dropzone" class="p-6 border-2 border-dashed border-emerald-200 bg-emerald-50/50 rounded-[20px] text-center cursor-pointer hover:bg-emerald-50 transition relative group">
                     <input type="file" id="sheet-file" accept=".pdf,image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="클릭하거나 드래그하여 파일 업로드 (여러 개 선택 가능)">
                     <i class="fa-solid fa-file-pdf text-[#00c897] text-3xl mb-2 group-hover:scale-110 transition"></i>
@@ -1013,7 +1012,7 @@
                 document.body.appendChild(link); 
                 link.click(); 
                 setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 2000);
-                showToast('다운로드가 시작되었습니다.', 'success');
+                showToast('다운로드가 완료되었습니다.', 'success');
             } catch (e) {
                 console.error("Force download error:", e);
                 // 브라우저가 막거나 fetch 실패 시 최후의 수단으로 창 열기
@@ -1376,7 +1375,6 @@
                 const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-10 mt-3 rounded-[10px] outline-none"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#f97316] font-bold hover:underline bg-orange-50 px-3 py-1.5 rounded-lg"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 
-                // 다중 파일이 등록된 악보일 경우 다운로드 버튼 처리
                 let downloadBtn = '';
                 if (sheet.pages && sheet.pages.length > 0) {
                     downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 모두 받기 (${sheet.pages.length}장)</button>`;
@@ -1411,7 +1409,6 @@
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet) return;
             
-            // 다중 파일인 경우 반복 다운로드
             if (sheet.pages && sheet.pages.length > 0) {
                 showToast(`총 ${sheet.pages.length}장의 악보 다운로드를 시작합니다.`, 'info');
                 for (let i = 0; i < sheet.pages.length; i++) {
@@ -1433,5 +1430,390 @@
             const memo = document.getElementById('sheet-memo').value.trim();
 
             if (!title) { showToast('곡 제목을 입력해주세요.', 'error'); return; }
-            const btn = document.getElementById('add-sheet-btn');
-            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중
+            
+            // 모든 항목이 비어있는지 확인
+            if (!editId && fileInput.files.length === 0 && audioInput.files.length === 0 && !link && !memo) {
+                showToast('최소 한 가지는 첨부/입력해야 합니다.', 'error'); 
+                return;
+            }
+
+            // 버튼 누르자마자 팝업 즉시 닫기 (답답함 해소)
+            closeModal('sheet-modal');
+            showToast('파일을 서버에 안전하게 저장 중입니다...', 'info');
+
+            try {
+                let sheetDataList = [];
+                let mainData = null, mainFilename = null;
+                let audioData = null, audioFilename = null;
+
+                if (fileInput.files.length > 0) {
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        let f = fileInput.files[i];
+                        let uploadedUrl;
+                        if (storage) {
+                            uploadedUrl = await uploadFileToStorage(f, 'sheets');
+                        } else {
+                            uploadedUrl = await readFileAsDataURL(f); 
+                        }
+                        sheetDataList.push({ data: uploadedUrl, filename: f.name });
+                    }
+                    if (sheetDataList.length > 0) {
+                        mainData = sheetDataList[0].data;
+                        mainFilename = sheetDataList[0].filename;
+                    }
+                }
+                
+                if (audioInput.files.length > 0) {
+                    const file = audioInput.files[0];
+                    audioFilename = file.name;
+                    if (storage) {
+                        audioData = await uploadFileToStorage(file, 'audio');
+                    } else {
+                        audioData = await readFileAsDataURL(file);
+                    }
+                }
+
+                if (editId) {
+                    let updatePayload = { title, link, memo };
+                    if (sheetDataList.length > 0) { 
+                        updatePayload.data = mainData; updatePayload.filename = mainFilename; updatePayload.pages = sheetDataList;
+                    }
+                    if (audioData) { 
+                        updatePayload.audioData = audioData; updatePayload.audioFilename = audioFilename; 
+                    }
+                    
+                    await dbUpdate('sheets', editId, updatePayload);
+                    showToast('정보가 수정되었습니다.', 'success');
+                } else {
+                    await dbAdd('sheets', { 
+                        title, link, memo, 
+                        data: mainData, filename: mainFilename, 
+                        pages: sheetDataList,
+                        audioData: audioData, audioFilename: audioFilename, 
+                        createdAt: Date.now(),
+                        author: currentUser.username
+                    });
+                    showToast('성공적으로 등록되었습니다.', 'success');
+                }
+            } catch (err) {
+                console.error(err); showToast('저장 중 오류가 발생했습니다.', 'error');
+            }
+        });
+
+        window.openEditSheet = (id) => {
+            let sheet = getCollectionData('sheets').find(s => s.id == id); if (!sheet) return;
+            document.getElementById('sheet-edit-id').value = sheet.id;
+            document.getElementById('sheet-title').value = sheet.title || '';
+            document.getElementById('sheet-link').value = sheet.link || '';
+            document.getElementById('sheet-memo').value = sheet.memo || '';
+            
+            let fileInfoText = '등록된 악보 없음';
+            if (sheet.pages && sheet.pages.length > 0) {
+                fileInfoText = `현재: 총 ${sheet.pages.length}개 파일`;
+            } else if (sheet.filename) {
+                fileInfoText = `현재: ${sheet.filename}`;
+            }
+            document.getElementById('sheet-current-file-info').textContent = fileInfoText;
+            document.getElementById('sheet-current-audio-info').textContent = sheet.audioFilename ? `현재: ${sheet.audioFilename}` : (sheet.audioData ? '현재: 오디오 파일 있음' : '등록된 음원 없음');
+            
+            document.getElementById('sheet-file').value = '';
+            document.getElementById('sheet-audio-file').value = '';
+            
+            document.getElementById('sheet-modal-title').textContent = '악보/음원 수정';
+            document.getElementById('sheet-modal').classList.remove('hidden');
+        };
+
+        window.deleteSheet = async (id) => { showCustomConfirm('악보 삭제', '이 곡의 모든 정보를 삭제하시겠습니까?', async () => { await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        function renderKontiSheetCheckboxes(selectedIds = []) { 
+            const container = document.getElementById('konti-sheets-checkboxes'); const sheets = getCollectionData('sheets'); container.innerHTML = '';
+            if (sheets.length === 0) { container.innerHTML = `<p class="text-xs text-[#8b95a1] font-bold text-center py-4">등록된 악보가 없습니다.</p>`; return; }
+            sheets.forEach(sheet => {
+                const isChecked = selectedIds.includes(sheet.id) ? 'checked' : '';
+                container.innerHTML += `<div class="konti-sheet-item flex items-center justify-between p-2 rounded-[12px] hover:bg-[#f2f4f6] transition" data-title="${escapeHtml(sheet.title)}"><label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden"><input type="checkbox" value="${sheet.id}" ${isChecked} class="konti-sheet-checkbox w-5 h-5 text-[#3182f6] rounded border-gray-300 flex-shrink-0"><span class="text-xs text-[#333d4b] font-semibold truncate">${escapeHtml(sheet.title)}</span></label><div class="flex items-center gap-1"><button type="button" onclick="moveSheetOrder(this, 'up')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-up"></i></button><button type="button" onclick="moveSheetOrder(this, 'down')" class="text-[#8b95a1] hover:text-[#3182f6] p-1.5"><i class="fa-solid fa-chevron-down"></i></button></div></div>`;
+            });
+        }
+        window.filterKontiSheetCheckboxes = () => { const search = (document.getElementById('konti-sheet-search')?.value || '').toLowerCase(); document.querySelectorAll('.konti-sheet-item').forEach(item => { if(item.getAttribute('data-title').toLowerCase().includes(search)) item.classList.remove('hidden'); else item.classList.add('hidden'); }); };
+        window.moveSheetOrder = (btnElement, dir) => { const container = document.getElementById('konti-sheets-checkboxes'); const item = btnElement.closest('.konti-sheet-item'); if(dir === 'up' && item.previousElementSibling) container.insertBefore(item, item.previousElementSibling); else if(dir === 'down' && item.nextElementSibling) container.insertBefore(item.nextElementSibling, item); };
+
+        function loadKonti() { 
+            const list = document.getElementById('konti-list'); const search = (document.getElementById('konti-search')?.value || '').toLowerCase(); let kontiList = getCollectionData('konti'); const sheets = getCollectionData('sheets');
+            if (search) kontiList = kontiList.filter(k => k.name.toLowerCase().includes(search) || (k.memo && k.memo.toLowerCase().includes(search)));
+            list.innerHTML = '';
+            if(kontiList.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 text-xs font-semibold bg-white rounded-[20px]">등록된 콘티가 없습니다.</div>`; return; }
+            kontiList.forEach(konti => {
+                const isOwner = !!currentUser;
+                const actionBtns = isOwner ? `<button onclick="openEditKonti('${konti.id}')" class="text-[#8b95a1] hover:text-[#3182f6] p-2 text-sm bg-[#f2f4f6] rounded-[10px] hover:bg-[#e8f3ff]"><i class="fa-solid fa-pen"></i></button><button onclick="deleteKonti('${konti.id}')" class="text-[#8b95a1] hover:text-red-500 p-2 text-sm bg-[#f2f4f6] rounded-[10px] hover:bg-red-50"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
+                const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
+                let sheetsHtml = kontiSheets.length === 0 ? `<p class="text-xs text-[#8b95a1] font-medium">포함된 악보가 없습니다.</p>` : '';
+                
+                kontiSheets.forEach((sheet, idx) => { 
+                    let downBtn = '';
+                    if(sheet.data || (sheet.pages && sheet.pages.length > 0)) {
+                        downBtn = `<button onclick="downloadSheet('${sheet.id}')" class="text-xs text-[#3182f6] font-bold px-3 py-1.5 bg-[#e8f3ff] rounded-md whitespace-nowrap"><i class="fa-solid fa-download"></i> 다운</button>`;
+                    }
+                    sheetsHtml += `<div class="flex items-center justify-between p-3 bg-[#fbfbfb] rounded-[14px] border border-gray-100"><div class="flex items-center gap-3 overflow-hidden"><span class="w-6 h-6 rounded-full bg-[#3182f6] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">${idx + 1}</span><span class="text-xs font-bold text-[#333d4b] truncate">${escapeHtml(sheet.title)}</span></div>${downBtn}</div>`; 
+                });
+                
+                let linkHtml = konti.link ? `<a href="${konti.link}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-red-600 hover:underline font-bold"><i class="fa-brands fa-youtube"></i> 유튜브 링크</a>` : '';
+                let memoHtml = konti.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-amber-50/50 p-4 rounded-[14px] whitespace-pre-wrap">${escapeHtml(konti.memo)}</div>` : '';
+                
+                const item = document.createElement('div'); item.className = 'toss-card p-4';
+                item.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3 pb-3 border-b border-gray-100"><div><h3 class="font-bold text-[#191f28] text-sm">${escapeHtml(konti.name)}</h3><div class="flex gap-3 items-center mt-1.5"><span class="text-[10px] text-[#8b95a1] font-bold bg-[#f2f4f6] px-2.5 py-1 rounded-md">총 ${kontiSheets.length}곡</span>${linkHtml}</div></div><div class="flex items-center gap-2 w-full sm:w-auto justify-end"><button onclick="downloadKontiMergedPdf('${konti.id}')" class="bg-[#3182f6] hover:bg-[#1b64da] text-white px-3.5 py-2 rounded-[10px] text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> 전체 악보 다운로드</button>${actionBtns}</div></div>${memoHtml}<div class="flex flex-col gap-2 mt-3">${sheetsHtml}</div>`;
+                list.appendChild(item);
+            });
+        }
+
+        document.getElementById('save-konti-btn').addEventListener('click', async () => {
+            const editId = document.getElementById('konti-edit-id').value; const name = document.getElementById('konti-name').value.trim();
+            const link = document.getElementById('konti-link').value.trim(); const memo = document.getElementById('konti-memo').value.trim();
+            let sheetIds = []; document.querySelectorAll('.konti-sheet-item').forEach(item => { const cb = item.querySelector('.konti-sheet-checkbox'); if (cb && cb.checked) sheetIds.push(cb.value); });
+            if(!name) { showToast('콘티 이름을 입력하세요.', 'error'); return; } closeModal('konti-modal');
+            if (editId) { await dbUpdate('konti', editId, { name, link, memo, sheetIds }); showToast('콘티가 수정되었습니다.', 'success'); } 
+            else { await dbAdd('konti', { name, link, memo, sheetIds, createdAt: Date.now(), author: currentUser.username }); showToast('콘티가 생성되었습니다.', 'success'); }
+        });
+
+        window.openEditKonti = (id) => {
+            let konti = getCollectionData('konti').find(k => k.id == id); if (!konti) return;
+            document.getElementById('konti-edit-id').value = konti.id; document.getElementById('konti-name').value = konti.name;
+            document.getElementById('konti-link').value = konti.link || ''; document.getElementById('konti-memo').value = konti.memo || '';
+            document.getElementById('konti-modal-title').textContent = '콘티 수정'; renderKontiSheetCheckboxes(konti.sheetIds || []);
+            const container = document.getElementById('konti-sheets-checkboxes'); const items = Array.from(container.children);
+            items.sort((a,b) => {
+                const aCb = a.querySelector('input'); const bCb = b.querySelector('input');
+                const aIdx = (konti.sheetIds||[]).indexOf(aCb.value); const bIdx = (konti.sheetIds||[]).indexOf(bCb.value);
+                if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx; if (aIdx !== -1) return -1; if (bIdx !== -1) return 1; return 0;
+            });
+            container.innerHTML = ''; items.forEach(item => container.appendChild(item)); document.getElementById('konti-modal').classList.remove('hidden');
+        };
+        window.deleteKonti = async (id) => { showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?', async () => { await dbDelete('konti', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        window.downloadKontiMergedPdf = async (kontiId) => {
+            let konti = getCollectionData('konti').find(k => k.id == kontiId); let sheets = getCollectionData('sheets'); if (!konti) return;
+            const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
+            if (kontiSheets.length === 0) { showToast('병합할 악보 파일이 없습니다.', 'error'); return; }
+
+            showToast(`[${konti.name}] 악보를 조립 중입니다...`, 'info');
+            try {
+                const { PDFDocument } = PDFLib; const mergedPdf = await PDFDocument.create();
+                let successCount = 0;
+
+                for (let i = 0; i < kontiSheets.length; i++) {
+                    let sheet = kontiSheets[i];
+                    
+                    let pagesToProcess = (sheet.pages && sheet.pages.length > 0) ? sheet.pages : [];
+                    if (pagesToProcess.length === 0 && sheet.data) {
+                        pagesToProcess.push({ data: sheet.data, filename: sheet.filename });
+                    }
+
+                    for (let p = 0; p < pagesToProcess.length; p++) {
+                        let dataUrl = pagesToProcess[p].data;
+                        if (!dataUrl) continue;
+
+                        try {
+                            let bytes;
+                            let isPdf = dataUrl.includes('application/pdf') || dataUrl.split('?')[0].toLowerCase().endsWith('.pdf');
+                            let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
+
+                            if (dataUrl.startsWith('http')) {
+                                let res;
+                                try {
+                                    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(dataUrl);
+                                    res = await fetch(proxyUrl);
+                                    if (!res.ok) throw new Error("Proxy failed");
+                                } catch (proxyErr) {
+                                    res = await fetch(dataUrl);
+                                    if (!res.ok) throw new Error("Fetch failed");
+                                }
+                                bytes = new Uint8Array(await res.arrayBuffer());
+                            } else {
+                                let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
+                                let len = binaryString.length; bytes = new Uint8Array(len);
+                                for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
+                            }
+
+                            if (isPdf) {
+                                const donorPdf = await PDFDocument.load(bytes);
+                                const copiedPages = await mergedPdf.copyPages(donorPdf, donorPdf.getPageIndices());
+                                copiedPages.forEach((page) => mergedPdf.addPage(page));
+                                successCount++;
+                            } else {
+                                let embeddedImage = isPng ? await mergedPdf.embedPng(bytes) : await mergedPdf.embedJpg(bytes);
+                                const page = mergedPdf.addPage([embeddedImage.width, embeddedImage.height]);
+                                page.drawImage(embeddedImage, { x: 0, y: 0, width: embeddedImage.width, height: embeddedImage.height });
+                                successCount++;
+                            }
+                        } catch (e) { 
+                            console.error("Error processing sheet file:", e); 
+                            showToast(`[${sheet.title}] 병합 실패 (악보를 지우고 다시 등록해주세요!)`, 'error'); 
+                        }
+                    }
+                }
+                
+                if (successCount === 0 || mergedPdf.getPageCount() === 0) {
+                    showToast('정상적인 파일이 없어 다운로드를 취소합니다. 오류나는 악보를 다시 등록해주세요!', 'error');
+                    return;
+                }
+
+                const mergedPdfBytes = await mergedPdf.save(); const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const blobUrl = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = blobUrl; link.download = `${konti.name.replace(/ /g, '_')}_통합악보.pdf`;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link); setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                showToast('성공적으로 하나로 묶였습니다!', 'success');
+            } catch (err) { console.error("PDF merge error:", err); showToast('PDF 합치기 중 서버 오류가 발생했습니다.', 'error'); }
+        };
+
+        function loadArchives() { 
+            const list = document.getElementById('archive-list'); const search = (document.getElementById('archive-search')?.value || '').toLowerCase();
+            let archives = getCollectionData('archives'); if (search) archives = archives.filter(a => a.title.toLowerCase().includes(search) || (a.memo && a.memo.toLowerCase().includes(search)));
+            list.innerHTML = '';
+            if(archives.length === 0) { list.innerHTML = `<div class="col-span-full text-center text-[#8b95a1] py-8 text-xs font-semibold bg-white rounded-[20px]">등록된 자료가 없습니다.</div>`; return; }
+            archives.forEach(arc => {
+                const isOwner = currentUser && (currentUser.isAdmin || (arc.author && arc.author === currentUser.username));
+                const actionBtns = isOwner ? `<div class="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition bg-white/85 backdrop-blur-sm rounded-lg p-1 z-10"><button onclick="openEditArchive('${arc.id}')" class="text-[#8b95a1] hover:text-teal-600 p-1.5 text-xs hover:bg-teal-50 rounded"><i class="fa-solid fa-pen"></i></button><button onclick="deleteArchive('${arc.id}')" class="text-[#8b95a1] hover:text-red-500 p-1.5 text-xs hover:bg-red-50 rounded"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                
+                const item = document.createElement('div'); item.className = 'toss-card p-4 relative group flex flex-col justify-between';
+                const linkHtml = arc.link ? `<a href="${arc.link}" target="_blank" class="text-xs text-teal-600 hover:underline font-bold bg-teal-50 px-3 py-1.5 rounded-lg inline-block mt-2 truncate max-w-full"><i class="fa-solid fa-link"></i> ${escapeHtml(arc.link)}</a>` : '';
+                
+                let downloadBtn = '';
+                if(arc.data){
+                    downloadBtn = `<button onclick="downloadArchive('${arc.id}')" class="text-xs text-[#333d4b] font-bold hover:bg-[#e5e8eb] bg-[#f2f4f6] px-3 py-1.5 rounded-lg mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-download"></i> 첨부파일 다운로드</button>`;
+                }
+                
+                const memoHtml = arc.memo ? `<div class="mt-3 text-xs text-[#4e5968] font-medium bg-[#fbfbfb] p-3 rounded-[12px] whitespace-pre-wrap">${escapeHtml(arc.memo)}</div>` : '';
+                const fileBadge = arc.filename ? `<span class="text-[10px] text-white bg-teal-500 font-bold px-2 py-0.5 rounded-md truncate max-w-[150px] inline-block align-middle ml-2">${escapeHtml(arc.filename)}</span>` : '';
+                item.innerHTML = `<div class="flex items-start gap-3 mb-2 pr-12"><div class="w-10 h-10 rounded-[14px] bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 text-xl"><i class="fa-solid fa-file-lines"></i></div><div class="flex-1 overflow-hidden"><h4 class="font-bold text-[#191f28] text-sm">${escapeHtml(arc.title)}${fileBadge}</h4><p class="text-[10px] text-[#8b95a1] font-bold mt-1">${new Date(arc.createdAt).toLocaleDateString()}</p></div></div><div class="flex flex-col gap-2 items-start">${linkHtml}${downloadBtn}</div>${memoHtml}${actionBtns}`;
+                list.appendChild(item);
+            });
+        }
+
+        window.downloadArchive = (id) => {
+            const arc = getCollectionData('archives').find(a => a.id == id); 
+            if (!arc || !arc.data) { showToast('첨부파일이 존재하지 않습니다.', 'error'); return; }
+            window.forceDownload(arc.data, arc.filename || 'downloaded_file');
+        };
+        
+        document.getElementById('add-archive-btn').addEventListener('click', async () => { 
+            const editId = document.getElementById('archive-edit-id').value; 
+            const title = document.getElementById('archive-title').value.trim(); 
+            const link = document.getElementById('archive-link').value.trim(); 
+            const memo = document.getElementById('archive-memo').value.trim(); 
+            const fileInput = document.getElementById('archive-file'); 
+            
+            if (!title) { showToast('자료 이름을 입력하세요.', 'error'); return; } 
+            
+            // 즉시 팝업 닫기
+            closeModal('archive-modal');
+            showToast('자료를 안전하게 서버에 업로드 중입니다...', 'info');
+
+            try { 
+                let fileData = null, filename = null; 
+                if (fileInput.files.length > 0) { 
+                    filename = fileInput.files[0].name; 
+                    if (storage) { 
+                        fileData = await uploadFileToStorage(fileInput.files[0], 'archives'); 
+                    } else { 
+                        fileData = await readFileAsDataURL(fileInput.files[0]); 
+                    } 
+                } 
+                
+                if (editId) { 
+                    let payload = { title, link, memo }; 
+                    if (fileData) { payload.data = fileData; payload.filename = filename; } 
+                    await dbUpdate('archives', editId, payload); 
+                    showToast('자료가 수정되었습니다.', 'success'); 
+                } else { 
+                    await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); 
+                    showToast('자료가 등록되었습니다.', 'success'); 
+                } 
+            } catch(e) { 
+                console.error(e); showToast('오류가 발생했습니다.', 'error'); 
+            } 
+        });
+
+        window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
+        window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
+
+        window.openModal = function(id) {
+            if (id === 'sheet-modal') {
+                document.getElementById('sheet-edit-id').value = ''; document.getElementById('sheet-title').value = '';
+                document.getElementById('sheet-file').value = ''; document.getElementById('sheet-audio-file').value = '';
+                document.getElementById('sheet-link').value = ''; document.getElementById('sheet-memo').value = '';
+                document.getElementById('sheet-current-file-info').textContent = ''; document.getElementById('sheet-current-audio-info').textContent = '';
+                document.getElementById('sheet-modal-title').textContent = '새 악보 및 음원 등록';
+            } else if (id === 'konti-modal') {
+                document.getElementById('konti-edit-id').value = ''; document.getElementById('konti-name').value = '';
+                document.getElementById('konti-link').value = ''; document.getElementById('konti-memo').value = '';
+                document.getElementById('konti-modal-title').textContent = '새 콘티 만들기';
+                if(document.getElementById('konti-sheet-search')) document.getElementById('konti-sheet-search').value = '';
+                renderKontiSheetCheckboxes();
+            } else if (id === 'archive-modal') {
+                document.getElementById('archive-edit-id').value = ''; document.getElementById('archive-title').value = '';
+                document.getElementById('archive-link').value = ''; document.getElementById('archive-memo').value = '';
+                document.getElementById('archive-file').value = ''; document.getElementById('archive-current-file-info').textContent = '';
+                document.getElementById('archive-modal-title').textContent = '새 자료 등록';
+            }
+            document.getElementById(id).classList.remove('hidden');
+        };
+
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
+
+        function loadBoard() { 
+            const list = document.getElementById('board-list'); const posts = getCollectionData('board');
+            posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
+            if(posts.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 flex-1 flex items-center justify-center text-xs font-semibold">첫 공지를 남겨보세요.</div>`; return; }
+            posts.forEach(post => {
+                const item = document.createElement('div'); item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-4 group';
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-[#8b95a1] ml-2 mb-1.5">${escapeHtml(post.author)}</div>` : '';
+                const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-[#8b95a1] hover:text-[#3182f6] transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="openEditPost('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="deletePost('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-2 w-full max-w-full"><div class="px-3.5 py-2.5 rounded-[20px] rounded-tl-sm bg-white text-[#191f28] shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[13px] sm:text-base font-medium whitespace-pre-wrap break-words leading-relaxed flex-1 min-w-0">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-1 flex-shrink-0"><span class="text-[9px] font-bold text-[#b0b8c1]">${post.time}</span>${actionButtons}</div></div>`;
+                list.appendChild(item);
+            });
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
+        }
+
+        document.getElementById('add-post-btn').addEventListener('click', async () => { 
+            const input = document.getElementById('board-input'); const text = input.value.trim(); 
+            if(!text) return; 
+            const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; 
+            const authorName = currentUser ? currentUser.username : '익명'; 
+            await dbAdd('board', { text, time: timeStr, author: authorName, createdAt: Date.now() }); 
+            input.value = ''; 
+            input.style.height = '44px'; // 제출 후 원래 높이로 복구
+        });
+        window.openEditPost = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("공지 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('board', id, { text: newText.trim() }); showToast('공지가 수정되었습니다.', 'success'); };
+        window.deletePost = async (id) => { await dbDelete('board', id); showToast('공지가 삭제되었습니다.', 'info'); };
+
+        function loadFreeboard() { 
+            const list = document.getElementById('freeboard-list'); if (!list) return; const posts = getCollectionData('freeboard');
+            posts.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0)); list.innerHTML = '';
+            if(posts.length === 0) { list.innerHTML = `<div class="text-center text-[#8b95a1] py-8 flex-1 flex items-center justify-center text-xs font-semibold">자유롭게 이야기를 나눠보세요.</div>`; return; }
+            posts.forEach(post => {
+                const item = document.createElement('div'); item.className = 'flex flex-col w-full sm:w-[85%] self-start items-start mb-4 group';
+                const authorName = post.author ? `<div class="text-[11px] font-bold text-[#8b95a1] ml-2 mb-1.5">${escapeHtml(post.author)}</div>` : '';
+                const isOwner = currentUser && (post.author === currentUser.username || currentUser.isAdmin);
+                const actionButtons = isOwner ? `<div class="flex items-center gap-1"><button class="text-[#8b95a1] hover:text-orange-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="openEditFreeboard('${post.id}', '${encodeURIComponent(post.text)}')"><i class="fa-solid fa-pen"></i></button><button class="text-[#8b95a1] hover:text-red-500 transition text-xs opacity-0 group-hover:opacity-100 cursor-pointer p-1.5" onclick="deleteFreeboard('${post.id}')"><i class="fa-solid fa-trash-can"></i></button></div>` : '';
+                item.innerHTML = `${authorName}<div class="flex items-end gap-2 w-full max-w-full"><div class="px-3.5 py-2.5 rounded-[20px] rounded-tl-sm bg-white text-[#191f28] shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[13px] sm:text-base font-medium whitespace-pre-wrap break-words leading-relaxed flex-1 min-w-0">${escapeHtml(post.text)}</div><div class="flex flex-col items-start gap-1 flex-shrink-0"><span class="text-[9px] font-bold text-[#b0b8c1]">${post.time}</span>${actionButtons}</div></div>`;
+                list.appendChild(item);
+            });
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 50);
+        }
+        
+        document.getElementById('add-freeboard-btn').addEventListener('click', async () => { 
+            const input = document.getElementById('freeboard-input'); const text = input.value.trim(); 
+            if(!text) return; 
+            const now = new Date(); const timeStr = `${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; 
+            const authorName = currentUser ? currentUser.username : '익명'; 
+            await dbAdd('freeboard', { text, time: timeStr, author: authorName, createdAt: Date.now() }); 
+            input.value = ''; 
+            input.style.height = '44px'; // 제출 후 원래 높이로 복구
+        });
+        
+        window.openEditFreeboard = async (id, encodedText) => { const currentText = decodeURIComponent(encodedText); const newText = prompt("게시판 글 수정", currentText); if (newText === null || !newText.trim()) return; await dbUpdate('freeboard', id, { text: newText.trim() }); showToast('게시글이 수정되었습니다.', 'success'); };
+        window.deleteFreeboard = async (id) => { await dbDelete('freeboard', id); showToast('게시글이 삭제되었습니다.', 'info'); };
+
+        function escapeHtml(unsafe) { return (unsafe || '').toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+    </script>
+</body>
+</html>
