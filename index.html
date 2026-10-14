@@ -82,6 +82,11 @@
         .toss-input:focus {
             background-color: #e8f3ff;
         }
+        
+        /* 팝업 오버레이 렌더링 시 최상단 위치(알림)를 위해 z-index 조정 */
+        #toast-container {
+            z-index: 9999 !important;
+        }
     </style>
 </head>
 <body class="h-[100dvh] w-screen overflow-hidden flex items-center justify-center bg-[#f2f4f6]">
@@ -615,16 +620,29 @@
             document.getElementById('custom-confirm-modal').classList.add('hidden');
             confirmCallback = null;
         }
+        
+        // 삭제 (컨펌) 버튼 클릭 로직 강력한 에러 방지 처리 적용
         document.getElementById('confirm-action-btn').addEventListener('click', async () => {
             if (confirmCallback) {
+                const btn = document.getElementById('confirm-action-btn');
+                const originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 처리중...';
+                
                 try {
                     await confirmCallback();
+                    closeCustomConfirm();
                 } catch(e) {
                     console.error("Confirm action error:", e);
-                    showToast('요청 처리 중 오류가 발생했습니다.', 'error');
+                    showToast('요청 처리 중 오류가 발생했습니다: ' + (e.message || ''), 'error');
+                    closeCustomConfirm();
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = originalText;
                 }
+            } else {
+                closeCustomConfirm();
             }
-            closeCustomConfirm();
         });
 
         function autoResizeTextarea(e) {
@@ -720,7 +738,6 @@
             const savedUser = localStorage.getItem('hagios_current_user') || sessionStorage.getItem('hagios_current_user');
             if(savedUser) {
                 currentUser = JSON.parse(savedUser);
-                // 자동 로그인이 되더라도 실제 렌더링 시점에 검증 로직이 돌아서 정지된 유저면 차단함
                 startWorkspace();
             }
         }
@@ -820,41 +837,50 @@
             }
         }
 
+        // 삭제 로직 최적화 (삭제 딜레이로 인한 먹통 현상 해결을 위해 화면에서 즉시 사라지게 처리)
         async function dbDelete(collectionName, id) {
             let items = getCollectionData(collectionName);
             let itemToDelete = items.find(x => x.id == id);
-
-            if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
-                const { doc, deleteDoc } = window.firebaseAppModules;
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
-            } else {
-                let list = JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
-                list = list.filter(item => item.id != id);
-                localStorage.setItem(`ccm_${collectionName}`, JSON.stringify(list));
-                store[collectionName] = list;
-            }
-
-            let notisToDelete = store.notifications.filter(n => n.sourceId === id);
             
-            if (notisToDelete.length === 0 && itemToDelete) {
-                let textMatch = itemToDelete.text || itemToDelete.title || itemToDelete.name || itemToDelete.memo;
-                if (textMatch) {
-                    notisToDelete = store.notifications.filter(n => n.message === textMatch && !n.sourceId);
-                }
-            }
-
-            for (let noti of notisToDelete) {
-                if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
-                    const { doc, deleteDoc } = window.firebaseAppModules;
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
-                } else {
-                    let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
-                    list = list.filter(n => n.id != noti.id);
-                    localStorage.setItem('ccm_notifications', JSON.stringify(list));
-                    store.notifications = list;
-                }
-            }
+            // UI를 위해 삭제된 상태로 임시 저장
+            store[collectionName] = items.filter(x => x.id != id);
             refreshUI();
+
+            try {
+                if (db && auth && auth.currentUser && !id.toString().startsWith('local_')) {
+                    const { doc, deleteDoc } = window.firebaseAppModules;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
+                } else {
+                    let list = JSON.parse(localStorage.getItem(`ccm_${collectionName}`)) || [];
+                    list = list.filter(item => item.id != id);
+                    localStorage.setItem(`ccm_${collectionName}`, JSON.stringify(list));
+                }
+
+                let notisToDelete = store.notifications.filter(n => n.sourceId === id);
+                if (notisToDelete.length === 0 && itemToDelete) {
+                    let textMatch = itemToDelete.text || itemToDelete.title || itemToDelete.name || itemToDelete.memo;
+                    if (textMatch) {
+                        notisToDelete = store.notifications.filter(n => n.message === textMatch && !n.sourceId);
+                    }
+                }
+
+                for (let noti of notisToDelete) {
+                    if (db && auth && auth.currentUser && !noti.id.toString().startsWith('local_')) {
+                        const { doc, deleteDoc } = window.firebaseAppModules;
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', noti.id));
+                    } else {
+                        let list = JSON.parse(localStorage.getItem('ccm_notifications')) || [];
+                        list = list.filter(n => n.id != noti.id);
+                        localStorage.setItem('ccm_notifications', JSON.stringify(list));
+                        store.notifications = list;
+                    }
+                }
+            } catch (e) {
+                // 실패 시 복구
+                store[collectionName] = items;
+                refreshUI();
+                throw e; // 호출한 곳으로 에러 넘김
+            }
         }
 
         function getCollectionData(collectionName) {
@@ -997,11 +1023,9 @@
                 showToast('파일을 불러오는 중입니다...', 'info');
                 let blob;
                 if (dataUrl.startsWith('http')) {
-                    // Firebase Storage 외부 링크일 경우 fetch 시도 (CORS 허용 시 작동)
                     const res = await fetch(dataUrl);
                     blob = await res.blob();
                 } else if (dataUrl.startsWith('data:')) {
-                    // Base64 데이터일 경우 Blob으로 완벽 변환 (모바일 강제 다운로드 핵심)
                     const arr = dataUrl.split(',');
                     let mime = 'application/octet-stream';
                     if (arr[0].indexOf(':') !== -1 && arr[0].indexOf(';') !== -1) mime = arr[0].match(/:(.*?);/)[1];
@@ -1021,10 +1045,8 @@
                 document.body.appendChild(link); 
                 link.click(); 
                 setTimeout(() => { document.body.removeChild(link); URL.revokeObjectURL(blobUrl); }, 2000);
-                showToast('다운로드가 시작되었습니다.', 'success');
             } catch (e) {
                 console.error("Force download error:", e);
-                // 브라우저가 막거나 fetch 실패 시 최후의 수단으로 창 열기
                 const link = document.createElement('a'); 
                 link.href = dataUrl; 
                 link.download = filename || 'download';
@@ -1046,7 +1068,7 @@
             });
         }
 
-        // Firebase Storage 파일 업로드 (강제 다운로드 속성 부여)
+        // Firebase Storage 파일 업로드 (강제 다운로드 속성 부여 및 용량 무제한)
         async function uploadFileToStorage(file, folderName) {
             if (!storage) throw new Error("Firebase Storage가 설정되지 않았습니다.");
             const { ref, uploadBytes, getDownloadURL } = window.firebaseAppModules;
@@ -1384,11 +1406,8 @@
                 const audioPlayer = sheet.audioData ? `<audio controls src="${sheet.audioData}" class="w-full h-10 mt-3 rounded-[10px] outline-none"></audio>` : '';
                 const linkHtml = sheet.link ? `<a href="${sheet.link}" target="_blank" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#f97316] font-bold hover:underline bg-orange-50 px-3 py-1.5 rounded-lg"><i class="fa-brands fa-youtube"></i> 링크 열기</a>` : '';
                 
-                // 다중 파일이 등록된 악보일 경우 다운로드 버튼 처리 (이름 통일)
                 let downloadBtn = '';
-                if (sheet.pages && sheet.pages.length > 0) {
-                    downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 다운하기</button>`;
-                } else if (sheet.data) {
+                if (sheet.data || (sheet.pages && sheet.pages.length > 0)) {
                     downloadBtn = `<button onclick="downloadSheet('${sheet.id}')" class="inline-flex items-center gap-1.5 mt-2 text-xs text-[#3182f6] font-bold hover:underline bg-[#e8f3ff] px-3 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-file-arrow-down"></i> 악보 다운하기</button>`;
                 }
                 
@@ -1419,9 +1438,8 @@
             const sheet = getCollectionData('sheets').find(s => s.id == id);
             if (!sheet) return;
             
-            // 다중 파일인 경우 반복 다운로드
             if (sheet.pages && sheet.pages.length > 0) {
-                showToast(`악보 다운로드를 시작합니다.`, 'info');
+                showToast(`악보 파일 다운로드를 시작합니다.`, 'info');
                 for (let i = 0; i < sheet.pages.length; i++) {
                     await window.forceDownload(sheet.pages[i].data, sheet.pages[i].filename || `${sheet.title}_${i+1}`);
                 }
@@ -1432,6 +1450,7 @@
             }
         };
 
+        // 로딩 및 팝업 닫힘 관련 완벽 개선 적용
         document.getElementById('add-sheet-btn').addEventListener('click', async () => {
             const editId = document.getElementById('sheet-edit-id').value;
             const title = document.getElementById('sheet-title').value.trim();
@@ -1449,14 +1468,13 @@
 
             const btn = document.getElementById('add-sheet-btn');
             btn.disabled = true; 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 업로드 중...';
 
             try {
                 let sheetDataList = [];
                 let mainData = null, mainFilename = null;
                 let audioData = null, audioFilename = null;
 
-                // 악보 여러 장 저장소 업로드 (용량 무제한)
                 if (fileInput.files.length > 0) {
                     for (let i = 0; i < fileInput.files.length; i++) {
                         let f = fileInput.files[i];
@@ -1474,7 +1492,6 @@
                     }
                 }
                 
-                // 오디오 무제한 업로드
                 if (audioInput.files.length > 0) {
                     const file = audioInput.files[0];
                     audioFilename = file.name;
@@ -1495,7 +1512,7 @@
                     }
                     
                     await dbUpdate('sheets', editId, updatePayload);
-                    showToast('정보가 수정되었습니다.', 'success');
+                    showToast('업로드 되었습니다.', 'success');
                 } else {
                     await dbAdd('sheets', { 
                         title, link, memo, 
@@ -1505,17 +1522,14 @@
                         createdAt: Date.now(),
                         author: currentUser.username
                     });
-                    showToast('성공적으로 등록되었습니다.', 'success');
+                    showToast('업로드 되었습니다.', 'success');
                 }
                 
-                // 작업 성공 시 팝업 닫기
-                closeModal('sheet-modal');
-                
+                closeModal('sheet-modal'); // 무조건 완료되었을 때만 닫힘
             } catch (err) {
-                console.error(err); 
-                showToast('저장 중 서버 오류가 발생했습니다. (잠시 후 시도)', 'error');
+                console.error("Upload Error:", err); 
+                showToast('업로드 오류: ' + (err.message || '다시 시도해주세요'), 'error');
             } finally {
-                // 완료 시(성공/실패 무관) 버튼 복구
                 btn.disabled = false; 
                 btn.innerText = '저장 완료';
             }
@@ -1544,7 +1558,12 @@
             document.getElementById('sheet-modal').classList.remove('hidden');
         };
 
-        window.deleteSheet = async (id) => { showCustomConfirm('악보 삭제', '이 곡의 모든 정보를 삭제하시겠습니까?', async () => { await dbDelete('sheets', id); showToast('삭제되었습니다.', 'info'); }); };
+        window.deleteSheet = async (id) => { 
+            showCustomConfirm('악보 삭제', '이 곡의 모든 정보를 삭제하시겠습니까?', async () => { 
+                await dbDelete('sheets', id); 
+                showToast('삭제되었습니다.', 'info'); 
+            }); 
+        };
 
         function renderKontiSheetCheckboxes(selectedIds = []) { 
             const container = document.getElementById('konti-sheets-checkboxes'); const sheets = getCollectionData('sheets'); container.innerHTML = '';
@@ -1610,7 +1629,6 @@
         };
         window.deleteKonti = async (id) => { showCustomConfirm('콘티 삭제', '이 콘티를 삭제하시겠습니까?', async () => { await dbDelete('konti', id); showToast('삭제되었습니다.', 'info'); }); };
 
-        // 프록시를 통해 모든 다중 악보 완벽하게 병합
         window.downloadKontiMergedPdf = async (kontiId) => {
             let konti = getCollectionData('konti').find(k => k.id == kontiId); let sheets = getCollectionData('sheets'); if (!konti) return;
             const kontiSheets = (konti.sheetIds || []).map(id => sheets.find(s => s.id == id)).filter(s => s !== undefined);
@@ -1624,7 +1642,6 @@
                 for (let i = 0; i < kontiSheets.length; i++) {
                     let sheet = kontiSheets[i];
                     
-                    // 여러 장(pages)이 있으면 모두 가져오고, 없으면 기존 1장짜리 데이터 사용
                     let pagesToProcess = (sheet.pages && sheet.pages.length > 0) ? sheet.pages : [];
                     if (pagesToProcess.length === 0 && sheet.data) {
                         pagesToProcess.push({ data: sheet.data, filename: sheet.filename });
@@ -1640,7 +1657,6 @@
                             let isPng = dataUrl.includes('image/png') || dataUrl.split('?')[0].toLowerCase().endsWith('.png');
 
                             if (dataUrl.startsWith('http')) {
-                                // CORS 보안 차단을 뚫는 강력한 프록시 모터 가동!
                                 let res;
                                 try {
                                     const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(dataUrl);
@@ -1652,7 +1668,6 @@
                                 }
                                 bytes = new Uint8Array(await res.arrayBuffer());
                             } else {
-                                // 오프라인 Base64 직접 변환
                                 let base64Data = dataUrl.split(',')[1]; let binaryString = atob(base64Data);
                                 let len = binaryString.length; bytes = new Uint8Array(len);
                                 for (let j = 0; j < len; j++) bytes[j] = binaryString.charCodeAt(j);
@@ -1729,7 +1744,7 @@
             
             const btn = document.getElementById('add-archive-btn'); 
             btn.disabled = true; 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 저장 중...'; 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 업로드 중...'; 
 
             try { 
                 let fileData = null, filename = null; 
@@ -1746,26 +1761,30 @@
                     let payload = { title, link, memo }; 
                     if (fileData) { payload.data = fileData; payload.filename = filename; } 
                     await dbUpdate('archives', editId, payload); 
-                    showToast('자료가 수정되었습니다.', 'success'); 
+                    showToast('업로드 되었습니다.', 'success'); 
                 } else { 
                     await dbAdd('archives', { title, link, memo, data: fileData, filename: filename, createdAt: Date.now(), author: currentUser.username }); 
-                    showToast('자료가 등록되었습니다.', 'success'); 
+                    showToast('업로드 되었습니다.', 'success'); 
                 } 
                 
-                // 완료 시 팝업 닫기
                 closeModal('archive-modal'); 
             } catch(e) { 
                 console.error(e); 
-                showToast('저장 중 서버 오류가 발생했습니다.', 'error'); 
+                showToast('저장 중 서버 오류가 발생했습니다: ' + (e.message || ''), 'error'); 
             } finally { 
-                // 복구
                 btn.disabled = false; 
                 btn.innerText = '등록 완료'; 
             } 
         });
 
         window.openEditArchive = (id) => { let arc = getCollectionData('archives').find(a => a.id == id); if (!arc) return; document.getElementById('archive-edit-id').value = arc.id; document.getElementById('archive-title').value = arc.title || ''; document.getElementById('archive-link').value = arc.link || ''; document.getElementById('archive-memo').value = arc.memo || ''; document.getElementById('archive-current-file-info').textContent = arc.filename ? `현재 파일: ${arc.filename}` : '첨부파일 없음'; document.getElementById('archive-file').value = ''; document.getElementById('archive-modal-title').textContent = '자료 수정'; document.getElementById('archive-modal').classList.remove('hidden'); };
-        window.deleteArchive = async (id) => { showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { await dbDelete('archives', id); showToast('삭제되었습니다.', 'info'); }); };
+        
+        window.deleteArchive = async (id) => { 
+            showCustomConfirm('자료 삭제', '이 자료를 삭제하시겠습니까?', async () => { 
+                await dbDelete('archives', id); 
+                showToast('삭제되었습니다.', 'info'); 
+            }); 
+        };
 
         window.openModal = function(id) {
             if (id === 'sheet-modal') {
